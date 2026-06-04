@@ -20,9 +20,9 @@ const DEFAULTS = {
     expectedOutput: 'Hello, World!',
     hint: 'Use the print() function.',
     starterCode: {
-      python: '# Write your solution here\nprint("Hello, World!")\n',
-      pseudocode: 'BEGIN\n  OUTPUT "Hello, World!"\nEND',
-      javascript: '// Write your solution here\nconsole.log("Hello, World!");\n'
+      python: '',
+      pseudocode: '',
+      javascript: ''
     }
   },
   theme: 'nexo',
@@ -48,63 +48,63 @@ const CHALLENGES = {
     challenge: 'Print "Hello, World!" to the screen.',
     expectedOutput: 'Hello, World!',
     hint: 'Use the print() function.',
-    starterCode: { python: 'print("Hello, World!")\n' }
+    starterCode: { python: '' }
   },
   'py-variables': {
     lang: 'python', title: 'Variables',
     challenge: 'Create variables for your name (string) and age (integer), then print both.',
     expectedOutput: 'Name: Alice\nAge: 17',
     hint: 'Remember: strings need quotes, integers do not.',
-    starterCode: { python: '# Declare variables\nname = "Alice"\nage = 17\n# Print them\nprint("Name:", name)\nprint("Age:", age)\n' }
+    starterCode: { python: '' }
   },
   'py-input': {
     lang: 'python', title: 'User Input',
     challenge: 'Ask the user for two numbers and print their sum.',
     expectedOutput: 'Enter first number: 5\nEnter second number: 3\nThe sum is: 8',
     hint: 'input() returns a string — use int() to convert.',
-    starterCode: { python: '# Get two numbers from user\na = int(input("Enter first number: "))\nb = int(input("Enter second number: "))\nprint("The sum is:", a + b)\n' }
+    starterCode: { python: '' }
   },
   'py-if-else': {
     lang: 'python', title: 'If/Else',
     challenge: 'Ask the user for a number. Print "Positive", "Negative", or "Zero".',
     expectedOutput: 'Enter a number: -5\nNegative',
     hint: 'You need three branches: if, elif, and else.',
-    starterCode: { python: 'num = int(input("Enter a number: "))\nif num > 0:\n    print("Positive")\nelif num < 0:\n    print("Negative")\nelse:\n    print("Zero")\n' }
+    starterCode: { python: '' }
   },
   'py-for-loop': {
     lang: 'python', title: 'For Loop',
     challenge: 'Print a multiplication table for 5 (5×1 to 5×10).',
     expectedOutput: '5 x 1 = 5\n5 x 2 = 10\n...\n5 x 10 = 50',
     hint: 'Use range(1, 11) inside your for loop.',
-    starterCode: { python: 'n = 5\nfor i in range(1, 11):\n    print(f"{n} x {i} = {n * i}")\n' }
+    starterCode: { python: '' }
   },
   'py-while-loop': {
     lang: 'python', title: 'While Loop',
     challenge: 'Keep asking the user for a password until they enter "nexo123".',
     expectedOutput: 'Enter password: hello\nAccess denied.\nEnter password: nexo123\nAccess granted!',
     hint: 'Use a while loop with a condition that checks the input.',
-    starterCode: { python: 'password = ""\nwhile password != "nexo123":\n    password = input("Enter password: ")\n    if password == "nexo123":\n        print("Access granted!")\n    else:\n        print("Access denied.")\n' }
+    starterCode: { python: '' }
   },
   'py-functions': {
     lang: 'python', title: 'Functions',
     challenge: 'Write a function called "greet" that takes a name and returns "Hello, [name]!"',
     expectedOutput: 'Hello, Alice!',
     hint: 'Define with def, use return, then call the function and print the result.',
-    starterCode: { python: 'def greet(name):\n    return f"Hello, {name}!"\n\nprint(greet("Alice"))\n' }
+    starterCode: { python: '' }
   },
   'psc-variables': {
     lang: 'pseudocode', title: 'Pseudocode Variables',
     challenge: 'Declare two INTEGER variables, assign values, and OUTPUT their sum.',
     expectedOutput: 'Sum: 15',
     hint: 'Use DECLARE, ←, and OUTPUT keywords.',
-    starterCode: { pseudocode: 'BEGIN\n  DECLARE a : INTEGER\n  DECLARE b : INTEGER\n  a ← 7\n  b ← 8\n  OUTPUT "Sum: ", a + b\nEND' }
+    starterCode: { pseudocode: '' }
   },
   'psc-loop': {
     lang: 'pseudocode', title: 'Pseudocode Loop',
     challenge: 'Write a FOR loop that outputs numbers 1 to 5.',
     expectedOutput: '1\n2\n3\n4\n5',
     hint: 'Use FOR i ← 1 TO 5 / OUTPUT i / NEXT i',
-    starterCode: { pseudocode: 'BEGIN\n  FOR i ← 1 TO 5\n    OUTPUT i\n  NEXT i\nEND' }
+    starterCode: { pseudocode: '' }
   }
 };
 
@@ -772,9 +772,14 @@ NXT.editor.init = function() {
   NXT.editor.syncHighlight();
   NXT.editor.updateGutter();
 
+  let highlightRaf = null;
   NXT.editor.el.addEventListener('input', function() {
-    NXT.editor.syncHighlight();
-    NXT.editor.updateGutter();
+    if (highlightRaf) cancelAnimationFrame(highlightRaf);
+    highlightRaf = requestAnimationFrame(function() {
+      NXT.editor.syncHighlight();
+      NXT.editor.updateGutter();
+      highlightRaf = null;
+    });
   });
 
   NXT.editor.el.addEventListener('scroll', function() {
@@ -899,6 +904,19 @@ NXT.editor.setValue = function(val) {
   NXT.editor.updateGutter();
 };
 
+NXT.editor.highlightErrorLine = function(lineNum) {
+  const lines = NXT.editor.el.value.split('\n');
+  if (lineNum < 1 || lineNum > lines.length) return;
+  const line = lines[lineNum - 1];
+  const highlightHtml = NXT.editor.highlight.innerHTML;
+  const lineHighlight = '<div class="nxt-error-line" style="background:rgba(212,96,106,0.12);border-left:3px solid var(--nxt-rose);padding-left:4px;">';
+  const parts = highlightHtml.split('\n');
+  if (parts.length >= lineNum) {
+    parts[lineNum - 1] = lineHighlight + parts[lineNum - 1] + '</div>';
+    NXT.editor.highlight.innerHTML = parts.join('\n');
+  }
+};
+
 NXT.getLang = function() {
   return document.getElementById('nxt-langSelect').value;
 };
@@ -909,8 +927,7 @@ NXT.getLangLabel = function() {
 };
 
 NXT.getStarterCode = function() {
-  const lang = NXT.getLang();
-  return CFG.lesson.starterCode[lang] || CFG.lesson.starterCode.python || '';
+  return '';
 };
 
 // =====================================================================
@@ -1024,6 +1041,55 @@ NXT.console.setStatus = function(status) {
 };
 
 // =====================================================================
+// === ERROR PARSER ===
+NXT.parseError = function(errMsg, lang) {
+  let lineNum = null, errorType = 'Error', errorDetail = errMsg, tip = '';
+
+  if (lang === 'python' || !lang) {
+    const lines = errMsg.split('\n');
+    for (const line of lines) {
+      const fileMatch = line.match(/File "<stdin>", line (\d+)/);
+      if (fileMatch) lineNum = parseInt(fileMatch[1]);
+      const errMatch = line.match(/^(\w+Error|SyntaxError|NameError|TypeError|ValueError|IndexError|KeyError|AttributeError|ZeroDivisionError|ImportError|IndentationError|StopIteration|OverflowError|RecursionError|FileNotFoundError|OSError|RuntimeError):\s*(.+)/);
+      if (errMatch) { errorType = errMatch[1]; errorDetail = errMatch[2]; }
+    }
+    const tips = {
+      NameError: "Check that the variable or function name is spelled correctly and defined before use.",
+      TypeError: "You're using a value with the wrong type — check your operators and function arguments.",
+      ValueError: "A function received a value with the right type but wrong value — check your inputs.",
+      SyntaxError: "There's a typo in your code — check for missing colons, brackets, or quotes.",
+      IndentationError: "Python relies on consistent indentation (4 spaces). Check your spacing.",
+      ZeroDivisionError: "You're trying to divide by zero — check your math before dividing.",
+      IndexError: "You're trying to access a list index that doesn't exist — check the list length.",
+      KeyError: "You're trying to access a dictionary key that doesn't exist — check your keys.",
+      AttributeError: "That object doesn't have the method or property you're trying to use.",
+      ImportError: "The module you're trying to import doesn't exist or isn't available.",
+      RecursionError: "Your function is calling itself too many times — check your base case.",
+      StopIteration: "The iterator ran out of items — check your loop logic."
+    };
+    tip = tips[errorType] || '';
+  } else if (lang === 'javascript') {
+    const jsMatch = errMsg.match(/(\w+Error):\s*(.+)/);
+    if (jsMatch) { errorType = jsMatch[1]; errorDetail = jsMatch[2]; }
+    const lineMatch = errMsg.match(/line\s(\d+)/i) || errMsg.match(/at\s.*?:(\d+):/);
+    if (lineMatch) lineNum = parseInt(lineMatch[1]);
+    const jsTips = {
+      ReferenceError: "A variable or function name isn't defined — check for typos.",
+      TypeError: "You're using a value incorrectly — check your function arguments and operators.",
+      SyntaxError: "There's a typo in your code — check for missing brackets, semicolons, or quotes.",
+      RangeError: "A value is outside the allowed range — check array lengths and number bounds."
+    };
+    tip = jsTips[errorType] || '';
+  }
+
+  let friendly = errorType;
+  if (lineNum !== null) friendly += ' on line ' + lineNum;
+  friendly += ': ' + errorDetail;
+  if (tip) friendly += '\n💡 Tip: ' + tip;
+
+  return { lineNum, errorType, errorDetail, tip, friendly };
+};
+
 // === EXECUTION ENGINE — Python (Skulpt) ===
 // =====================================================================
 NXT.py = {};
@@ -1112,7 +1178,11 @@ NXT.py.run = function(code) {
     NXT.console.showCursor();
   }, function(err) {
     const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
-    NXT.console.appendErr(err.toString());
+    const parsed = NXT.parseError(err.toString(), 'python');
+    NXT.console.appendErr(parsed.friendly);
+    if (parsed.lineNum !== null) {
+      NXT.editor.highlightErrorLine(parsed.lineNum);
+    }
     NXT.console.appendSys('Program finished with errors (' + elapsed + 's elapsed)');
     NXT.console.setStatus('error');
     NXT.py.running = false;
@@ -1191,8 +1261,12 @@ NXT.js.run = function(code) {
     logs.forEach(function(log) {
       NXT.console.append(log.text, log.type);
     });
-    NXT.console.appendErr(err.toString());
     const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+    const parsed = NXT.parseError(err.toString(), 'javascript');
+    NXT.console.appendErr(parsed.friendly);
+    if (parsed.lineNum !== null) {
+      NXT.editor.highlightErrorLine(parsed.lineNum);
+    }
     NXT.console.appendSys('Program finished with errors (' + elapsed + 's elapsed)');
     NXT.console.setStatus('error');
   }

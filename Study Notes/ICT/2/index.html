@@ -15,7 +15,7 @@ body { font-family: -apple-system,'Segoe UI',system-ui,sans-serif; background: v
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
-#particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
 .hero { position: relative; z-index: 1; min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
 .hero-badge { display: inline-block; padding: 0.4rem 1.2rem; background: rgba(138,90,190,0.15); border: 1px solid rgba(138,90,190,0.3); border-radius: 50px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); margin-bottom: 1.5rem; }
 .hero h1 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; margin-bottom: 1rem; }
@@ -44,7 +44,7 @@ pre.code-block { background: var(--bg); border: 1px solid var(--border); border-
 </head>
 <body>
 <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
-<canvas id="particles"></canvas>
+
 <section class="hero">
   <div class="hero-badge">ICT &middot; Lesson 2</div>
   <h1>Control Flow:<br>Conditionals &amp; Loops</h1>
@@ -128,32 +128,21 @@ print("Access granted!")</pre>
 <script>
   window.NEXO_TERMINAL_CONFIG = {
     lang: 'python',
-    lessonId: 'py-if-else',
     lesson: {
-      title: 'If/Else Practice',
-      challenge: 'Write a program that asks for a number and prints "Positive", "Negative", or "Zero".',
-      expectedOutput: 'Enter a number: -5\nNegative',
-      hint: 'Use if, elif, and else branches.',
-      starterCode: {
-        python: '# Ask for a number and classify it\nnum = int(input("Enter a number: "))\n# Your code below\n',
-        pseudocode: 'BEGIN\n  DECLARE num : INTEGER\n  OUTPUT "Enter a number: "\n  INPUT num\n  // Complete the program\nEND',
-        javascript: 'const num = parseInt(prompt("Enter a number:"));\n// Your code below\n'
-      }
+      title: 'Conditionals & Loops Practice',
+      challenge: 'Write a Python program that:\n1. Asks the user for a number\n2. Prints "Positive", "Negative", or "Zero" based on the number\n3. Then prints all numbers from 1 up to that number using a loop\n\nBonus: Ask for a password and keep asking until they enter "python123".',
+      expectedOutput: 'Enter a number: 5\nPositive\n1\n2\n3\n4\n5',
+      hint: 'Use if/elif/else for the sign check. Use for i in range(1, num+1) for the loop. For the bonus, use a while loop.',
+      starterCode: { python: '', pseudocode: '', javascript: '' }
     }
   };
 </script>
+<script src="https://skulpt.org/js/skulpt.min.js"></script>
+<script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
 <div id="nexo-terminal-mount"></div>
 <script src="../../../components/nexo-terminal-embed.js"></script>
 
 <script>
-  const canvas = document.getElementById('particles'), ctx = canvas.getContext('2d');
-  let particles = [];
-  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  resizeCanvas(); window.addEventListener('resize', resizeCanvas);
-  class Particle { constructor() { this.reset(); } reset() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.size=Math.random()*2+0.5; this.speedX=(Math.random()-0.5)*0.5; this.speedY=(Math.random()-0.5)*0.5; this.opacity=Math.random()*0.4+0.05; } update() { this.x+=this.speedX; this.y+=this.speedY; if(this.x<0||this.x>canvas.width)this.speedX*=-1; if(this.y<0||this.y>canvas.height)this.speedY*=-1; } draw() { ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fillStyle='rgba(138,90,190,'+this.opacity+')'; ctx.fill(); } }
-  for(let i=0;i<60;i++)particles.push(new Particle());
-  function animateParticles() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); for(let i=0;i<particles.length;i++){for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<150){ctx.beginPath();ctx.strokeStyle='rgba(138,90,190,'+(0.05*(1-dist/150))+')';ctx.lineWidth=0.5;ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke();}}} requestAnimationFrame(animateParticles); }
-  animateParticles();
   const sections = document.querySelectorAll('[data-section]');
   function revealSections() { sections.forEach(s => { if(s.getBoundingClientRect().top < window.innerHeight - 80) s.classList.add('visible'); }); }
   window.addEventListener('scroll', revealSections); revealSections();
