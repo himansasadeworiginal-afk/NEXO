@@ -2,9 +2,15 @@
 
 Turn books and notes into interactive learning experiences.
 
+<p align="center">
+  <a href="https://himansasadeworiginal-afk.github.io/NEXO/">
+    <img src="https://img.shields.io/badge/Live-GitHub%20Pages-2ea84c?style=for-the-badge" alt="Live on GitHub Pages">
+  </a>
+</p>
+
 ## Overview
 
-Nexo is a self-contained, single-file HTML learning platform — no frameworks, no CDN, no server needed. Open `index.html` in any browser and start learning.
+Nexo is a self-contained, single-file HTML learning platform — no frameworks, no CDN, no server needed. Open `index.html` in any browser and start learning, or visit the **[live site](https://himansasadeworiginal-afk.github.io/NEXO/)**.
 
 It has three main sections:
 - **Study Hub** — structured lessons organized by subject, each with interactive summary pages and built-in quizzes
@@ -112,7 +118,7 @@ nexo 2.0/
 
 ## Usage
 
-Open `index.html` in any browser. The app loads immediately — no install, no build, no server.
+Open `index.html` in any browser or visit the **[live site](https://himansasadeworiginal-afk.github.io/NEXO/)**. The app loads immediately — no install, no build, no server.
 
 - **Study Hub tab** — Browse subjects, expand panels, click Start to open a lesson or Quiz to test your knowledge
 - **Book Library tab** — Browse 24 book summaries, filter by category, search by title or author
@@ -189,7 +195,11 @@ Or use the standalone iframe version:
 
 ## Deployment
 
-This is a static site. Deploy to GitHub Pages:
+This is a static site hosted on **GitHub Pages**. The live site is at:
+
+➡️ **https://himansasadeworiginal-afk.github.io/NEXO/**
+
+To deploy updates:
 
 ```bash
 # From the nexo directory:
@@ -198,7 +208,7 @@ git commit -m "Update NEXO"
 git push origin main
 ```
 
-Then enable GitHub Pages in repo Settings → Pages → deploy from `main` branch root.
+Changes go live automatically after pushing to `main`. Make sure `.nojekyll` is present at the root for proper file serving.
 
 ## Planned Enhancements
 
