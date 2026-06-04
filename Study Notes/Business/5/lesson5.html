@@ -344,6 +344,15 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem; margin-bottom: 1rem;
+  color: var(--text-muted); text-decoration: none; font-size: 0.8rem;
+  border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s;
+}
+.back-link:hover { border-color: var(--accent); color: var(--accent); }
+
 </style>
 </head>
 <body>
@@ -353,6 +362,8 @@
 <canvas id="particles-canvas"></canvas>
 <div class="progress-bar" id="progress-bar"></div>
 <div class="content">
+<a class="back-link" href="../../../index.html">&larr; Back to Study Hub</a>
+
   <header>
     <div class="badge">Business Studies &mdash; Lesson 5</div>
     <h1>Entrepreneurship</h1>

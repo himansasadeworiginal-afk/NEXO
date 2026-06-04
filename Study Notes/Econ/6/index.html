@@ -725,6 +725,15 @@
   .phase-detail .phase-chars .char-item .char-value {
     font-weight: 600;
   }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem; margin-bottom: 1rem;
+  color: var(--text-muted); text-decoration: none; font-size: 0.8rem;
+  border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s;
+}
+.back-link:hover { border-color: var(--accent); color: var(--accent); }
+
 </style>
 </head>
 <body>
@@ -743,6 +752,8 @@
 </section>
 
 <div class="container">
+
+<a class="back-link" href="../../../index.html">&larr; Back to Study Hub</a>
 
   <!-- 1. Macroeconomic Variables & Objectives -->
   <div class="section" data-section>
