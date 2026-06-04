@@ -1,32 +1,42 @@
-# NEXO 1.0
+# NEXO 2.0
 
-Turn books and notes into interactive web pages.
+Turn books and notes into interactive learning experiences.
 
 ## Overview
 
-Nexo transforms book summaries and study notes into self-contained, interactive HTML pages.  
-Each book and lesson is a fully interactive page with search, expandable sections, and visual tools — making review and study more engaging than static notes.
+Nexo is a self-contained, single-file HTML learning platform — no frameworks, no CDN, no server needed. Open `index.html` in any browser and start learning.
+
+It has two main sections:
+- **Study Hub** — structured lessons organized by subject, each with interactive summary pages and built-in quizzes
+- **Book Library** — 24 interactive book summaries filterable by category
 
 ## Features
 
-- **Interactive Library Hub** — Browse all 44 resources with filterable categories and search
-- **Category System** — Books organized into Productivity, Philosophy, Psychology, Power, and Finance; Study Notes organized into Economics and Business Studies
-- **Dual Layouts** — Switch between grid and list view
-- **Interactive Summaries** — Each page includes search, expandable sections, and interactive tools
-- **Ambient Environment** — Particle network, floating orbs, mouse-reactive glow, animated gradients
+- **Study Hub** — Subject-first layout with collapsible panels, progress tracking, and lesson cards
+- **Interactive Quizzes** — Multiple-choice quiz per lesson with instant feedback, explanations, and best score tracking (stored in localStorage)
+- **Book Library** — All 24 book summaries with category filters, search, and grid/list toggle
+- **Progress Tracking** — Mark lessons as Not Started / In Progress / Done; progress rings per subject
+- **Keyboard Shortcuts** — `/` to search, `Escape` to clear, arrow keys to navigate lesson cards, `1-4` for quiz answers
+- **Expand/Collapse All** — Toggle all subject panels at once
+- **Ambient Environment** — Particle network, floating orbs, mouse-reactive glow, animated gradients, noise texture
 - **Dark Theme** — Green/teal/purple/amber color palette with smooth animations throughout
-- **Line Icons** — All icons are clean SVG line-art (no emojis) for a consistent, polished look
+- **Count-up Animation** — Hero stats animate on scroll into view
+- **Typewriter Effect** — Subtitle types itself in on page load
+- **Sticky Subject Nav** — Quick-jump pill nav appears when scrolling past the hero
+- **Scroll Progress** — Gradient progress bar with percentage tooltip on hover
+- **Fully Offline** — Everything runs from a single HTML file via `file://` protocol
 
 ## Structure
 
 ```
-nexo 1.0/
-├── index.html                # Library hub — browse all books and study notes
+nexo 2.0/
+├── index.html                # Main app — hub, study hub, book library, quizzes
 ├── README.md
-├── <Book Title>/             # Each book's folder
-│   ├── index.html            # Interactive summary page
-│   ├── <summary>.txt         # Raw summary notes
-│   └── <book>.(pdf|epub)     # Source ebook (if available)
+├── nexo-2.0-upgrade-prompt.txt
+├── <Book Title>/             # Each book's interactive summary folder
+│   ├── index.html
+│   ├── <summary>.txt
+│   └── <book>.(pdf|epub)
 ├── Study Notes/
 │   ├── Business/             # Business Studies lessons (1-8)
 │   │   ├── <n>/
@@ -39,46 +49,28 @@ nexo 1.0/
 └── ...
 ```
 
-## Categories
+## Subjects
 
-| Category       | Resources |
-|---------------|-----------|
-| Productivity  | Atomic Habits, Building a Second Brain, Deep Work, Hyperfocus, Mastery |
-| Philosophy    | Ego Is the Enemy, The Power of Now, Book of Wisdom |
-| Psychology    | Psycho-Cybernetics, What Every BODY Is Saying, The 48 Laws of Power, Read People Like a Book, Surrounded by Idiots, Surrounded By Psychopaths, The Concise Laws of Human Nature, The Laws of Human Nature |
-| Power         | The 48 Laws of Power, Daily Robert Greene, The Art of Seduction, The Prince |
-| Finance       | Money Unlocked, The Changing World Order, Rich Dad Poor Dad, The Millionaire Master Plan, The Psychology of Money |
-| Economics     | 12 lessons covering microeconomics, macroeconomics, trade, and the Sri Lankan economy |
-| Business      | 8 lessons covering business foundations, ethics, organizations, entrepreneurship, and more |
+| Subject | Lessons | Accent Color | Quiz Questions |
+|---------|---------|-------------|----------------|
+| Economics | 12 | Teal | 8 real (L1-2) + 4 placeholder (L3-12) |
+| Business Studies | 8 | Amber | 8 real (L1-2) + 4 placeholder (L3-8) |
 
-## Books Included
+> Future subjects slot into `SUBJECTS_DATA` in `index.html` at the marked `// == TODO:` comment.
 
-- The 48 Laws of Power (Robert Greene)
-- Atomic Habits (James Clear)
-- Building a Second Brain (Tiago Forte)
-- Deep Work (Cal Newport)
-- Ego Is the Enemy (Ryan Holiday)
-- Hyperfocus (Chris Bailey)
-- Money Unlocked (John Lee)
-- The Power of Now (Eckhart Tolle)
-- Psycho-Cybernetics (Maxwell Maltz)
-- The Changing World Order (Ray Dalio)
-- What Every BODY Is Saying (Joe Navarro)
-- Book of Wisdom (Harry B. Joseph)
-- Daily Robert Greene (Robert Greene)
-- Mastery (Robert Greene)
-- Read People Like a Book (Patrick King)
-- Rich Dad Poor Dad (Robert Kiyosaki)
-- Surrounded by Idiots (Thomas Erikson)
-- Surrounded By Psychopaths (Thomas Erikson)
-- The Art of Seduction (Robert Greene)
-- The Concise Laws of Human Nature (Robert Greene)
-- The Laws of Human Nature (Robert Greene)
-- The Millionaire Master Plan (Roger James Hamilton)
-- The Prince (Niccolò Machiavelli)
-- The Psychology of Money (Morgan Housel)
+## Books Library
 
-## Study Notes Included
+24 books across 5 categories:
+
+| Category | Books |
+|----------|-------|
+| Productivity | Atomic Habits, Building a Second Brain, Deep Work, Hyperfocus, Mastery |
+| Philosophy | Ego Is the Enemy, The Power of Now, Book of Wisdom |
+| Psychology | Psycho-Cybernetics, What Every BODY Is Saying, Read People Like a Book, Surrounded by Idiots, Surrounded By Psychopaths, The Concise Laws of Human Nature, The Laws of Human Nature |
+| Power | The 48 Laws of Power, Daily Robert Greene, The Art of Seduction, The Prince |
+| Finance | Money Unlocked, The Changing World Order, Rich Dad Poor Dad, The Millionaire Master Plan, The Psychology of Money |
+
+## Study Notes
 
 ### Business Studies (8 Lessons)
 1. Basis of Business & Environment
@@ -106,9 +98,30 @@ nexo 1.0/
 
 ## Usage
 
-Open `nexo 1.0/index.html` in any browser.  
-Click a card to open its interactive summary page. Use the category filters and search bar to find specific resources.
+Open `index.html` in any browser. The app loads immediately — no install, no build, no server.
+
+- **Study Hub tab** — Browse subjects, expand panels, click Start to open a lesson or Quiz to test your knowledge
+- **Book Library tab** — Browse 24 book summaries, filter by category, search by title or author
+- **Quiz modal** — Answer questions, get instant feedback, track your best score (stored in your browser's localStorage)
+- **Status tracking** — Click the status pill on any lesson card to cycle: Not Started → In Progress → Done
+
+## Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `/` | Focus search bar |
+| `Escape` | Clear search / reset view |
+| `↑` / `↓` | Navigate lesson cards (when search focused) |
+| `1` `2` `3` `4` | Select quiz answer A/B/C/D |
+
+## Technical Notes
+
+- Single-file HTML — everything inline (HTML + CSS + JS)
+- All data in JS constants at the top of the script: `BOOKS_DATA`, `SUBJECTS_DATA`, `QUIZ_DATA`
+- localStorage keys use the `nexo_` prefix to avoid collisions
+- Canvas particle system auto-reduces to 20 particles on mobile
+- Data-driven design — adding a subject only requires a new entry in `SUBJECTS_DATA`
 
 ## Credits
 
-Summaries and interactive pages built from notes on each respective work.
+Summaries, interactive pages, and quizzes built from notes on each respective work.

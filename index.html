@@ -3,1070 +3,1978 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXO 1.0 - Interactive Book Summaries</title>
+<title>NEXO 2.0 - Interactive Learning Platform</title>
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-  :root{
-    --bg:#060906;
-    --surface:#0c110c;
-    --surface-hover:#141c14;
-    --text:#d8e8d8;
-    --text-dim:#607a60;
-    --text-muted:#3a4f3a;
-    --green:#2ea84c;
-    --green-light:#4cd96b;
-    --green-dim:#1a5c2a;
-    --teal:#2aaf8f;
-    --teal-light:#4cdbb8;
-    --teal-dim:#1a6a55;
-    --amber:#d4a040;
-    --amber-light:#e8c060;
-    --amber-dim:#7a5a1a;
-    --purple:#8a5abe;
-    --purple-light:#b07ae0;
-    --purple-dim:#5a2a8a;
-    --rose:#d4606a;
-    --border:#182218;
-    --transition:0.5s cubic-bezier(.22,1,.36,1);
-    --gradient-green:linear-gradient(135deg, #2ea84c, #4cd96b);
-    --gradient-teal:linear-gradient(135deg, #2aaf8f, #4cdbb8);
-    --gradient-amber:linear-gradient(135deg, #d4a040, #e8c060);
-    --gradient-purple:linear-gradient(135deg, #8a5abe, #b07ae0);
-    --gradient-wide:linear-gradient(135deg, #2ea84c, #4cd96b, #2aaf8f);
-  }
+:root{
+  --bg:#060906;
+  --surface:#0c110c;
+  --surface-hover:#141c14;
+  --text:#d8e8d8;
+  --text-dim:#607a60;
+  --text-muted:#3a4f3a;
+  --green:#2ea84c;
+  --green-light:#4cd96b;
+  --green-dim:#1a5c2a;
+  --teal:#2aaf8f;
+  --teal-light:#4cdbb8;
+  --teal-dim:#1a6a55;
+  --amber:#d4a040;
+  --amber-light:#e8c060;
+  --amber-dim:#7a5a1a;
+  --purple:#8a5abe;
+  --purple-light:#b07ae0;
+  --purple-dim:#5a2a8a;
+  --rose:#d4606a;
+  --border:#182218;
+  --transition:0.5s cubic-bezier(.22,1,.36,1);
+  --gradient-green:linear-gradient(135deg, #2ea84c, #4cd96b);
+  --gradient-teal:linear-gradient(135deg, #2aaf8f, #4cdbb8);
+  --gradient-amber:linear-gradient(135deg, #d4a040, #e8c060);
+  --gradient-purple:linear-gradient(135deg, #8a5abe, #b07ae0);
+  --gradient-wide:linear-gradient(135deg, #2ea84c, #4cd96b, #2aaf8f);
+}
 
-  html{scroll-behavior:smooth}
+html{scroll-behavior:smooth}
 
-  body{
-    font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.6;
-    overflow-x:hidden;
-    cursor:default;
-  }
+body{
+  font-family:-apple-system,'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+  cursor:default;
+}
 
-  ::-webkit-scrollbar{width:6px}
-  ::-webkit-scrollbar-track{background:transparent}
-  ::-webkit-scrollbar-thumb{background:var(--green-dim);border-radius:3px}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--green-dim);border-radius:3px}
 
-  /*  SCROLL PROGRESS  */
-  #progress{
-    position:fixed;top:0;left:0;height:2px;
-    background:var(--gradient-wide);
-    background-size:200% auto;
-    animation:gradientShift 3s ease infinite;
-    z-index:999;width:0%;
-    transition:width 0.1s;
-  }
+/* SCROLL PROGRESS */
+#progress{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--gradient-wide);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+  z-index:999;width:0%;
+  transition:width 0.1s;
+}
+#progress-tooltip{
+  position:fixed;top:4px;left:0;z-index:999;
+  font-size:0.6rem;color:var(--text-dim);
+  letter-spacing:1px;pointer-events:none;
+  opacity:0;transition:opacity 0.3s;
+  transform:translateX(-50%);
+}
+#progress:hover + #progress-tooltip,
+#progress-tooltip:hover{opacity:1}
 
-  /* 
-     BACKGROUND CANVAS
-      */
-  #bgCanvas{
-    position:fixed;top:0;left:0;width:100%;height:100%;
-    z-index:0;pointer-events:none;
-  }
+/* BACKGROUND */
+#bgCanvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;
+}
+#orbs{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;overflow:hidden;
+}
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(80px);
+  animation:orbFloat var(--duration) ease-in-out infinite;
+  animation-delay:var(--delay);
+  opacity:0;
+}
+@keyframes orbFloat{
+  0%{transform:translate(0,0) scale(0.8);opacity:0}
+  20%{opacity:var(--max-opacity)}
+  80%{opacity:var(--max-opacity)}
+  100%{transform:translate(var(--tx),var(--ty)) scale(1.2);opacity:0}
+}
+#noise{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;
+  opacity:0.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px 256px;
+  animation:noiseShift 0.5s steps(4) infinite;
+}
+@keyframes noiseShift{
+  0%{background-position:0 0}
+  25%{background-position:4px 8px}
+  50%{background-position:8px 2px}
+  75%{background-position:2px 6px}
+}
+#mouseGlow{
+  position:fixed;width:400px;height:400px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(46,168,76,0.04) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+  transform:translate(-50%,-50%);
+  transition:left 0.3s ease-out, top 0.3s ease-out;
+}
 
-  /* 
-     FLOATING ORBS
-      */
-  #orbs{
-    position:fixed;top:0;left:0;width:100%;height:100%;
-    z-index:0;pointer-events:none;overflow:hidden;
-  }
-  .orb{
-    position:absolute;border-radius:50%;
-    filter:blur(80px);
-    animation:orbFloat var(--duration) ease-in-out infinite;
-    animation-delay:var(--delay);
-    opacity:0;
-  }
-  @keyframes orbFloat{
-    0%{transform:translate(0,0) scale(0.8);opacity:0}
-    20%{opacity:var(--max-opacity)}
-    80%{opacity:var(--max-opacity)}
-    100%{transform:translate(var(--tx),var(--ty)) scale(1.2);opacity:0}
-  }
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes gradientShift{
+  0%,100%{background-position:0% center}
+  50%{background-position:200% center}
+}
+@keyframes shimmer{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(200%)}
+}
+@keyframes appear{
+  from{opacity:0;transform:translateY(20px) scale(0.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes breathe{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+}
 
-  /* 
-     NOISE OVERLAY
-      */
-  #noise{
-    position:fixed;top:0;left:0;width:100%;height:100%;
-    z-index:0;pointer-events:none;
-    opacity:0.03;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size:256px 256px;
-    animation:noiseShift 0.5s steps(4) infinite;
-  }
-  @keyframes noiseShift{
-    0%{background-position:0 0}
-    25%{background-position:4px 8px}
-    50%{background-position:8px 2px}
-    75%{background-position:2px 6px}
-  }
+body::before{
+  content:'';position:fixed;top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(46,168,76,0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(42,175,143,0.02) 0%, transparent 45%),
+    radial-gradient(ellipse at 20% 80%, rgba(138,90,190,0.02) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 20%, rgba(212,160,64,0.02) 0%, transparent 40%);
+  pointer-events:none;z-index:0;
+}
 
-  /*  MOUSE GLOW  */
-  #mouseGlow{
-    position:fixed;width:400px;height:400px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(46,168,76,0.04) 0%, transparent 70%);
-    pointer-events:none;z-index:0;
-    transform:translate(-50%,-50%);
-    transition:left 0.3s ease-out, top 0.3s ease-out;
-  }
+.container{max-width:1200px;margin:0 auto;padding:2rem;position:relative;z-index:1;}
 
-  /* 
-     KEYFRAMES
-      */
-  @keyframes fadeUp{
-    from{opacity:0;transform:translateY(30px)}
-    to{opacity:1;transform:translateY(0)}
-  }
-  @keyframes fadeIn{
-    from{opacity:0}
-    to{opacity:1}
-  }
-  @keyframes gradientShift{
-    0%,100%{background-position:0% center}
-    50%{background-position:200% center}
-  }
-  @keyframes shimmer{
-    0%{transform:translateX(-100%)}
-    100%{transform:translateX(200%)}
-  }
-  @keyframes appear{
-    from{opacity:0;transform:translateY(20px) scale(0.97)}
-    to{opacity:1;transform:translateY(0) scale(1)}
-  }
-  @keyframes breathe{
-    0%,100%{transform:scale(1)}
-    50%{transform:scale(1.05)}
-  }
-  @keyframes borderPulse{
-    0%,100%{border-color:var(--border)}
-    50%{border-color:var(--green-dim)}
-  }
+/* ===== HERO ===== */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:3rem 2rem;
+  position:relative;z-index:1;
+}
+.hero .accent-line{
+  width:50px;height:2px;
+  background:var(--gradient-wide);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+  margin-bottom:2rem;
+  animation:fadeUp 0.8s 0.1s both, gradientShift 3s ease 1s infinite;
+}
+.hero .version-badge{
+  display:inline-block;
+  font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--teal);
+  border:1px solid var(--teal-dim);
+  padding:3px 14px;margin-bottom:1.5rem;
+  animation:fadeUp 0.8s 0.2s both;
+  transition:background 0.3s, color 0.3s;
+}
+.hero .version-badge:hover{
+  background:var(--teal-dim);color:var(--text);
+}
+.hero h1{
+  font-size:clamp(3.5rem, 14vw, 7rem);
+  font-weight:800;letter-spacing:-2px;line-height:1;
+  background:var(--gradient-wide);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp 0.8s 0.3s both, gradientShift 4s ease 1.5s infinite;
+  margin-bottom:0.8rem;
+}
+.hero .subtitle{
+  font-size:clamp(1rem, 2.5vw, 1.3rem);
+  color:var(--text-dim);max-width:600px;
+  font-weight:300;letter-spacing:0.5px;
+  animation:fadeUp 0.8s 0.4s both;
+  min-height:1.6em;
+}
+.hero .subtitle .cursor{
+  display:inline-block;width:2px;height:1.2em;
+  background:var(--green);margin-left:2px;
+  vertical-align:text-bottom;
+  animation:blink 0.8s step-end infinite;
+}
+@keyframes blink{50%{opacity:0}}
+.hero .desc{
+  color:var(--text-muted);font-size:0.9rem;
+  max-width:540px;margin-top:1.5rem;line-height:1.8;
+  animation:fadeUp 0.8s 0.5s both;
+}
+.hero .hero-stats{
+  display:flex;gap:3.5rem;flex-wrap:wrap;justify-content:center;
+  margin-top:2.5rem;
+  animation:fadeUp 0.8s 0.6s both;
+}
+.hero .hero-stats .hs-item{
+  text-align:center;
+}
+.hero .hero-stats strong{
+  display:block;font-size:1.6rem;font-weight:700;
+}
+.hero .hero-stats .hs-item:nth-child(1) strong{
+  background:var(--gradient-green);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero .hero-stats .hs-item:nth-child(2) strong{
+  background:var(--gradient-teal);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero .hero-stats .hs-item:nth-child(3) strong{
+  background:var(--gradient-amber);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero .hero-stats .hs-item:nth-child(4) strong{
+  background:var(--gradient-purple);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero .hero-stats .hs-label{
+  font-size:0.75rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;
+  margin-top:0.15rem;
+}
+.hero .cta-btn{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  margin-top:2rem;padding:12px 28px;
+  background:var(--green);color:var(--bg);
+  font-size:0.85rem;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;text-decoration:none;
+  border:none;cursor:pointer;font-family:inherit;
+  transition:all var(--transition);
+  animation:fadeUp 0.8s 0.7s both;
+  position:relative;overflow:hidden;
+}
+.hero .cta-btn:hover{
+  background:var(--green-light);
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(46,168,76,0.3);
+}
+.hero .scroll-indicator{
+  position:absolute;bottom:2rem;
+  animation:fadeUp 0.8s 1s both;
+}
+.hero .scroll-indicator svg{
+  color:var(--green-dim);
+  animation:bounce 2s 1.5s infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:1}
+  50%{transform:translateY(8px);opacity:0.5}
+}
 
-  /*  AMBIENT BG  */
-  body::before{
-    content:'';position:fixed;top:-50%;left:-50%;
-    width:200%;height:200%;
-    background:
-      radial-gradient(ellipse at 30% 20%, rgba(46,168,76,0.03) 0%, transparent 50%),
-      radial-gradient(ellipse at 70% 60%, rgba(42,175,143,0.02) 0%, transparent 45%),
-      radial-gradient(ellipse at 20% 80%, rgba(138,90,190,0.02) 0%, transparent 40%),
-      radial-gradient(ellipse at 80% 20%, rgba(212,160,64,0.02) 0%, transparent 40%);
-    pointer-events:none;z-index:0;
-  }
+/* ===== SUBJECT PILL NAV ===== */
+.subject-nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,9,6,0.9);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0.6rem 1rem;
+  display:none;
+}
+.subject-nav.show{display:block}
+.subject-nav-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;gap:0.5rem;flex-wrap:wrap;
+  justify-content:center;align-items:center;
+}
+.subject-nav-pill{
+  padding:4px 14px;font-size:0.7rem;
+  letter-spacing:0.5px;text-transform:uppercase;
+  border:1px solid var(--border);
+  background:transparent;color:var(--text-dim);
+  cursor:pointer;transition:all var(--transition);
+  font-family:inherit;text-decoration:none;
+}
+.subject-nav-pill:hover{border-color:var(--green-dim);color:var(--text);background:var(--surface-hover);}
+.subject-nav-pill[data-accent="teal"]:hover{border-color:var(--teal-dim);color:var(--teal);}
+.subject-nav-pill[data-accent="amber"]:hover{border-color:var(--amber-dim);color:var(--amber);}
+.subject-nav-pill[data-accent="purple"]:hover{border-color:var(--purple-dim);color:var(--purple);}
+.subject-nav-pill[data-accent="rose"]:hover{border-color:var(--rose);color:var(--rose);}
 
-  .container{max-width:1200px;margin:0 auto;padding:2rem;position:relative;z-index:1;}
+/* ===== TAB NAVIGATION ===== */
+.tab-nav{
+  display:flex;gap:0;justify-content:center;
+  margin-bottom:0;position:relative;z-index:2;
+  border-bottom:1px solid var(--border);
+}
+.tab-btn{
+  padding:14px 32px;font-size:0.8rem;
+  letter-spacing:2px;text-transform:uppercase;
+  background:transparent;border:none;
+  border-bottom:2px solid transparent;
+  color:var(--text-muted);cursor:pointer;
+  transition:all var(--transition);
+  font-family:inherit;font-weight:500;
+}
+.tab-btn:hover{color:var(--text-dim);}
+.tab-btn.active{
+  color:var(--green);border-bottom-color:var(--green);
+}
+.tab-content{display:none;animation:fadeUp 0.4s ease;}
+.tab-content.active{display:block;}
 
-  /* 
-     HERO
-      */
-  .hero{
-    min-height:100vh;
-    display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    text-align:center;
-    padding:3rem 2rem;
-    position:relative;z-index:1;
-  }
-  .hero .accent-line{
-    width:50px;height:2px;
-    background:var(--gradient-wide);
-    background-size:200% auto;
-    animation:gradientShift 3s ease infinite;
-    margin-bottom:2rem;
-    animation:fadeUp 0.8s 0.1s both, gradientShift 3s ease 1s infinite;
-  }
-  .hero .version-badge{
-    display:inline-block;
-    font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;
-    color:var(--teal);
-    border:1px solid var(--teal-dim);
-    padding:3px 14px;margin-bottom:1.5rem;
-    animation:fadeUp 0.8s 0.2s both;
-    transition:background 0.3s, color 0.3s;
-  }
-  .hero .version-badge:hover{
-    background:var(--teal-dim);color:var(--text);
-  }
-  .hero h1{
-    font-size:clamp(3.5rem, 14vw, 7rem);
-    font-weight:800;letter-spacing:-2px;line-height:1;
-    background:var(--gradient-wide);
-    background-size:200% auto;
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    animation:fadeUp 0.8s 0.3s both, gradientShift 4s ease 1.5s infinite;
-    margin-bottom:0.8rem;
-  }
-  .hero .glow-ring{
-    display:inline-block;
-    animation:breathe 4s ease-in-out infinite;
-  }
-  .hero .subtitle{
-    font-size:clamp(1rem, 2.5vw, 1.3rem);
-    color:var(--text-dim);max-width:600px;
-    font-weight:300;letter-spacing:0.5px;
-    animation:fadeUp 0.8s 0.4s both;
-  }
-  .hero .desc{
-    color:var(--text-muted);font-size:0.9rem;
-    max-width:540px;margin-top:1.5rem;line-height:1.8;
-    animation:fadeUp 0.8s 0.5s both;
-  }
-  .hero .hero-stats{
-    display:flex;gap:3.5rem;flex-wrap:wrap;justify-content:center;
-    margin-top:2.5rem;
-    animation:fadeUp 0.8s 0.6s both;
-  }
-  .hero .hero-stats .hs-item{
-    text-align:center;
-  }
-  .hero .hero-stats strong{
-    display:block;font-size:1.6rem;font-weight:700;
-  }
-  .hero .hero-stats .hs-item:nth-child(1) strong{
-    background:var(--gradient-green);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  .hero .hero-stats .hs-item:nth-child(2) strong{
-    background:var(--gradient-teal);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  .hero .hero-stats .hs-item:nth-child(3) strong{
-    background:var(--gradient-amber);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  .hero .hero-stats .hs-item:nth-child(4) strong{
-    background:var(--gradient-purple);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  }
-  .hero .hero-stats .hs-label{
-    font-size:0.75rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;
-    margin-top:0.15rem;
-  }
-  .hero .scroll-indicator{
-    position:absolute;bottom:2rem;
-    animation:fadeUp 0.8s 1s both;
-  }
-  .hero .scroll-indicator svg{
-    color:var(--green-dim);
-    animation:bounce 2s 1.5s infinite;
-  }
-  @keyframes bounce{
-    0%,100%{transform:translateY(0);opacity:1}
-    50%{transform:translateY(8px);opacity:0.5}
-  }
+/* ===== SECTION DIVIDER ===== */
+.section-divider{
+  text-align:center;padding:2rem 0;
+  position:relative;z-index:1;
+}
+.section-divider .divider-line{
+  width:1px;height:40px;
+  margin:0 auto;
+  background:var(--gradient-wide);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+}
 
-  /* 
-     ABOUT
-      */
-  .about-section{
-    padding:4rem 0;
-    position:relative;z-index:1;
-  }
-  .about-section .about-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
-    gap:1rem;
-  }
-  .about-card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    padding:1.5rem;
-    transition:all var(--transition);
-    position:relative;overflow:hidden;
-  }
-  .about-card:nth-child(1):hover{border-color:var(--green-dim);}
-  .about-card:nth-child(2):hover{border-color:var(--teal-dim);}
-  .about-card:nth-child(3):hover{border-color:var(--purple-dim);}
-  .about-card:nth-child(1):hover{background:var(--surface-hover);}
-  .about-card:nth-child(2):hover{background:var(--surface-hover);}
-  .about-card:nth-child(3):hover{background:var(--surface-hover);}
-  .about-card:hover{transform:translateY(-3px);}
-  .about-card .about-icon{
-    width:32px;height:32px;margin-bottom:1rem;
-  }
-  .about-card:nth-child(1) .about-icon{color:var(--green);}
-  .about-card:nth-child(2) .about-icon{color:var(--teal);}
-  .about-card:nth-child(3) .about-icon{color:var(--purple);}
-  .about-card h3{
-    font-size:0.9rem;font-weight:600;margin-bottom:0.4rem;
-    letter-spacing:0.3px;
-  }
-  .about-card p{
-    font-size:0.8rem;color:var(--text-dim);
-    line-height:1.6;
-  }
-  .about-card .about-glow{
-    position:absolute;top:-50%;right:-50%;
-    width:100%;height:100%;
-    border-radius:50%;
-    pointer-events:none;opacity:0;
-    transition:opacity 0.5s;
-  }
-  .about-card:nth-child(1) .about-glow{background:radial-gradient(circle, rgba(46,168,76,0.06), transparent);}
-  .about-card:nth-child(2) .about-glow{background:radial-gradient(circle, rgba(42,175,143,0.06), transparent);}
-  .about-card:nth-child(3) .about-glow{background:radial-gradient(circle, rgba(138,90,190,0.06), transparent);}
-  .about-card:hover .about-glow{opacity:1;}
+/* ===== SECTION LABEL ===== */
+.section-label{
+  text-align:center;padding:3rem 0 1.5rem;
+  position:relative;z-index:1;
+}
+.section-label h2{
+  font-size:1.6rem;font-weight:700;letter-spacing:-0.5px;
+  color:var(--text);
+}
+.section-label .label-line{
+  width:30px;height:1px;margin:0.6rem auto 0;
+  background:var(--gradient-wide);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+}
+.section-label .label-sub{
+  font-size:0.75rem;color:var(--text-muted);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-top:0.4rem;
+}
 
-  /* 
-     SECTION HEADER
-      */
-  .section-header{
-    text-align:center;margin-bottom:2.5rem;
-    position:relative;z-index:1;
-  }
-  .section-header h2{
-    font-size:1.1rem;font-weight:600;letter-spacing:3px;
-    text-transform:uppercase;
-  }
-  .section-header .line{
-    width:24px;height:1px;margin:0.6rem auto 0;
-    background:var(--gradient-wide);
-    background-size:200% auto;
-    animation:gradientShift 3s ease infinite;
-  }
+/* ===== STUDY HUB CONTROLS ===== */
+.study-controls{
+  display:flex;gap:0.75rem;flex-wrap:wrap;
+  align-items:center;justify-content:space-between;
+  margin-bottom:1.5rem;
+}
+.study-controls-left{
+  display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;
+}
+.study-controls-right{
+  display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;
+}
+.expand-toggle{
+  padding:6px 16px;font-size:0.75rem;
+  letter-spacing:0.5px;text-transform:uppercase;
+  background:transparent;border:1px solid var(--border);
+  color:var(--text-dim);cursor:pointer;
+  transition:all var(--transition);font-family:inherit;
+}
+.expand-toggle:hover{border-color:var(--green-dim);color:var(--text);background:var(--surface-hover);}
 
-  /* 
-     CATEGORIES
-      */
-  .categories-bar{
-    padding:3rem 0 0;
-    position:relative;z-index:1;
-  }
-  .categories-bar .cat-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
-    gap:0.75rem;
-  }
-  .cat-item{
-    background:var(--surface);
-    border:1px solid var(--border);
-    padding:1.2rem;text-align:center;
-    cursor:pointer;transition:all var(--transition);
-    position:relative;overflow:hidden;
-  }
-  .cat-item:hover{transform:translateY(-2px);}
-  .cat-item[data-filter="productivity"]:hover{border-color:var(--green-dim);background:var(--surface-hover);}
-  .cat-item[data-filter="philosophy"]:hover{border-color:var(--teal-dim);background:var(--surface-hover);}
-  .cat-item[data-filter="psychology"]:hover{border-color:var(--purple-dim);background:var(--surface-hover);}
-  .cat-item[data-filter="power"]:hover{border-color:var(--amber-dim);background:var(--surface-hover);}
-  .cat-item[data-filter="economics"]:hover{border-color:var(--teal-dim);background:var(--surface-hover);}
-  .cat-item[data-filter="business"]:hover{border-color:var(--amber-dim);background:var(--surface-hover);}
-  .cat-item[data-filter="study-notes"]:hover{border-color:var(--purple-dim);background:var(--surface-hover);}
-  .cat-item .cat-dot{
-    display:inline-block;width:8px;height:8px;border-radius:50%;
-    margin-bottom:0.4rem;
-    animation:breathe 3s ease-in-out infinite;
-  }
-  .cat-item[data-filter="productivity"] .cat-dot{background:var(--green);box-shadow:0 0 12px rgba(46,168,76,0.3);}
-  .cat-item[data-filter="philosophy"] .cat-dot{background:var(--teal);box-shadow:0 0 12px rgba(42,175,143,0.3);}
-  .cat-item[data-filter="psychology"] .cat-dot{background:var(--purple);box-shadow:0 0 12px rgba(138,90,190,0.3);}
-  .cat-item[data-filter="power"] .cat-dot{background:var(--amber);box-shadow:0 0 12px rgba(212,160,64,0.3);}
-  .cat-item[data-filter="finance"] .cat-dot{background:var(--amber);box-shadow:0 0 12px rgba(212,160,64,0.3);}
-  .cat-item[data-filter="economics"] .cat-dot{background:var(--teal);box-shadow:0 0 12px rgba(42,175,143,0.3);}
-  .cat-item[data-filter="business"] .cat-dot{background:var(--amber);box-shadow:0 0 12px rgba(212,160,64,0.3);}
-  .cat-item[data-filter="study-notes"] .cat-dot{background:var(--purple);box-shadow:0 0 12px rgba(138,90,190,0.3);}
-  .cat-item .cat-name{
-    font-size:0.75rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;
-  }
-  .cat-item .cat-count{
-    font-size:0.65rem;color:var(--text-muted);margin-top:0.15rem;
-  }
+/* ===== SUBJECT PANEL ===== */
+.subject-panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  margin-bottom:1rem;
+  transition:all var(--transition);
+  position:relative;z-index:1;overflow:hidden;
+}
+.subject-panel:hover{border-color:var(--green-dim);}
+.subject-panel-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 1.5rem;cursor:pointer;
+  transition:background var(--transition);
+  position:relative;z-index:1;
+}
+.subject-panel-header:hover{background:var(--surface-hover);}
+.subject-panel-header-left{
+  display:flex;align-items:center;gap:1rem;
+}
+.subject-panel-accent{
+  width:3px;height:28px;border-radius:2px;flex-shrink:0;
+}
+.subject-panel-info{}
+.subject-panel-title{
+  font-size:1rem;font-weight:600;letter-spacing:0.3px;
+}
+.subject-panel-meta{
+  font-size:0.7rem;color:var(--text-muted);
+  letter-spacing:0.5px;margin-top:2px;
+}
+.subject-panel-header-right{
+  display:flex;align-items:center;gap:1.2rem;
+}
+.subject-panel-progress{
+  display:flex;align-items:center;gap:0.6rem;
+}
+.progress-ring{
+  width:36px;height:36px;position:relative;flex-shrink:0;
+}
+.progress-ring svg{transform:rotate(-90deg);}
+.progress-ring .ring-bg{fill:none;stroke:var(--border);stroke-width:3;}
+.progress-ring .ring-fg{fill:none;stroke-width:3;stroke-linecap:round;
+  transition:stroke-dashoffset 0.6s ease, stroke 0.3s;
+  stroke-dasharray:100;stroke-dashoffset:100;}
+.progress-ring .ring-label{
+  position:absolute;inset:0;display:flex;
+  align-items:center;justify-content:center;
+  font-size:0.55rem;font-weight:600;color:var(--text-dim);
+}
+.subject-panel-arrow{
+  width:16px;height:16px;color:var(--text-muted);
+  flex-shrink:0;transition:transform 0.4s ease;
+}
+.subject-panel.open .subject-panel-arrow{transform:rotate(180deg);}
 
-  /* 
-     CONTROLS
-      */
-  .controls-row{
-    display:flex;gap:0.5rem;flex-wrap:wrap;
-    align-items:center;justify-content:center;
-    margin-bottom:1.5rem;
-  }
-  .filter-btn{
-    padding:6px 16px;
-    background:transparent;border:1px solid var(--border);
-    color:var(--text-dim);font-size:0.78rem;
-    cursor:pointer;transition:all var(--transition);
-    font-family:inherit;letter-spacing:0.3px;
-    position:relative;overflow:hidden;
-  }
-  .filter-btn::before{
-    content:'';position:absolute;inset:0;
-    background:var(--gradient-green);opacity:0;
-    transition:opacity var(--transition);z-index:-1;
-  }
-  .filter-btn:hover{border-color:var(--green-dim);color:var(--text);transform:translateY(-1px);}
-  .filter-btn.active{color:#060906;font-weight:600;border-color:var(--green);}
-  .filter-btn.active::before{opacity:1;}
+.subject-panel-body{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.5s cubic-bezier(.22,1,.36,1);
+}
+.subject-panel.open .subject-panel-body{
+  max-height:2000px;
+}
+.subject-panel-inner{
+  padding:0 1.5rem 1.5rem;
+  border-top:1px solid var(--border);
+  padding-top:1rem;
+}
 
-  .search-wrapper{
-    position:relative;display:inline-block;
-    min-width:220px;max-width:320px;
-  }
-  .search-wrapper svg{
-    position:absolute;left:12px;top:50%;
-    transform:translateY(-50%);
-    width:14px;height:14px;
-    color:var(--text-muted);
-  }
-  .search-bar{
-    width:100%;padding:9px 14px 9px 34px;
-    background:var(--surface);border:1px solid var(--border);
-    color:var(--text);font-size:0.9rem;outline:none;
-    transition:all var(--transition);
-    font-family:inherit;
-  }
-  .search-bar:focus{
-    border-color:var(--green-dim);
-    box-shadow:0 0 0 3px rgba(46,168,76,0.08), 0 0 20px rgba(46,168,76,0.04);
-  }
-  .search-bar::placeholder{color:var(--text-muted);}
+/* ===== SEARCH WITHIN STUDY HUB ===== */
+.study-search-wrapper{
+  position:relative;display:inline-block;
+  min-width:200px;max-width:280px;
+}
+.study-search-wrapper svg{
+  position:absolute;left:10px;top:50%;
+  transform:translateY(-50%);
+  width:12px;height:12px;color:var(--text-muted);
+}
+.study-search{
+  width:100%;padding:7px 10px 7px 28px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-size:0.8rem;outline:none;
+  transition:all var(--transition);
+  font-family:inherit;
+}
+.study-search:focus{
+  border-color:var(--green-dim);
+  box-shadow:0 0 0 2px rgba(46,168,76,0.08);
+}
+.study-search::placeholder{color:var(--text-muted);}
 
-  .toolbar{
-    display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:1.2rem;flex-wrap:wrap;gap:0.5rem;
-  }
-  .result-count{color:var(--text-dim);font-size:0.8rem;letter-spacing:0.3px;}
-  .layout-toggle{display:flex;gap:4px;}
-  .layout-btn{
-    padding:4px 10px;background:transparent;
-    border:1px solid var(--border);color:var(--text-dim);
-    cursor:pointer;font-size:0.75rem;transition:all var(--transition);
-    font-family:inherit;
-  }
-  .layout-btn.active{border-color:var(--teal-dim);color:var(--teal);}
-  .layout-btn:hover{border-color:var(--teal-dim);}
+/* ===== LESSON CARD ===== */
+.lesson-card{
+  display:flex;align-items:center;gap:1rem;
+  padding:0.85rem 1rem;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-left:3px solid var(--border);
+  margin-bottom:0.5rem;
+  transition:all var(--transition);
+  position:relative;
+}
+.lesson-card:hover{
+  background:var(--surface-hover);
+  transform:translateX(2px);
+}
+.lesson-card .lesson-num{
+  font-size:0.7rem;font-weight:700;color:var(--text-muted);
+  letter-spacing:0.5px;min-width:28px;flex-shrink:0;
+}
+.lesson-card .lesson-info{
+  flex:1;min-width:0;
+}
+.lesson-card .lesson-title{
+  font-size:0.85rem;font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.lesson-card .lesson-desc{
+  font-size:0.7rem;color:var(--text-muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-top:1px;
+}
+.lesson-card .lesson-actions{
+  display:flex;gap:0.4rem;align-items:center;flex-shrink:0;
+}
+.lesson-card .lesson-action-btn{
+  padding:5px 12px;font-size:0.65rem;
+  letter-spacing:0.8px;text-transform:uppercase;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text-dim);cursor:pointer;
+  transition:all var(--transition);
+  font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;
+}
+.lesson-card .lesson-action-btn:hover{
+  background:var(--surface-hover);color:var(--text);
+  border-color:var(--green-dim);transform:translateY(-1px);
+}
+.lesson-card .lesson-action-btn.primary{
+  border-color:var(--green-dim);color:var(--green);
+}
+.lesson-card .lesson-action-btn.primary:hover{
+  background:var(--green-dim);color:var(--text);
+}
+.lesson-card .lesson-action-btn.quiz{
+  border-color:var(--teal-dim);color:var(--teal);
+}
+.lesson-card .lesson-action-btn.quiz:hover{
+  background:var(--teal-dim);color:var(--text);
+}
+.lesson-card .lesson-status{
+  font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;
+  padding:2px 8px;border:1px solid var(--border);
+  color:var(--text-muted);cursor:pointer;flex-shrink:0;
+  transition:all var(--transition);user-select:none;
+}
+.lesson-card .lesson-status:hover{background:var(--surface-hover);}
+.lesson-card .lesson-status.done{
+  border-color:var(--green-dim);color:var(--green);
+}
+.lesson-card .lesson-status.in-progress{
+  border-color:var(--amber-dim);color:var(--amber);
+}
+.lesson-card .lesson-best{
+  font-size:0.6rem;color:var(--purple-light);
+  letter-spacing:0.5px;flex-shrink:0;
+}
+.lesson-card.muted{opacity:0.3;pointer-events:none;}
+.lesson-card.highlight{
+  border-color:var(--green);border-left-width:3px;
+  box-shadow:0 0 20px rgba(46,168,76,0.08);
+}
 
-  /* 
-     BOOK GRID
-      */
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
-    gap:1rem;
-  }
-  .grid.list{grid-template-columns:1fr;}
+/* ===== BOOK LIBRARY ===== */
+.controls-row{
+  display:flex;gap:0.5rem;flex-wrap:wrap;
+  align-items:center;justify-content:center;
+  margin-bottom:1.5rem;
+}
+.filter-btn{
+  padding:6px 16px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--text-dim);font-size:0.78rem;
+  cursor:pointer;transition:all var(--transition);
+  font-family:inherit;letter-spacing:0.3px;
+  position:relative;overflow:hidden;
+}
+.filter-btn::before{
+  content:'';position:absolute;inset:0;
+  background:var(--gradient-green);opacity:0;
+  transition:opacity var(--transition);z-index:-1;
+}
+.filter-btn:hover{border-color:var(--green-dim);color:var(--text);transform:translateY(-1px);}
+.filter-btn.active{color:#060906;font-weight:600;border-color:var(--green);}
+.filter-btn.active::before{opacity:1;}
 
-  .card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    padding:1.5rem;
-    text-decoration:none;color:inherit;
-    transition:all var(--transition);
-    position:relative;overflow:hidden;
-    opacity:0;
-  }
-  .card.visible{
-    animation:appear 0.45s ease forwards;
-  }
+.search-wrapper{
+  position:relative;display:inline-block;
+  min-width:220px;max-width:320px;
+}
+.search-wrapper svg{
+  position:absolute;left:12px;top:50%;
+  transform:translateY(-50%);
+  width:14px;height:14px;
+  color:var(--text-muted);
+}
+.search-bar{
+  width:100%;padding:9px 14px 9px 34px;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-size:0.9rem;outline:none;
+  transition:all var(--transition);
+  font-family:inherit;
+}
+.search-bar:focus{
+  border-color:var(--green-dim);
+  box-shadow:0 0 0 3px rgba(46,168,76,0.08);
+}
+.search-bar::placeholder{color:var(--text-muted);}
 
-  .card .card-accent{
-    position:absolute;top:0;left:0;right:0;
-    height:2px;
-    background-size:200% auto;
-    transform:scaleX(0);transform-origin:left;
-    transition:transform 0.5s var(--transition);
-  }
-  .card[data-filter="productivity"] .card-accent{background:var(--gradient-green);}
-  .card[data-filter="philosophy"] .card-accent{background:var(--gradient-teal);}
-  .card[data-filter="psychology"] .card-accent{background:var(--gradient-purple);}
-  .card[data-filter="power"] .card-accent{background:var(--gradient-amber);}
-  .card[data-filter="finance"] .card-accent{background:var(--gradient-amber);}
-  .card[data-filter="economics"] .card-accent{background:var(--gradient-teal);}
-  .card[data-filter="business"] .card-accent{background:var(--gradient-amber);}
-  .card[data-filter="study-notes"] .card-accent{background:var(--gradient-purple);}
-  .card:hover .card-accent{transform:scaleX(1);}
+.toolbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:1.2rem;flex-wrap:wrap;gap:0.5rem;
+}
+.result-count{color:var(--text-dim);font-size:0.8rem;letter-spacing:0.3px;}
+.layout-toggle{display:flex;gap:4px;}
+.layout-btn{
+  padding:4px 10px;background:transparent;
+  border:1px solid var(--border);color:var(--text-dim);
+  cursor:pointer;font-size:0.75rem;transition:all var(--transition);
+  font-family:inherit;
+}
+.layout-btn.active{border-color:var(--teal-dim);color:var(--teal);}
+.layout-btn:hover{border-color:var(--teal-dim);}
 
-  .card:hover{
-    background:var(--surface-hover);
-    transform:translateY(-3px);
-    box-shadow:0 12px 40px rgba(0,0,0,0.5);
-  }
-  .card[data-filter="productivity"]:hover{border-color:var(--green-dim);}
-  .card[data-filter="philosophy"]:hover{border-color:var(--teal-dim);}
-  .card[data-filter="psychology"]:hover{border-color:var(--purple-dim);}
-  .card[data-filter="power"]:hover{border-color:var(--amber-dim);}
-  .card[data-filter="finance"]:hover{border-color:var(--amber-dim);}
-  .card[data-filter="economics"]:hover{border-color:var(--teal-dim);}
-  .card[data-filter="business"]:hover{border-color:var(--amber-dim);}
-  .card[data-filter="study-notes"]:hover{border-color:var(--purple-dim);}
-  .card.hidden{display:none;}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:1rem;
+}
+.grid.list{grid-template-columns:1fr;}
 
-  .card .shimmer-line{
-    position:absolute;top:0;left:0;width:60%;height:100%;
-    background:linear-gradient(90deg, transparent, rgba(46,168,76,0.04), transparent);
-    transform:translateX(-100%);
-    pointer-events:none;
-  }
-  .card:hover .shimmer-line{animation:shimmer 1s ease;}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:1.5rem;
+  text-decoration:none;color:inherit;
+  transition:all var(--transition);
+  position:relative;overflow:hidden;
+  opacity:0;
+}
+.card.visible{
+  animation:appear 0.45s ease forwards;
+}
+.card .card-accent{
+  position:absolute;top:0;left:0;right:0;
+  height:2px;
+  background-size:200% auto;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.5s var(--transition);
+}
+.card[data-filter="productivity"] .card-accent{background:var(--gradient-green);}
+.card[data-filter="philosophy"] .card-accent{background:var(--gradient-teal);}
+.card[data-filter="psychology"] .card-accent{background:var(--gradient-purple);}
+.card[data-filter="power"] .card-accent{background:var(--gradient-amber);}
+.card[data-filter="finance"] .card-accent{background:var(--gradient-amber);}
+.card:hover .card-accent{transform:scaleX(1);}
+.card:hover{
+  background:var(--surface-hover);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.5);
+}
+.card[data-filter="productivity"]:hover{border-color:var(--green-dim);}
+.card[data-filter="philosophy"]:hover{border-color:var(--teal-dim);}
+.card[data-filter="psychology"]:hover{border-color:var(--purple-dim);}
+.card[data-filter="power"]:hover{border-color:var(--amber-dim);}
+.card[data-filter="finance"]:hover{border-color:var(--amber-dim);}
+.card.hidden{display:none;}
+.card .shimmer-line{
+  position:absolute;top:0;left:0;width:60%;height:100%;
+  background:linear-gradient(90deg, transparent, rgba(46,168,76,0.04), transparent);
+  transform:translateX(-100%);
+  pointer-events:none;
+}
+.card:hover .shimmer-line{animation:shimmer 1s ease;}
+.card .card-top{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:0.3rem;
+}
+.card h3{
+  font-size:1.05rem;font-weight:600;line-height:1.3;
+  padding-right:0.5rem;
+}
+.card .badge{
+  font-size:0.55rem;letter-spacing:1.5px;text-transform:uppercase;
+  padding:2px 8px;white-space:nowrap;
+  border:1px solid var(--border);
+  color:var(--text-muted);flex-shrink:0;
+  transition:all var(--transition);
+}
+.card[data-filter="power"] .badge{border-color:#6a4e1a;color:var(--amber);}
+.card[data-filter="productivity"] .badge{border-color:var(--green-dim);color:var(--green);}
+.card[data-filter="philosophy"] .badge{border-color:var(--teal-dim);color:var(--teal);}
+.card[data-filter="psychology"] .badge{border-color:#4a2a6a;color:var(--purple-light);}
+.card[data-filter="finance"] .badge{border-color:#6a5a1a;color:var(--amber);}
+.card .author{
+  color:var(--text-muted);font-size:0.8rem;
+  margin-bottom:0.6rem;letter-spacing:0.3px;
+}
+.card .desc{
+  color:var(--text-dim);font-size:0.85rem;
+  line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card .card-footer{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:1rem;
+}
+.card .open-hint{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;
+  transition:all var(--transition);
+}
+.card[data-filter="productivity"] .open-hint{color:var(--green-dim);}
+.card[data-filter="philosophy"] .open-hint{color:var(--teal-dim);}
+.card[data-filter="psychology"] .open-hint{color:var(--purple-dim);}
+.card[data-filter="power"] .open-hint{color:var(--amber-dim);}
+.card[data-filter="finance"] .open-hint{color:var(--amber-dim);}
+.card .open-hint svg{transition:transform var(--transition);}
+.card:hover .open-hint{letter-spacing:2px;}
+.card[data-filter="productivity"]:hover .open-hint{color:var(--green);}
+.card[data-filter="philosophy"]:hover .open-hint{color:var(--teal);}
+.card[data-filter="psychology"]:hover .open-hint{color:var(--purple);}
+.card[data-filter="power"]:hover .open-hint{color:var(--amber);}
+.card[data-filter="finance"]:hover .open-hint{color:var(--amber);}
+.card:hover .open-hint svg{transform:translateX(4px);}
+.card .card-num{
+  font-size:0.65rem;color:var(--text-muted);letter-spacing:1px;
+}
+.grid.list .card{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.5rem;}
+.grid.list .card .card-top{margin-bottom:0;}
+.grid.list .card h3{font-size:1rem;min-width:200px;}
+.grid.list .card .author{margin-bottom:0;min-width:130px;}
+.grid.list .card .desc{-webkit-line-clamp:1;flex:1;}
+.grid.list .card .card-footer{margin-top:0;}
 
-  .card .card-top{
-    display:flex;justify-content:space-between;align-items:flex-start;
-    margin-bottom:0.3rem;
-  }
-  .card h3{
-    font-size:1.05rem;font-weight:600;line-height:1.3;
-    padding-right:0.5rem;
-  }
-  .card .badge{
-    font-size:0.55rem;letter-spacing:1.5px;text-transform:uppercase;
-    padding:2px 8px;white-space:nowrap;
-    border:1px solid var(--border);
-    color:var(--text-muted);flex-shrink:0;
-    transition:all var(--transition);
-  }
-  .card[data-filter="power"] .badge{border-color:#6a4e1a;color:var(--amber);}
-  .card[data-filter="productivity"] .badge{border-color:var(--green-dim);color:var(--green);}
-  .card[data-filter="philosophy"] .badge{border-color:var(--teal-dim);color:var(--teal);}
-  .card[data-filter="psychology"] .badge{border-color:#4a2a6a;color:var(--purple-light);}
-  .card[data-filter="finance"] .badge{border-color:#6a5a1a;color:var(--amber);}
-  .card[data-filter="economics"] .badge{border-color:var(--teal-dim);color:var(--teal);}
-  .card[data-filter="business"] .badge{border-color:#6a4e1a;color:var(--amber);}
-  .card[data-filter="study-notes"] .badge{border-color:#4a2a6a;color:var(--purple-light);}
+/* ===== QUIZ MODAL ===== */
+.quiz-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,0.85);
+  display:none;align-items:center;justify-content:center;
+  padding:1rem;
+  animation:fadeIn 0.2s ease;
+}
+.quiz-overlay.open{display:flex;}
+.quiz-modal{
+  background:var(--surface);
+  border:1px solid var(--green-dim);
+  max-width:640px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  padding:2rem;position:relative;
+  animation:appear 0.3s ease;
+}
+.quiz-close{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:none;color:var(--text-muted);
+  cursor:pointer;padding:4px;transition:color 0.3s;
+  font-size:1.2rem;line-height:1;
+}
+.quiz-close:hover{color:var(--text);}
+.quiz-header{
+  margin-bottom:1.5rem;padding-right:2rem;
+}
+.quiz-header .quiz-breadcrumb{
+  font-size:0.65rem;color:var(--text-muted);
+  letter-spacing:1px;text-transform:uppercase;
+}
+.quiz-header .quiz-title{
+  font-size:1.1rem;font-weight:600;margin-top:0.2rem;
+}
+.quiz-progress{
+  display:flex;align-items:center;gap:0.75rem;
+  margin-bottom:1.5rem;
+}
+.quiz-progress-bar{
+  flex:1;height:2px;background:var(--border);
+  position:relative;overflow:hidden;
+}
+.quiz-progress-bar .qp-fill{
+  height:100%;background:var(--gradient-wide);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+  transition:width 0.3s ease;
+  width:0%;
+}
+.quiz-progress-text{
+  font-size:0.7rem;color:var(--text-dim);
+  letter-spacing:0.5px;flex-shrink:0;
+}
+.quiz-question{
+  font-size:1rem;font-weight:500;line-height:1.5;
+  margin-bottom:1.2rem;color:var(--text);
+}
+.quiz-options{display:flex;flex-direction:column;gap:0.6rem;}
+.quiz-option{
+  padding:12px 16px;background:var(--bg);
+  border:1px solid var(--border);
+  color:var(--text);cursor:pointer;
+  transition:all 0.2s ease;
+  font-size:0.9rem;font-family:inherit;
+  text-align:left;display:flex;align-items:center;gap:0.75rem;
+}
+.quiz-option:hover:not(.disabled){
+  border-color:var(--green-dim);
+  background:var(--surface-hover);
+}
+.quiz-option .q-opt-label{
+  font-size:0.7rem;font-weight:700;color:var(--text-muted);
+  letter-spacing:1px;width:20px;flex-shrink:0;
+}
+.quiz-option.correct{
+  border-color:var(--green) !important;
+  background:rgba(46,168,76,0.1) !important;
+}
+.quiz-option.correct .q-opt-label{color:var(--green);}
+.quiz-option.wrong{
+  border-color:var(--rose) !important;
+  background:rgba(212,96,106,0.1) !important;
+}
+.quiz-option.wrong .q-opt-label{color:var(--rose);}
+.quiz-option.disabled{cursor:default;opacity:0.7;}
+.quiz-option.disabled.correct{opacity:1;}
+.quiz-explain{
+  margin-top:0.8rem;padding:10px 14px;
+  background:rgba(46,168,76,0.04);
+  border-left:2px solid var(--green-dim);
+  font-size:0.8rem;color:var(--text-dim);
+  line-height:1.5;animation:fadeUp 0.3s ease;
+}
+.quiz-next{
+  margin-top:1rem;padding:10px 24px;
+  background:var(--green);color:var(--bg);
+  border:none;font-size:0.8rem;font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;transition:all var(--transition);
+  font-family:inherit;float:right;
+  display:none;
+}
+.quiz-next:hover{background:var(--green-light);transform:translateY(-1px);}
+.quiz-next.show{display:inline-block;}
 
-  .card .author{
-    color:var(--text-muted);font-size:0.8rem;
-    margin-bottom:0.6rem;letter-spacing:0.3px;
-  }
-  .card .desc{
-    color:var(--text-dim);font-size:0.85rem;
-    line-height:1.5;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  }
-  .card .card-footer{
-    display:flex;justify-content:space-between;align-items:center;
-    margin-top:1rem;
-  }
-  .card .open-hint{
-    display:inline-flex;align-items:center;gap:0.4rem;
-    font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;
-    transition:all var(--transition);
-  }
-  .card[data-filter="productivity"] .open-hint{color:var(--green-dim);}
-  .card[data-filter="philosophy"] .open-hint{color:var(--teal-dim);}
-  .card[data-filter="psychology"] .open-hint{color:var(--purple-dim);}
-  .card[data-filter="power"] .open-hint{color:var(--amber-dim);}
-  .card[data-filter="finance"] .open-hint{color:var(--amber-dim);}
-  .card[data-filter="economics"] .open-hint{color:var(--teal-dim);}
-  .card[data-filter="business"] .open-hint{color:var(--amber-dim);}
-  .card[data-filter="study-notes"] .open-hint{color:var(--purple-dim);}
-  .card .open-hint svg{transition:transform var(--transition);}
-  .card:hover .open-hint{letter-spacing:2px;}
-  .card[data-filter="productivity"]:hover .open-hint{color:var(--green);}
-  .card[data-filter="philosophy"]:hover .open-hint{color:var(--teal);}
-  .card[data-filter="psychology"]:hover .open-hint{color:var(--purple);}
-  .card[data-filter="power"]:hover .open-hint{color:var(--amber);}
-  .card[data-filter="finance"]:hover .open-hint{color:var(--amber);}
-  .card[data-filter="economics"]:hover .open-hint{color:var(--teal);}
-  .card[data-filter="business"]:hover .open-hint{color:var(--amber);}
-  .card[data-filter="study-notes"]:hover .open-hint{color:var(--purple);}
-  .card:hover .open-hint svg{transform:translateX(4px);}
-  .card .card-num{
-    font-size:0.65rem;color:var(--text-muted);letter-spacing:1px;
-  }
+.quiz-results{
+  text-align:center;padding:2rem 0;
+  display:none;
+}
+.quiz-results.show{display:block;}
+.quiz-results .qr-score{
+  font-size:3rem;font-weight:800;
+  background:var(--gradient-wide);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gradientShift 3s ease infinite;
+}
+.quiz-results .qr-label{
+  font-size:0.8rem;color:var(--text-muted);
+  letter-spacing:1px;text-transform:uppercase;margin-top:0.3rem;
+}
+.quiz-results .qr-msg{
+  font-size:0.9rem;color:var(--text-dim);
+  margin-top:0.8rem;
+}
+.quiz-results .qr-actions{
+  display:flex;gap:0.75rem;justify-content:center;margin-top:1.5rem;
+}
+.quiz-results .qr-btn{
+  padding:10px 24px;font-size:0.75rem;
+  letter-spacing:1px;text-transform:uppercase;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text-dim);cursor:pointer;
+  transition:all var(--transition);font-family:inherit;
+}
+.quiz-results .qr-btn:hover{background:var(--surface-hover);color:var(--text);border-color:var(--green-dim);}
+.quiz-results .qr-btn.primary{
+  background:var(--green);color:var(--bg);border-color:var(--green);
+}
+.quiz-results .qr-btn.primary:hover{background:var(--green-light);}
 
-  .grid.list .card{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.5rem;}
-  .grid.list .card .card-top{margin-bottom:0;}
-  .grid.list .card h3{font-size:1rem;min-width:200px;}
-  .grid.list .card .author{margin-bottom:0;min-width:130px;}
-  .grid.list .card .desc{-webkit-line-clamp:1;flex:1;}
-  .grid.list .card .card-footer{margin-top:0;}
+/* ===== FOOTER ===== */
+footer{
+  border-top:1px solid var(--border);
+  margin-top:3rem;padding:3rem 2rem;
+  position:relative;z-index:1;
+}
+footer .footer-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+}
+footer .footer-logo{
+  font-size:1rem;font-weight:700;
+  background:var(--gradient-wide);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gradientShift 4s ease infinite;
+}
+footer .footer-info{color:var(--text-muted);font-size:0.75rem;letter-spacing:0.5px;}
+footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 
-  /* 
-     DIVIDER
-      */
-  .section-divider{
-    text-align:center;padding:2rem 0;
-    position:relative;z-index:1;
-  }
-  .section-divider .divider-line{
-    width:1px;height:40px;
-    margin:0 auto;
-    background:var(--gradient-wide);
-    background-size:200% auto;
-    animation:gradientShift 3s ease infinite;
-  }
-
-  /* 
-     FOOTER
-      */
-  footer{
-    border-top:1px solid var(--border);
-    margin-top:3rem;padding:3rem 2rem;
-    position:relative;z-index:1;
-  }
-  footer .footer-inner{
-    max-width:1200px;margin:0 auto;
-    display:flex;justify-content:space-between;align-items:center;
-    flex-wrap:wrap;gap:1rem;
-  }
-  footer .footer-logo{
-    font-size:1rem;font-weight:700;
-    background:var(--gradient-wide);
-    background-size:200% auto;
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    animation:gradientShift 4s ease infinite;
-  }
-  footer .footer-info{color:var(--text-muted);font-size:0.75rem;letter-spacing:0.5px;}
-  footer .footer-info span{margin:0 0.5rem;color:var(--border);}
-
-  /* 
-     RESPONSIVE
-      */
-  @media(max-width:700px){
-    .container{padding:1.5rem 1rem;}
-    .grid{grid-template-columns:1fr;}
-    .controls-row{flex-direction:column;align-items:stretch;}
-    .search-wrapper{max-width:100%;}
-    .hero h1{font-size:clamp(2.5rem, 15vw, 4rem);}
-    .hero{padding:2rem 1.5rem;min-height:85vh;}
-    .hero .hero-stats{gap:1.5rem;}
-    .toolbar{flex-direction:column;align-items:center;}
-    .grid.list .card{flex-direction:column;gap:0.3rem;align-items:flex-start;}
-    .grid.list .card h3{min-width:auto;}
-    .grid.list .card .author{min-width:auto;}
-    footer .footer-inner{flex-direction:column;text-align:center;}
-    .about-section .about-grid{grid-template-columns:1fr;}
-    .categories-bar .cat-grid{grid-template-columns:1fr 1fr;}
-    #mouseGlow{display:none}
-  }
+/* ===== RESPONSIVE ===== */
+@media(max-width:700px){
+  .container{padding:1.5rem 1rem;}
+  .grid{grid-template-columns:1fr;}
+  .controls-row{flex-direction:column;align-items:stretch;}
+  .search-wrapper{max-width:100%;}
+  .hero h1{font-size:clamp(2.5rem, 15vw, 4rem);}
+  .hero{padding:2rem 1.5rem;min-height:85vh;}
+  .hero .hero-stats{gap:1.5rem;}
+  .toolbar{flex-direction:column;align-items:center;}
+  .grid.list .card{flex-direction:column;gap:0.3rem;align-items:flex-start;}
+  .grid.list .card h3{min-width:auto;}
+  .grid.list .card .author{min-width:auto;}
+  footer .footer-inner{flex-direction:column;text-align:center;}
+  #mouseGlow{display:none}
+  .tab-btn{padding:12px 20px;font-size:0.72rem;letter-spacing:1px;}
+  .lesson-card{flex-wrap:wrap;gap:0.5rem;}
+  .lesson-card .lesson-title{white-space:normal;}
+  .lesson-card .lesson-desc{white-space:normal;}
+  .lesson-card .lesson-actions{width:100%;justify-content:flex-end;}
+  .study-controls{flex-direction:column;align-items:stretch;}
+  .study-controls-left,.study-controls-right{justify-content:center;}
+  .study-search-wrapper{max-width:100%;}
+  .subject-panel-header{flex-wrap:wrap;gap:0.5rem;}
+  .subject-panel-header-right{flex-wrap:wrap;}
+  .quiz-modal{padding:1.5rem;max-height:85vh;}
+  .quiz-modal .quiz-question{font-size:0.9rem;}
+  .quiz-modal .quiz-option{padding:10px 12px;font-size:0.85rem;}
+}
 </style>
 </head>
 <body>
 
 <div id="progress"></div>
+<div id="progress-tooltip">0%</div>
 <canvas id="bgCanvas"></canvas>
 <div id="orbs"></div>
 <div id="noise"></div>
 <div id="mouseGlow"></div>
 
-<!--  HERO  -->
+<!-- ===== HERO ===== -->
 <section class="hero">
   <div class="accent-line"></div>
-  <div class="version-badge">Version 1.0</div>
+  <div class="version-badge">Version 2.0</div>
   <h1>NEXO</h1>
-  <p class="subtitle">Turn Books and Notes Into Interactive Pages</p>
+  <p class="subtitle" id="typewriter"></p>
   <p class="desc">
-    A curated library of interactive book summaries and study notes designed for exploration, 
-    study, and deeper understanding. Each book and lesson is transformed into a fully 
-    interactive web experience.
+    A curated interactive learning platform — explore structured lessons, take quizzes,
+    and dive into a library of book summaries. Everything in one self-contained page.
   </p>
   <div class="hero-stats">
-    <div class="hs-item"><strong>24</strong><div class="hs-label">Books</div></div>
-    <div class="hs-item"><strong>20</strong><div class="hs-label">Lessons</div></div>
-    <div class="hs-item"><strong>7</strong><div class="hs-label">Categories</div></div>
-    <div class="hs-item"><strong>10k+</strong><div class="hs-label">Lines of Notes</div></div>
+    <div class="hs-item"><strong class="countup" data-target="20">0</strong><div class="hs-label">Lessons</div></div>
+    <div class="hs-item"><strong class="countup" data-target="24">0</strong><div class="hs-label">Books</div></div>
+    <div class="hs-item"><strong class="countup" data-target="2">0</strong><div class="hs-label">Subjects</div></div>
+    <div class="hs-item"><strong class="countup" data-target="10">0</strong><div class="hs-label">k+ Lines of Notes</div></div>
   </div>
+  <a class="cta-btn" href="#study-hub" onclick="switchTab('study')">
+    Start Learning
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+  </a>
   <div class="scroll-indicator">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
   </div>
 </section>
 
-<!--  ABOUT  -->
-<div class="container">
-  <div class="about-section">
-    <div class="about-grid">
-      <div class="about-card">
-        <div class="about-glow"></div>
-        <svg class="about-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        <h3>Interactive Summaries</h3>
-        <p>Every book and lesson is a fully interactive HTML page — search, expand, explore. Designed for deep engagement with the material.</p>
-      </div>
-      <div class="about-card">
-        <div class="about-glow"></div>
-        <svg class="about-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        <h3>Curated Collection</h3>
-        <p>Eleven transformative books and twenty study lessons spanning productivity, philosophy, psychology, power, finance, economics, and business.</p>
-      </div>
-      <div class="about-card">
-        <div class="about-glow"></div>
-        <svg class="about-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        <h3>Built From Raw Notes</h3>
-        <p>Each page is distilled from original book notes, transformed into structured, browsable interactive formats.</p>
-      </div>
-    </div>
+<!-- ===== STICKY SUBJECT NAV ===== -->
+<nav class="subject-nav" id="subjectNav">
+  <div class="subject-nav-inner" id="subjectNavInner"></div>
+</nav>
+
+<!-- ===== TAB NAVIGATION ===== -->
+<div class="container" style="padding-bottom:0;">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="study" onclick="switchTab('study')">Study Hub</button>
+    <button class="tab-btn" data-tab="books" onclick="switchTab('books')">Book Library</button>
   </div>
 </div>
 
-<!--  CATEGORIES  -->
-<div class="categories-bar">
+<!-- ===== STUDY HUB TAB ===== -->
+<div class="tab-content active" id="tab-study">
+  <div class="section-label" style="padding-top:2rem;">
+    <h2>Study Hub</h2>
+    <div class="label-line"></div>
+    <div class="label-sub">Structured Lessons Across Subjects</div>
+  </div>
+  <div class="container" id="study-hub">
+    <div class="study-controls">
+      <div class="study-controls-left">
+        <div class="study-search-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="study-search" id="studySearch" placeholder="Search lessons..." aria-label="Search lessons">
+        </div>
+      </div>
+      <div class="study-controls-right">
+        <button class="expand-toggle" id="expandAllToggle">Expand All</button>
+      </div>
+    </div>
+    <div id="subjectContainer"></div>
+  </div>
+</div>
+
+<!-- ===== BOOK LIBRARY TAB ===== -->
+<div class="tab-content" id="tab-books">
+  <div class="section-label" style="padding-top:2rem;">
+    <h2>Book Library</h2>
+    <div class="label-line"></div>
+    <div class="label-sub">24 Interactive Book Summaries</div>
+  </div>
   <div class="container">
-    <div class="section-header">
-      <h2>Categories</h2>
-      <div class="line"></div>
-    </div>
-    <div class="cat-grid">
-      <div class="cat-item" data-filter="productivity">
-        <div class="cat-dot"></div>
-        <div class="cat-name">Productivity</div>
-        <div class="cat-count">5 books</div>
-      </div>
-      <div class="cat-item" data-filter="philosophy">
-        <div class="cat-dot"></div>
-        <div class="cat-name">Philosophy</div>
-        <div class="cat-count">3 books</div>
-      </div>
-      <div class="cat-item" data-filter="psychology">
-        <div class="cat-dot"></div>
-        <div class="cat-name">Psychology</div>
-        <div class="cat-count">8 books</div>
-      </div>
-      <div class="cat-item" data-filter="power">
-        <div class="cat-dot"></div>
-        <div class="cat-name">Power</div>
-        <div class="cat-count">4 books</div>
-      </div>
-      <div class="cat-item" data-filter="finance">
-        <div class="cat-dot"></div>
-        <div class="cat-name">Finance</div>
-        <div class="cat-count">5 books</div>
-      </div>
-      <div class="cat-item" data-filter="study-notes">
-        <div class="cat-dot"></div>
-        <div class="cat-name">Study Notes</div>
-        <div class="cat-count">20 lessons</div>
-      </div>
-      <div class="cat-item" data-filter="economics">
-        <div class="cat-dot"></div>
-        <div class="cat-name">Economics</div>
-        <div class="cat-count">12 lessons</div>
-      </div>
-      <div class="cat-item" data-filter="business">
-        <div class="cat-dot"></div>
-        <div class="cat-name">Business Studies</div>
-        <div class="cat-count">8 lessons</div>
+    <div class="controls-row">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="productivity">Productivity</button>
+      <button class="filter-btn" data-filter="philosophy">Philosophy</button>
+      <button class="filter-btn" data-filter="psychology">Psychology</button>
+      <button class="filter-btn" data-filter="power">Power</button>
+      <button class="filter-btn" data-filter="finance">Finance</button>
+      <div class="search-wrapper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-bar" id="search" placeholder="Search title or author...">
       </div>
     </div>
+    <div class="toolbar">
+      <div class="result-count" id="count">24 resources</div>
+      <div class="layout-toggle">
+        <button class="layout-btn active" data-layout="grid">Grid</button>
+        <button class="layout-btn" data-layout="list">List</button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
   </div>
 </div>
 
-<!--  DIVIDER  -->
-<div class="section-divider">
-  <div class="divider-line"></div>
+<!-- ===== QUIZ MODAL ===== -->
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-modal">
+    <button class="quiz-close" id="quizClose">&times;</button>
+    <div class="quiz-header">
+      <div class="quiz-breadcrumb" id="quizBreadcrumb"></div>
+      <div class="quiz-title" id="quizTitle"></div>
+    </div>
+    <div class="quiz-progress">
+      <div class="quiz-progress-bar"><div class="qp-fill" id="qpFill"></div></div>
+      <div class="quiz-progress-text" id="qpText">0 of 0</div>
+    </div>
+    <div id="quizBody"></div>
+    <div class="quiz-results" id="quizResults">
+      <div class="qr-score" id="qrScore">0/0</div>
+      <div class="qr-label">Correct</div>
+      <div class="qr-msg" id="qrMsg"></div>
+      <div class="qr-actions">
+        <button class="qr-btn" id="qrRetake">Retake Quiz</button>
+        <button class="qr-btn primary" id="qrClose">Close</button>
+      </div>
+    </div>
+    <div style="clear:both;"></div>
+  </div>
 </div>
 
-<!--  LIBRARY  -->
-<div class="container">
-  <div class="section-header">
-    <h2>Library</h2>
-    <div class="line"></div>
-  </div>
-
-  <div class="controls-row">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="productivity">Productivity</button>
-    <button class="filter-btn" data-filter="philosophy">Philosophy</button>
-    <button class="filter-btn" data-filter="psychology">Psychology</button>
-    <button class="filter-btn" data-filter="power">Power</button>
-    <button class="filter-btn" data-filter="finance">Finance</button>
-    <button class="filter-btn" data-filter="study-notes">Study Notes</button>
-    <button class="filter-btn" data-filter="economics">Economics</button>
-    <button class="filter-btn" data-filter="business">Business Studies</button>
-    <div class="search-wrapper">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="search-bar" id="search" placeholder="Search title or author...">
-    </div>
-  </div>
-
-  <div class="toolbar">
-    <div class="result-count" id="count">44 resources</div>
-    <div class="layout-toggle">
-      <button class="layout-btn active" data-layout="grid">Grid</button>
-      <button class="layout-btn" data-layout="list">List</button>
-    </div>
-  </div>
-
-  <div class="grid" id="grid"></div>
-</div>
-
-<!--  FOOTER  -->
+<!-- ===== FOOTER ===== -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo">NEXO 1.0</div>
+    <div class="footer-logo">NEXO 2.0</div>
     <div class="footer-info">
-      Interactive Book Summaries & Study Notes <span>|</span> Built from notes <span>|</span> Open index.html to begin
+      Interactive Learning Platform <span>|</span> Lessons + Quizzes + Book Summaries <span>|</span> Open index.html to begin
     </div>
   </div>
 </footer>
 
 <script>
-  //  CANVAS PARTICLES WITH CONNECTIONS 
-  (function(){
-    const canvas = document.getElementById('bgCanvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let mouse = {x: -1000, y: -1000};
+// =====================================================================
+// DATA: BOOKS (preserved from NEXO 1.0)
+// =====================================================================
+const BOOKS_DATA = [
+  {id:"01", title:"The 48 Laws of Power", author:"Robert Greene", path:"48 Laws of power/index.html", desc:"The essential guide to the mechanics of power — how to acquire it, defend it, and wield it without falling victim to those who play the game better than you.", filter:"power"},
+  {id:"02", title:"Atomic Habits", author:"James Clear", path:"atomic habbits/index.html", desc:"Tiny changes, remarkable results. The science of building good habits, breaking bad ones, and mastering the tiny behaviors that lead to remarkable outcomes.", filter:"productivity"},
+  {id:"03", title:"Building a Second Brain", author:"Tiago Forte", path:"Building a second brain/index.html", desc:"A proven method to organize your digital life and unlock your creative potential using the CODE framework and PARA system.", filter:"productivity"},
+  {id:"04", title:"Deep Work", author:"Cal Newport", path:"Deep Work Rules for Focused Success in a Distracted World (Cal Newport)/index.html", desc:"Rules for focused success in a distracted world. Why deep concentration is becoming the superpower of the 21st century.", filter:"productivity"},
+  {id:"05", title:"Ego Is the Enemy", author:"Ryan Holiday", path:"Ego Is the Enemy (Ryan Holiday)/index.html", desc:"The battle against ego — in ambition, success, and failure. Why humility is the ultimate strategy and ego the greatest obstacle.", filter:"philosophy"},
+  {id:"06", title:"Hyperfocus", author:"Chris Bailey", path:"Hyperfocus/index.html", desc:"How to manage your attention in a world of distraction and be more productive by understanding the two modes of focus.", filter:"productivity"},
+  {id:"07", title:"Money Unlocked", author:"John Lee", path:"Money Unlocked (John Lee)/index.html", desc:"Break free from limiting beliefs about money and unlock your financial potential through mindset shifts and practical strategies.", filter:"finance"},
+  {id:"08", title:"The Power of Now", author:"Eckhart Tolle", path:"Power of Now/index.html", desc:"The ultimate guide to spiritual enlightenment through living in the present moment and freeing yourself from pain and suffering.", filter:"philosophy"},
+  {id:"09", title:"Psycho-Cybernetics", author:"Maxwell Maltz", path:"Psycho-Cybernetics (Maxwell Maltz)/index.html", desc:"Your self-image determines your success. The classic guide to rewiring your brain for achievement through cybernetic principles.", filter:"psychology"},
+  {id:"10", title:"The Changing World Order", author:"Ray Dalio", path:"The Changing World Order Why Nations Succeed and Fail (Ray Dalio)/index.html", desc:"Why nations succeed and fail — the big cycles in history that explain the past, present, and future of global power.", filter:"finance"},
+  {id:"11", title:"What Every BODY Is Saying", author:"Joe Navarro", path:"What Every BODY Is Saying/index.html", desc:"An ex-FBI agent's guide to speed-reading people through nonverbal communication and understanding the hidden messages in body language.", filter:"psychology"},
+  {id:"12", title:"Book of Wisdom", author:"Harry B. Joseph", path:"Book of Wisdom/index.html", desc:"A revival of ancient wisdom for modern living — timeless philosophical insights and practical principles for navigating life with clarity, purpose, and understanding.", filter:"philosophy"},
+  {id:"13", title:"Daily Robert Greene", author:"Robert Greene", path:"Daily Robert Greene/index.html", desc:"366 meditations on power, seduction, mastery, strategy, and human nature — a year of daily wisdom drawn from Greene's life's work.", filter:"power"},
+  {id:"14", title:"Mastery", author:"Robert Greene", path:"Mastery/index.html", desc:"The lifelong journey of mastering a craft — following your passion, undergoing apprenticeship, and achieving creative excellence through deliberate practice and perseverance.", filter:"productivity"},
+  {id:"15", title:"Read People Like a Book", author:"Patrick King", path:"Read People Like a Book/index.html", desc:"How to analyze, understand, and predict people's emotions, thoughts, intentions, and behaviors — decoding the hidden meanings behind what people say and do.", filter:"psychology"},
+  {id:"16", title:"Rich Dad Poor Dad", author:"Robert Kiyosaki", path:"Rich Dad Poor Dad/index.html", desc:"What the rich teach their kids about money that the poor and middle class do not — the timeless lessons of financial literacy, assets vs liabilities, and escaping the rat race.", filter:"finance"},
+  {id:"17", title:"Surrounded by Idiots", author:"Thomas Erikson", path:"Surrounded by Idiots/index.html", desc:"The four types of human behavior and how to effectively communicate with each in business and in life using the DISC personality framework.", filter:"psychology"},
+  {id:"18", title:"Surrounded By Psychopaths", author:"Thomas Erikson", path:"Surrounded By Psychopaths/index.html", desc:"How to identify, understand, and protect yourself from psychopathic behavior using the DISC model and recognizing the dark triad of personality traits.", filter:"psychology"},
+  {id:"19", title:"The Art of Seduction", author:"Robert Greene", path:"The Art of Seduction/index.html", desc:"The 9 types of seducers and the timeless strategies of attraction — mastering the seductive process through psychological insight and social intelligence.", filter:"power"},
+  {id:"20", title:"The Concise Laws of Human Nature", author:"Robert Greene", path:"The Concise Laws of Human Nature/index.html", desc:"A condensed guide to the 18 laws of human nature — understanding why people behave the way they do and mastering the dynamics of social behavior.", filter:"psychology"},
+  {id:"21", title:"The Laws of Human Nature", author:"Robert Greene", path:"The Laws of Human Nature/index.html", desc:"The definitive guide to understanding human behavior — 18 deep psychological laws with historical examples and strategies for mastering social dynamics.", filter:"psychology"},
+  {id:"22", title:"The Millionaire Master Plan", author:"Roger James Hamilton", path:"The Millionaire Master Plan/index.html", desc:"Your personalized path to financial success — discovering your wealth personality type and following a tailored plan to build lasting prosperity.", filter:"finance"},
+  {id:"23", title:"The Prince", author:"Niccolò Machiavelli", path:"The Prince/index.html", desc:"The classic Renaissance treatise on power, leadership, and statecraft — the timeless principles of how a ruler should acquire, maintain, and wield power.", filter:"power"},
+  {id:"24", title:"The Psychology of Money", author:"Morgan Housel", path:"The Psychology of Money/index.html", desc:"Timeless lessons on wealth, greed, and happiness — how our emotional and psychological relationship with money shapes our financial decisions more than math ever does.", filter:"finance"}
+];
 
-    function resize(){
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+// =====================================================================
+// DATA: SUBJECTS
+// =====================================================================
+const SUBJECTS_DATA = [
+  {
+    id: 'economics',
+    name: 'Economics',
+    accent: 'teal',
+    lessons: [
+      {id:1, title:'Introduction to Economics', desc:'Fundamental concepts — scarcity, choice, opportunity cost, PPC, and basic economic questions.', path:'Study Notes/Econ/1/index.html'},
+      {id:2, title:'Demand, Supply & Market Equilibrium', desc:'Laws of demand and supply, equilibrium, elasticity, and price determination in markets.', path:'Study Notes/Econ/2/index.html'},
+      {id:3, title:'Government Intervention in Markets', desc:'Price controls, taxes, subsidies, and effects of government intervention on market outcomes.', path:'Study Notes/Econ/3/index.html'},
+      {id:4, title:'Production, Cost & Market Structures', desc:'Production functions, costs, economies of scale, and market structures from competition to monopoly.', path:'Study Notes/Econ/4/index.html'},
+      {id:5, title:'National Accounting', desc:'GDP measurement, national income accounting, circular flow of income, and its limitations.', path:'Study Notes/Econ/5/index.html'},
+      {id:6, title:'Macroeconomic Concepts', desc:'Aggregate demand/supply, business cycles, unemployment, and macroeconomic policy framework.', path:'Study Notes/Econ/6/index.html'},
+      {id:7, title:'Price, Inflation, Money & Financial System', desc:'Price indices, inflation, money, financial intermediation, and monetary policy tools.', path:'Study Notes/Econ/7/index.html'},
+      {id:8, title:'Market Failure, Government & Public Finance', desc:'Externalities, public goods, taxation, government spending, and fiscal policy.', path:'Study Notes/Econ/8/index.html'},
+      {id:9, title:'Protectionism & Foreign Investments', desc:'Trade barriers, protectionism, FDI, multinational corporations, and global trade dynamics.', path:'Study Notes/Econ/9/index.html'},
+      {id:10, title:'Foreign Exchange & Balance of Payments', desc:'Exchange rates, balance of payments, currency markets, and international capital flows.', path:'Study Notes/Econ/10/index.html'},
+      {id:11, title:'Economic Growth, Development & Labour', desc:'Growth sources, development indicators, labor markets, and human capital theory.', path:'Study Notes/Econ/11/index.html'},
+      {id:12, title:'Sri Lankan Economy Post-Independence', desc:'Evolution of Sri Lanka\'s economy from independence to present — policy shifts and challenges.', path:'Study Notes/Econ/12/index.html'}
+    ]
+  },
+  {
+    id: 'business',
+    name: 'Business Studies',
+    accent: 'amber',
+    lessons: [
+      {id:1, title:'Basis of Business & Environment', desc:'Business definition, types of activity, objectives, stakeholders, and PEST factors.', path:'Study Notes/Business/1/index.html'},
+      {id:2, title:'Social Responsibility & Business Ethics', desc:'CSR, ethical vs legal, stakeholder impact, triple bottom line, and ethical trading.', path:'Study Notes/Business/2/index.html'},
+      {id:3, title:'Business-Government Relations & Consumer Protection', desc:'Business-government relations, regulations, consumer rights, and protection mechanisms.', path:'Study Notes/Business/3/index.html'},
+      {id:4, title:'Business Organizations', desc:'Sole proprietorships, partnerships, corporations, cooperatives, and their characteristics.', path:'Study Notes/Business/4/lesson4.html'},
+      {id:5, title:'Entrepreneurship', desc:'Entrepreneurial process, innovation, business planning, venture creation, and economic role.', path:'Study Notes/Business/5/lesson5.html'},
+      {id:6, title:'Money and Financial Institutions', desc:'Nature of money, financial systems, banking institutions, and monetary policy fundamentals.', path:'Study Notes/Business/6/lesson6.html'},
+      {id:7, title:'Insurance', desc:'Insurance principles, policy types, risk management, and the insurance industry\'s role.', path:'Study Notes/Business/7/lesson7.html'},
+      {id:8, title:'Communication', desc:'Business communication methods, written and oral, technology, and presentation skills.', path:'Study Notes/Business/8/lesson8.html'}
+    ]
+  }
+  // == TODO: Add future subjects here ==
+  // { id: 'new-subject', name: 'New Subject', accent: 'purple', lessons: [...] }
+];
+
+// =====================================================================
+// DATA: QUIZ
+// =====================================================================
+const QUIZ_DATA = {
+  economics: {
+    1: [
+      {q:'What is the fundamental economic problem faced by all societies?', options:['Scarcity','Inflation','Unemployment','Taxation'], answer:0, explain:'Scarcity — unlimited wants vs limited resources — is the basic economic problem.'},
+      {q:'What does opportunity cost refer to?', options:['Money spent on a purchase','The next best alternative forgone','Total cost of production','The price of a good'], answer:1, explain:'Opportunity cost is the value of the next best alternative given up when making a choice.'},
+      {q:'Which of the following is NOT a factor of production?', options:['Land','Labour','Money','Entrepreneurship'], answer:2, explain:'The four factors of production are land, labour, capital, and entrepreneurship. Money is not a factor — it is a medium of exchange.'},
+      {q:'In a market economy, resource allocation is primarily determined by:', options:['Government planning','Price mechanism / market forces','Traditional customs','Central authority'], answer:1, explain:'Market economies rely on the price mechanism — supply and demand — to allocate resources.'},
+      {q:'A point inside the Production Possibility Curve (PPC) indicates:', options:['Efficient production','Unattainable production','Underutilization of resources','Economic growth'], answer:2, explain:'Points inside the PPC show that resources are not being fully or efficiently utilized.'},
+      {q:'Which economic system answers the three basic questions through customs and traditions?', options:['Market economy','Command economy','Mixed economy','Traditional economy'], answer:3, explain:'Traditional economies rely on customs, beliefs, and habits passed down through generations.'},
+      {q:'"Needs" refer to:', options:['Luxury items','Items essential for survival','Goods that are on sale','Non-essential services'], answer:1, explain:'Needs are basic requirements for survival (food, water, shelter), while wants are non-essential desires.'},
+      {q:'What does a rightward shift of the PPC represent?', options:['Economic decline','Economic growth','Resource underutilization','Increase in unemployment'], answer:1, explain:'An outward (rightward) shift of the PPC indicates economic growth — an increase in the economy\'s productive capacity.'}
+    ],
+    2: [
+      {q:'The law of demand states that as price increases, quantity demanded:', options:['Increases','Decreases','Stays constant','Fluctuates randomly'], answer:1, explain:'The law of demand: price and quantity demanded are inversely related — higher price leads to lower quantity demanded.'},
+      {q:'Which of the following would shift the demand curve for a good to the right?', options:['A decrease in consumer income (normal good)','An increase in the price of a substitute','A decrease in population','An increase in the price of the good itself'], answer:1, explain:'If the price of a substitute rises, consumers switch to this good, increasing demand (rightward shift).'},
+      {q:'Market equilibrium occurs when:', options:['Quantity demanded equals quantity supplied','Price is at its maximum','Supply exceeds demand','Government sets the price'], answer:0, explain:'Equilibrium is the point where the quantity consumers want to buy equals the quantity producers want to sell.'},
+      {q:'A surplus in a market occurs when:', options:['Price is below equilibrium','Price is above equilibrium','Demand increases','Supply decreases'], answer:1, explain:'When price is above equilibrium, quantity supplied exceeds quantity demanded, creating a surplus.'},
+      {q:'Which factor would shift the supply curve to the left?', options:['Technological advancement','A decrease in production costs','An increase in the number of suppliers','An increase in the cost of raw materials'], answer:3, explain:'Higher input costs (raw materials) make production more expensive, reducing supply (leftward shift).'},
+      {q:'A price ceiling set below equilibrium will cause:', options:['A surplus','A shortage','No change','Increased supply'], answer:1, explain:'A binding price ceiling (below equilibrium) keeps price artificially low, causing quantity demanded to exceed quantity supplied — a shortage.'},
+      {q:'If a good has a price elasticity of demand of 0.3, demand is:', options:['Perfectly elastic','Elastic','Unit elastic','Inelastic'], answer:3, explain:'A PED of 0.3 (less than 1) means demand is inelastic — quantity changes proportionally less than price.'},
+      {q:'Cross-price elasticity of demand between two substitutes will be:', options:['Negative','Zero','Positive','Infinite'], answer:2, explain:'For substitutes, a price rise in one good increases demand for the other, giving a positive cross-price elasticity.'}
+    ],
+    3: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Government Intervention in Markets #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Government Intervention in Markets #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Government Intervention in Markets #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Government Intervention in Markets #4', options:['A','B','C','D'], answer:0}
+    ],
+    4: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Production, Cost & Market Structures #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Production, Cost & Market Structures #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Production, Cost & Market Structures #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Production, Cost & Market Structures #4', options:['A','B','C','D'], answer:0}
+    ],
+    5: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for National Accounting #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for National Accounting #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for National Accounting #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for National Accounting #4', options:['A','B','C','D'], answer:0}
+    ],
+    6: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Macroeconomic Concepts #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Macroeconomic Concepts #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Macroeconomic Concepts #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Macroeconomic Concepts #4', options:['A','B','C','D'], answer:0}
+    ],
+    7: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Price, Inflation, Money & Financial System #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Price, Inflation, Money & Financial System #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Price, Inflation, Money & Financial System #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Price, Inflation, Money & Financial System #4', options:['A','B','C','D'], answer:0}
+    ],
+    8: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Market Failure, Government & Public Finance #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Market Failure, Government & Public Finance #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Market Failure, Government & Public Finance #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Market Failure, Government & Public Finance #4', options:['A','B','C','D'], answer:0}
+    ],
+    9: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Protectionism & Foreign Investments #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Protectionism & Foreign Investments #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Protectionism & Foreign Investments #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Protectionism & Foreign Investments #4', options:['A','B','C','D'], answer:0}
+    ],
+    10: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Foreign Exchange & Balance of Payments #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Foreign Exchange & Balance of Payments #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Foreign Exchange & Balance of Payments #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Foreign Exchange & Balance of Payments #4', options:['A','B','C','D'], answer:0}
+    ],
+    11: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Economic Growth, Development & Labour #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Economic Growth, Development & Labour #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Economic Growth, Development & Labour #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Economic Growth, Development & Labour #4', options:['A','B','C','D'], answer:0}
+    ],
+    12: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Sri Lankan Economy Post-Independence #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Sri Lankan Economy Post-Independence #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Sri Lankan Economy Post-Independence #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Sri Lankan Economy Post-Independence #4', options:['A','B','C','D'], answer:0}
+    ]
+  },
+  business: {
+    1: [
+      {q:'What is the primary purpose of a business?', options:['To provide employment','To maximize shareholder wealth','To produce goods and services to satisfy needs','To pay taxes'], answer:2, explain:'The core purpose of a business is to produce goods and services that satisfy human needs and wants.'},
+      {q:'Which of the following is a stakeholder of a business?', options:['Only shareholders','Only employees','Only customers','All of the above'], answer:3, explain:'Stakeholders include shareholders, employees, customers, suppliers, the government, and the community.'},
+      {q:'What is CSR (Corporate Social Responsibility)?', options:['Maximizing profits at all costs','Business obligations to society beyond legal requirements','Strictly following the law','Reducing employee wages'], answer:1, explain:'CSR refers to a business\'s voluntary commitment to act ethically and contribute to society beyond legal obligations.'},
+      {q:'What does the PEST analysis examine?', options:['Product, price, place, promotion','Political, Economic, Social, Technological factors','Profit, equity, sales, tax','People, environment, strategy, time'], answer:1, explain:'PEST analysis examines the external macro-environment: Political, Economic, Social, and Technological factors affecting a business.'},
+      {q:'A sole trader business structure is characterized by:', options:['Shared ownership among many partners','Single owner with unlimited liability','Separate legal entity','Ownership through shares'], answer:1, explain:'A sole trader has one owner who bears unlimited liability for the business\'s debts.'},
+      {q:'The secondary sector of industry involves:', options:['Extraction of raw materials','Manufacturing and construction','Retail and services','Research and development'], answer:1, explain:'The secondary sector transforms raw materials into finished goods through manufacturing and construction.'},
+      {q:'Which business objective focuses on minimizing harm to the environment?', options:['Profit maximization','Market share growth','Sustainability','Employee satisfaction'], answer:2, explain:'Sustainability as a business objective involves operating in a way that minimizes environmental harm and preserves resources for future generations.'},
+      {q:'Opportunity cost for a business is:', options:['The monetary cost of production','The benefit given up from the next best alternative','The total revenue minus costs','The price set for a product'], answer:1, explain:'For businesses, opportunity cost is the potential benefit lost when choosing one alternative over the next best option.'}
+    ],
+    2: [
+      {q:'What is Corporate Social Responsibility (CSR)?', options:['A legal requirement for all businesses','The voluntary integration of social and environmental concerns in business operations','A marketing strategy to increase prices','A government regulation on wages'], answer:1, explain:'CSR is the voluntary commitment by businesses to operate ethically and consider their social and environmental impact.'},
+      {q:'Ethical behavior in business means:', options:['Following only what is profitable','Doing what is legally required','Doing what is morally right beyond legal obligations','Following competitor actions'], answer:2, explain:'Business ethics involves doing what is morally right, even when not legally required.'},
+      {q:'The triple bottom line framework considers:', options:['Profit, products, and people','Profit, planet, and people','Price, product, and promotion','Production, profit, and planning'], answer:1, explain:'The triple bottom line — People, Planet, Profit — measures a business\'s social, environmental, and financial performance.'},
+      {q:'Which is an example of ethical trading?', options:['Paying below minimum wage','Using child labor','Ensuring fair wages and safe working conditions in the supply chain','Ignoring environmental regulations'], answer:2, explain:'Ethical trading involves ensuring fair wages, safe conditions, and human rights throughout the supply chain.'},
+      {q:'A business that pollutes a river but stays within legal limits is:', options:['Acting ethically','Acting legally but not necessarily ethically','Fully responsible under CSR','Meeting triple bottom line standards'], answer:1, explain:'Legal compliance does not equal ethical behavior. CSR goes beyond the law to consider wider impacts.'},
+      {q:'Which stakeholder is most directly affected by a business\'s decision to relocate abroad?', options:['Government','Local employees','Customers','Competitors'], answer:1, explain:'Local employees are directly affected by relocation — they may lose jobs or face pressure to relocate.'},
+      {q:'Ethical sourcing of materials means:', options:['Buying the cheapest materials','Sourcing from suppliers who follow ethical labor and environmental practices','Sourcing only from local suppliers','Using synthetic materials only'], answer:1, explain:'Ethical sourcing involves selecting suppliers that adhere to fair labor practices and environmental standards.'},
+      {q:'A business engaging in greenwashing is:', options:['Actually reducing its environmental footprint','Making misleading claims about its environmental practices','Investing in renewable energy','Complying with environmental laws'], answer:1, explain:'Greenwashing is the practice of making deceptive or exaggerated claims about environmental efforts to appear more eco-friendly than reality.'}
+    ],
+    3: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Business-Government Relations & Consumer Protection #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Business-Government Relations & Consumer Protection #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Business-Government Relations & Consumer Protection #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Business-Government Relations & Consumer Protection #4', options:['A','B','C','D'], answer:0}
+    ],
+    4: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Business Organizations #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Business Organizations #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Business Organizations #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Business Organizations #4', options:['A','B','C','D'], answer:0}
+    ],
+    5: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Entrepreneurship #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Entrepreneurship #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Entrepreneurship #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Entrepreneurship #4', options:['A','B','C','D'], answer:0}
+    ],
+    6: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Money and Financial Institutions #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Money and Financial Institutions #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Money and Financial Institutions #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Money and Financial Institutions #4', options:['A','B','C','D'], answer:0}
+    ],
+    7: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Insurance #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Insurance #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Insurance #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Insurance #4', options:['A','B','C','D'], answer:0}
+    ],
+    8: [
+      /* TODO: Replace with real questions */
+      {q:'Placeholder question for Communication #1', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Communication #2', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Communication #3', options:['A','B','C','D'], answer:0},
+      {q:'Placeholder question for Communication #4', options:['A','B','C','D'], answer:0}
+    ]
+  }
+};
+
+// =====================================================================
+// === QUIZ ENGINE ===
+// =====================================================================
+let quizState = {
+  subjectId: null,
+  lessonId: null,
+  questions: [],
+  current: 0,
+  score: 0,
+  answered: false
+};
+
+function openQuiz(subjectId, lessonId) {
+  const qs = QUIZ_DATA[subjectId] && QUIZ_DATA[subjectId][lessonId];
+  if (!qs || qs.length === 0) return;
+
+  const subject = SUBJECTS_DATA.find(s => s.id === subjectId);
+  const lesson = subject.lessons.find(l => l.id === lessonId);
+
+  quizState.subjectId = subjectId;
+  quizState.lessonId = lessonId;
+  quizState.questions = qs;
+  quizState.current = 0;
+  quizState.score = 0;
+  quizState.answered = false;
+
+  document.getElementById('quizBreadcrumb').textContent = subject.name + ' / Lesson ' + lessonId;
+  document.getElementById('quizTitle').textContent = 'Quiz: ' + lesson.title;
+  document.getElementById('quizResults').classList.remove('show');
+  document.getElementById('quizBody').style.display = 'block';
+  document.getElementById('quizOverlay').classList.add('open');
+
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const qs = quizState.questions;
+  const i = quizState.current;
+  const q = qs[i];
+  const body = document.getElementById('quizBody');
+  const next = document.getElementById('quizNext') || createNextButton();
+
+  document.getElementById('qpFill').style.width = ((i + 1) / qs.length * 100) + '%';
+  document.getElementById('qpText').textContent = 'Question ' + (i + 1) + ' of ' + qs.length;
+
+  next.classList.remove('show');
+  quizState.answered = false;
+
+  let html = '<div class="quiz-question">' + q.q + '</div><div class="quiz-options">';
+  const labels = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, oi) => {
+    html += '<button class="quiz-option" data-opt="' + oi + '" onclick="selectOption(' + oi + ')">' +
+      '<span class="q-opt-label">' + labels[oi] + '</span><span>' + opt + '</span></button>';
+  });
+  html += '</div>';
+  body.innerHTML = html;
+  body.appendChild(next);
+}
+
+function createNextButton() {
+  const btn = document.createElement('button');
+  btn.id = 'quizNext';
+  btn.className = 'quiz-next';
+  btn.textContent = 'Next Question';
+  btn.addEventListener('click', nextQuestion);
+  return btn;
+}
+
+function selectOption(oi) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+
+  const q = quizState.questions[quizState.current];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach((el, idx) => {
+    el.classList.add('disabled');
+    if (idx === q.answer) el.classList.add('correct');
+    if (idx === oi && oi !== q.answer) el.classList.add('wrong');
+  });
+
+  if (oi === q.answer) quizState.score++;
+
+  if (q.explain) {
+    const body = document.getElementById('quizBody');
+    const expl = document.createElement('div');
+    expl.className = 'quiz-explain';
+    expl.textContent = q.explain;
+    body.appendChild(expl);
+  }
+
+  const next = document.getElementById('quizNext');
+  const qs = quizState.questions;
+  if (quizState.current === qs.length - 1) {
+    next.textContent = 'See Results';
+  }
+  next.classList.add('show');
+}
+
+function nextQuestion() {
+  const qs = quizState.questions;
+  if (quizState.current < qs.length - 1) {
+    quizState.current++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quizBody').style.display = 'none';
+  const total = quizState.questions.length;
+  const score = quizState.score;
+  document.getElementById('qrScore').textContent = score + ' / ' + total;
+
+  let msg = '';
+  const pct = score / total;
+  if (pct === 1) msg = 'Perfect score! Outstanding!';
+  else if (pct >= 0.8) msg = 'Great work! You have a solid understanding.';
+  else if (pct >= 0.6) msg = 'Good effort! Review the material and try again.';
+  else msg = 'Keep studying! Review the lesson and retake the quiz.';
+  document.getElementById('qrMsg').textContent = msg;
+
+  document.getElementById('quizResults').classList.add('show');
+
+  // Save best score
+  const key = 'nexo_quiz_' + quizState.subjectId + '_' + quizState.lessonId + '_best';
+  const prev = parseInt(localStorage.getItem(key)) || 0;
+  if (score > prev) {
+    localStorage.setItem(key, score);
+  }
+
+  // Update lesson card best score display
+  renderStudyHub();
+}
+
+function closeQuiz() {
+  document.getElementById('quizOverlay').classList.remove('open');
+}
+
+function retakeQuiz() {
+  if (quizState.subjectId && quizState.lessonId) {
+    openQuiz(quizState.subjectId, quizState.lessonId);
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  if (document.getElementById('quizOverlay').classList.contains('open')) {
+    if (e.key === 'Escape') {
+      closeQuiz();
+      return;
     }
-    resize();
-    window.addEventListener('resize', resize);
-
-    const colors = ['#2ea84c', '#4cd96b', '#2aaf8f', '#8a5abe', '#d4a040'];
-
-    class Particle {
-      constructor() { this.reset(); }
-      reset(){
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.2;
-        this.vy = (Math.random() - 0.5) * 0.2;
-        this.r = Math.random() * 1.5 + 0.5;
-        this.color = colors[Math.floor(Math.random() * colors.length)];
-        this.alpha = Math.random() * 0.15 + 0.05;
-      }
-      update(){
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-      }
-      draw(){
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.alpha;
-        ctx.fill();
-        ctx.globalAlpha = 1;
+    if (!quizState.answered) {
+      const k = parseInt(e.key);
+      if (k >= 1 && k <= 4) {
+        selectOption(k - 1);
       }
     }
+  }
+});
 
-    for (let i = 0; i < 60; i++) particles.push(new Particle());
+document.getElementById('quizClose').addEventListener('click', closeQuiz);
+document.getElementById('qrClose').addEventListener('click', closeQuiz);
+document.getElementById('qrRetake').addEventListener('click', retakeQuiz);
 
-    function animate(){
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+// =====================================================================
+// === STUDY HUB ===
+// =====================================================================
+let allExpanded = false;
 
-      // Draw connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const d = Math.sqrt(dx*dx + dy*dy);
-          if (d < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = particles[i].color;
-            ctx.globalAlpha = 0.04 * (1 - d/120);
-            ctx.stroke();
-            ctx.globalAlpha = 1;
-          }
-        }
+function renderStudyHub() {
+  const container = document.getElementById('subjectContainer');
+  const searchQ = document.getElementById('studySearch').value.trim().toLowerCase();
+  container.innerHTML = '';
+
+  SUBJECTS_DATA.forEach(subject => {
+    let lessonCount = subject.lessons.length;
+    let doneCount = 0;
+    subject.lessons.forEach(lesson => {
+      const sk = 'nexo_lesson_' + subject.id + '_' + lesson.id;
+      if (localStorage.getItem(sk) === 'done') doneCount++;
+    });
+    const pct = lessonCount > 0 ? (doneCount / lessonCount * 100) : 0;
+
+    // Check if any lesson matches search
+    let hasMatch = true;
+    if (searchQ) {
+      hasMatch = subject.lessons.some(l => l.title.toLowerCase().includes(searchQ));
+    }
+
+    if (searchQ && !hasMatch) return;
+
+    const panel = document.createElement('div');
+    panel.className = 'subject-panel' + (allExpanded ? ' open' : '');
+    panel.dataset.subject = subject.id;
+
+    const accentColors = {teal: 'var(--teal)', amber: 'var(--amber)', purple: 'var(--purple)', rose: 'var(--rose)', green: 'var(--green)'};
+    const accent = accentColors[subject.accent] || 'var(--green)';
+
+    // Header
+    const dash = 100 - (pct / 100 * 100);
+    panel.innerHTML = `
+      <div class="subject-panel-header" onclick="toggleSubject(this)">
+        <div class="subject-panel-header-left">
+          <div class="subject-panel-accent" style="background:${accent}"></div>
+          <div class="subject-panel-info">
+            <div class="subject-panel-title">${subject.name}</div>
+            <div class="subject-panel-meta">${lessonCount} lessons &middot; ${doneCount} / ${lessonCount} complete</div>
+          </div>
+        </div>
+        <div class="subject-panel-header-right">
+          <div class="subject-panel-progress">
+            <div class="progress-ring">
+              <svg width="36" height="36" viewBox="0 0 36 36">
+                <circle class="ring-bg" cx="18" cy="18" r="15.5"/>
+                <circle class="ring-fg" cx="18" cy="18" r="15.5" style="stroke:${accent};stroke-dashoffset:${dash}"/>
+              </svg>
+              <div class="ring-label">${doneCount}</div>
+            </div>
+          </div>
+          <svg class="subject-panel-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="subject-panel-body">
+        <div class="subject-panel-inner"></div>
+      </div>
+    `;
+
+    const inner = panel.querySelector('.subject-panel-inner');
+
+    subject.lessons.forEach(lesson => {
+      const lsk = 'nexo_lesson_' + subject.id + '_' + lesson.id;
+      const status = localStorage.getItem(lsk) || 'not-started';
+      const bestKey = 'nexo_quiz_' + subject.id + '_' + lesson.id + '_best';
+      const totalQ = (QUIZ_DATA[subject.id] && QUIZ_DATA[subject.id][lesson.id]) ? QUIZ_DATA[subject.id][lesson.id].length : 0;
+      const best = parseInt(localStorage.getItem(bestKey)) || 0;
+
+      const matchSearch = !searchQ || lesson.title.toLowerCase().includes(searchQ);
+      const muted = searchQ && !matchSearch;
+
+      const card = document.createElement('div');
+      card.className = 'lesson-card' + (muted ? ' muted' : '') + (matchSearch && searchQ ? ' highlight' : '');
+
+      const statusLabels = {'not-started': 'Not Started', 'in-progress': 'In Progress', 'done': 'Done'};
+      const statusClass = status !== 'not-started' ? status : '';
+
+      let bestHtml = '';
+      if (best > 0 && totalQ > 0) {
+        bestHtml = '<span class="lesson-best">Best: ' + best + '/' + totalQ + '</span>';
       }
 
-      // Draw mouse connections
-      particles.forEach(p => {
-        const dx = p.x - mouse.x;
-        const dy = p.y - mouse.y;
+      card.innerHTML = `
+        <span class="lesson-num">${String(lesson.id).padStart(2, '0')}</span>
+        <div class="lesson-info">
+          <div class="lesson-title">${lesson.title}</div>
+          <div class="lesson-desc">${lesson.desc}</div>
+        </div>
+        ${bestHtml}
+        <div class="lesson-actions">
+          <a class="lesson-action-btn primary" href="${lesson.path}">Start</a>
+          <button class="lesson-action-btn quiz" onclick="event.stopPropagation();openQuiz('${subject.id}',${lesson.id})">Quiz</button>
+        </div>
+        <span class="lesson-status ${statusClass}" onclick="event.stopPropagation();cycleStatus(this,'${subject.id}',${lesson.id})">${statusLabels[status]}</span>
+      `;
+      inner.appendChild(card);
+
+      // If this is the first render and a search is active, open matching panels
+      if (searchQ && matchSearch) {
+        setTimeout(() => {
+          const parentPanel = card.closest('.subject-panel');
+          if (parentPanel) parentPanel.classList.add('open');
+        }, 10);
+      }
+    });
+
+    container.appendChild(panel);
+  });
+}
+
+function toggleSubject(header) {
+  const panel = header.closest('.subject-panel');
+  panel.classList.toggle('open');
+}
+
+function toggleAllSubjects() {
+  allExpanded = !allExpanded;
+  const panels = document.querySelectorAll('.subject-panel');
+  panels.forEach(p => {
+    if (allExpanded) p.classList.add('open');
+    else p.classList.remove('open');
+  });
+  document.getElementById('expandAllToggle').textContent = allExpanded ? 'Collapse All' : 'Expand All';
+}
+
+function cycleStatus(el, subjectId, lessonId) {
+  const key = 'nexo_lesson_' + subjectId + '_' + lessonId;
+  const current = localStorage.getItem(key) || 'not-started';
+  const next = current === 'not-started' ? 'in-progress' : current === 'in-progress' ? 'done' : 'not-started';
+  if (next === 'not-started') localStorage.removeItem(key);
+  else localStorage.setItem(key, next);
+  renderStudyHub();
+  buildSubjectNav();
+}
+
+// =====================================================================
+// === SUBJECT PILL NAV ===
+// =====================================================================
+function buildSubjectNav() {
+  const inner = document.getElementById('subjectNavInner');
+  inner.innerHTML = '';
+  SUBJECTS_DATA.forEach(subject => {
+    const sk = 'nexo_lesson_' + subject.id + '_';
+    let done = 0;
+    subject.lessons.forEach(l => {
+      if (localStorage.getItem(sk + l.id) === 'done') done++;
+    });
+    const pill = document.createElement('button');
+    pill.className = 'subject-nav-pill';
+    pill.dataset.accent = subject.accent;
+    pill.textContent = subject.name + ' (' + done + '/' + subject.lessons.length + ')';
+    pill.addEventListener('click', function() {
+      const panel = document.querySelector('.subject-panel[data-subject="' + subject.id + '"]');
+      if (panel) {
+        panel.classList.toggle('open');
+        panel.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+    });
+    inner.appendChild(pill);
+  });
+}
+
+// =====================================================================
+// === TAB SWITCHING ===
+// =====================================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector('.tab-btn[data-tab="' + tab + '"]').classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+
+  if (tab === 'study') {
+    document.getElementById('subjectNav').classList.add('show');
+  } else {
+    document.getElementById('subjectNav').classList.remove('show');
+  }
+}
+
+// =====================================================================
+// === BOOK LIBRARY (preserved from NEXO 1.0) ===
+// =====================================================================
+const grid = document.getElementById('grid');
+const search = document.getElementById('search');
+const count = document.getElementById('count');
+const filterBtns = document.querySelectorAll('.controls-row .filter-btn');
+const layoutBtns = document.querySelectorAll('.layout-btn');
+let activeFilter = 'all';
+let searchQuery = '';
+let layout = 'grid';
+
+function renderBooks() {
+  grid.innerHTML = '';
+  const q = searchQuery.toLowerCase();
+  let visible = 0;
+
+  BOOKS_DATA.forEach(book => {
+    const matchFilter = activeFilter === 'all' || book.filter === activeFilter;
+    const matchSearch = !q || book.title.toLowerCase().includes(q) || (book.author && book.author.toLowerCase().includes(q));
+    const show = matchFilter && matchSearch;
+    if (show) visible++;
+
+    const card = document.createElement('a');
+    card.className = 'card' + (show ? '' : ' hidden');
+    card.href = book.path;
+    card.setAttribute('data-filter', book.filter);
+    card.innerHTML = `
+      <div class="card-accent"></div>
+      <div class="shimmer-line"></div>
+      <div class="card-top">
+        <h3>${book.title}</h3>
+        <span class="badge ${book.filter}">${book.filter}</span>
+      </div>
+      <div class="author">${book.author}</div>
+      <div class="desc">${book.desc}</div>
+      <div class="card-footer">
+        <span class="open-hint">
+          Open
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+        <span class="card-num">${book.id}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  count.textContent = visible + ' resource' + (visible !== 1 ? 's' : '');
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.card:not(.hidden)').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 50);
+    });
+  });
+}
+
+renderBooks();
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderBooks();
+  });
+});
+
+search.addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderBooks();
+});
+
+layoutBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    layoutBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    layout = btn.dataset.layout;
+    grid.classList.toggle('list', layout === 'list');
+    renderBooks();
+  });
+});
+
+// =====================================================================
+// === TYPEWRITER EFFECT ===
+// =====================================================================
+(function() {
+  const text = 'Turn Books and Notes Into Interactive Pages';
+  const el = document.getElementById('typewriter');
+  let i = 0;
+  function type() {
+    if (i < text.length) {
+      el.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
+      i++;
+      setTimeout(type, 35 + Math.random() * 20);
+    } else {
+      el.innerHTML = text + '<span class="cursor"></span>';
+    }
+  }
+  setTimeout(type, 800);
+})();
+
+// =====================================================================
+// === COUNT-UP ANIMATION ===
+// =====================================================================
+(function() {
+  const els = document.querySelectorAll('.countup');
+  let animated = false;
+  function animateCounts() {
+    if (animated) return;
+    els.forEach(el => {
+      const target = parseInt(el.dataset.target);
+      const duration = 1500;
+      const start = performance.now();
+      function update(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        const val = Math.round(ease * target);
+        el.textContent = val >= 10 && target === 10 ? val + 'k+' : val;
+        if (p < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    });
+    animated = true;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { animateCounts(); observer.disconnect(); } });
+  });
+  const heroStats = document.querySelector('.hero-stats');
+  if (heroStats) observer.observe(heroStats);
+})();
+
+// =====================================================================
+// === STUDY SEARCH ===
+// =====================================================================
+document.getElementById('studySearch').addEventListener('input', function() {
+  renderStudyHub();
+});
+
+// =====================================================================
+// === EXPAND/COLLAPSE ALL ===
+// =====================================================================
+document.getElementById('expandAllToggle').addEventListener('click', toggleAllSubjects);
+
+// =====================================================================
+// === KEYBOARD SHORTCUTS ===
+// =====================================================================
+document.addEventListener('keydown', function(e) {
+  const quizOpen = document.getElementById('quizOverlay').classList.contains('open');
+  if (quizOpen) return;
+
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    const studySearch = document.getElementById('studySearch');
+    const bookSearch = document.getElementById('search');
+    if (document.getElementById('tab-study').classList.contains('active')) {
+      studySearch.focus();
+    } else {
+      bookSearch.focus();
+    }
+  }
+  if (e.key === 'Escape') {
+    const studySearch = document.getElementById('studySearch');
+    const bookSearch = document.getElementById('search');
+    if (document.activeElement === studySearch) {
+      studySearch.value = '';
+      studySearch.blur();
+      renderStudyHub();
+    } else if (document.activeElement === bookSearch) {
+      bookSearch.value = '';
+      bookSearch.blur();
+      searchQuery = '';
+      renderBooks();
+    }
+    return;
+  }
+
+  // Arrow key navigation between lesson cards when study search is focused
+  if (document.activeElement === document.getElementById('studySearch')) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const cards = document.querySelectorAll('.lesson-card:not(.muted) .lesson-action-btn.primary');
+      if (cards.length === 0) return;
+      const current = document.activeElement;
+      let idx = Array.from(cards).indexOf(current);
+      if (e.key === 'ArrowDown') {
+        idx = (idx + 1) % cards.length;
+      } else {
+        idx = (idx - 1 + cards.length) % cards.length;
+      }
+      cards[idx].focus();
+    }
+  }
+});
+
+// =====================================================================
+// === SCROLL PROGRESS (upgraded) ===
+// =====================================================================
+window.addEventListener('scroll', () => {
+  const s = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('progress').style.width = s + '%';
+  const tooltip = document.getElementById('progress-tooltip');
+  tooltip.textContent = Math.round(s) + '%';
+  tooltip.style.left = 'calc(' + s + '% - 20px)';
+});
+
+// =====================================================================
+// === PARTICLE SYSTEM (preserved, mobile reduction) ===
+// =====================================================================
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let mouse = {x: -1000, y: -1000};
+  const isMobile = window.innerWidth < 700;
+  const PARTICLE_COUNT = isMobile ? 20 : 60;
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const colors = ['#2ea84c', '#4cd96b', '#2aaf8f', '#8a5abe', '#d4a040'];
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset(){
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.2;
+      this.vy = (Math.random() - 0.5) * 0.2;
+      this.r = Math.random() * 1.5 + 0.5;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.alpha = Math.random() * 0.15 + 0.05;
+    }
+    update(){
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    draw(){
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = this.alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+  function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
         const d = Math.sqrt(dx*dx + dy*dy);
-        if (d < 150) {
+        if (d < 120) {
           ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = p.color;
-          ctx.globalAlpha = 0.06 * (1 - d/150);
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = particles[i].color;
+          ctx.globalAlpha = 0.04 * (1 - d/120);
           ctx.stroke();
           ctx.globalAlpha = 1;
         }
-      });
-
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animate);
+      }
     }
-    animate();
-
-    document.addEventListener('mousemove', e => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+    particles.forEach(p => {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 150) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = 0.06 * (1 - d/150);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
     });
-  })();
-
-  //  FLOATING ORBS 
-  (function(){
-    const c = document.getElementById('orbs');
-    const orbColors = [
-      'rgba(46,168,76,0.12)',
-      'rgba(42,175,143,0.08)',
-      'rgba(138,90,190,0.08)',
-      'rgba(212,160,64,0.08)'
-    ];
-    for (let i = 0; i < 6; i++) {
-      const o = document.createElement('div');
-      o.className = 'orb';
-      const size = 150 + Math.random() * 250;
-      o.style.cssText = `
-        width:${size}px;height:${size}px;
-        left:${Math.random()*100}%;
-        top:${Math.random()*100}%;
-        background:${orbColors[i % orbColors.length]};
-        --duration:${20 + Math.random() * 30}s;
-        --delay:${Math.random() * 10}s;
-        --max-opacity:0.4;
-        --tx:${(Math.random()-0.5)*400}px;
-        --ty:${(Math.random()-0.5)*400}px;
-      `;
-      c.appendChild(o);
-    }
-  })();
-
-  //  MOUSE GLOW 
-  const mouseGlow = document.getElementById('mouseGlow');
-  document.addEventListener('mousemove', e => {
-    mouseGlow.style.left = e.clientX + 'px';
-    mouseGlow.style.top = e.clientY + 'px';
-  });
-
-  //  SCROLL PROGRESS 
-  window.addEventListener('scroll', () => {
-    const s = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
-    document.getElementById('progress').style.width = s + '%';
-  });
-
-  //  BOOK DATA 
-  const books = [
-    {id:"01", title:"The 48 Laws of Power", author:"Robert Greene", path:"48 Laws of power/index.html", desc:"The essential guide to the mechanics of power — how to acquire it, defend it, and wield it without falling victim to those who play the game better than you.", filter:"power"},
-    {id:"02", title:"Atomic Habits", author:"James Clear", path:"atomic habbits/index.html", desc:"Tiny changes, remarkable results. The science of building good habits, breaking bad ones, and mastering the tiny behaviors that lead to remarkable outcomes.", filter:"productivity"},
-    {id:"03", title:"Building a Second Brain", author:"Tiago Forte", path:"Building a second brain/index.html", desc:"A proven method to organize your digital life and unlock your creative potential using the CODE framework and PARA system.", filter:"productivity"},
-    {id:"04", title:"Deep Work", author:"Cal Newport", path:"Deep Work Rules for Focused Success in a Distracted World (Cal Newport)/index.html", desc:"Rules for focused success in a distracted world. Why deep concentration is becoming the superpower of the 21st century.", filter:"productivity"},
-    {id:"05", title:"Ego Is the Enemy", author:"Ryan Holiday", path:"Ego Is the Enemy (Ryan Holiday)/index.html", desc:"The battle against ego — in ambition, success, and failure. Why humility is the ultimate strategy and ego the greatest obstacle.", filter:"philosophy"},
-    {id:"06", title:"Hyperfocus", author:"Chris Bailey", path:"Hyperfocus/index.html", desc:"How to manage your attention in a world of distraction and be more productive by understanding the two modes of focus.", filter:"productivity"},
-    {id:"07", title:"Money Unlocked", author:"John Lee", path:"Money Unlocked (John Lee)/index.html", desc:"Break free from limiting beliefs about money and unlock your financial potential through mindset shifts and practical strategies.", filter:"finance"},
-    {id:"08", title:"The Power of Now", author:"Eckhart Tolle", path:"Power of Now/index.html", desc:"The ultimate guide to spiritual enlightenment through living in the present moment and freeing yourself from pain and suffering.", filter:"philosophy"},
-    {id:"09", title:"Psycho-Cybernetics", author:"Maxwell Maltz", path:"Psycho-Cybernetics (Maxwell Maltz)/index.html", desc:"Your self-image determines your success. The classic guide to rewiring your brain for achievement through cybernetic principles.", filter:"psychology"},
-    {id:"10", title:"The Changing World Order", author:"Ray Dalio", path:"The Changing World Order Why Nations Succeed and Fail (Ray Dalio)/index.html", desc:"Why nations succeed and fail — the big cycles in history that explain the past, present, and future of global power.", filter:"finance"},
-    {id:"11", title:"What Every BODY Is Saying", author:"Joe Navarro", path:"What Every BODY Is Saying/index.html", desc:"An ex-FBI agent's guide to speed-reading people through nonverbal communication and understanding the hidden messages in body language.", filter:"psychology"},
-    {id:"12", title:"Basis of Business & Environment", author:"Business Studies", path:"Study Notes/Business/1/index.html", desc:"The foundation of business — types of businesses, economic systems, environmental influences, and the role of business in society.", filter:"business"},
-    {id:"13", title:"Social Responsibility & Business Ethics", author:"Business Studies", path:"Study Notes/Business/2/index.html", desc:"Corporate social responsibility, ethical decision-making, stakeholder theory, and sustainable business practices.", filter:"business"},
-    {id:"14", title:"Business-Government Relations & Consumer Protection", author:"Business Studies", path:"Study Notes/Business/3/index.html", desc:"The relationship between business and government, regulatory frameworks, consumer rights, and protection mechanisms.", filter:"business"},
-    {id:"15", title:"Business Organizations", author:"Business Studies", path:"Study Notes/Business/4/lesson4.html", desc:"Types of business organizations — sole proprietorships, partnerships, corporations, cooperatives, and their characteristics.", filter:"business"},
-    {id:"16", title:"Entrepreneurship", author:"Business Studies", path:"Study Notes/Business/5/lesson5.html", desc:"The entrepreneurial process, innovation, business planning, venture creation, and the role of entrepreneurs in the economy.", filter:"business"},
-    {id:"17", title:"Money and Financial Institutions", author:"Business Studies", path:"Study Notes/Business/6/lesson6.html", desc:"The nature of money, financial systems, banking institutions, central banking, and monetary policy fundamentals.", filter:"business"},
-    {id:"18", title:"Insurance", author:"Business Studies", path:"Study Notes/Business/7/lesson7.html", desc:"Principles of insurance, types of insurance policies, risk management, and the insurance industry's role in business.", filter:"business"},
-    {id:"19", title:"Communication", author:"Business Studies", path:"Study Notes/Business/8/lesson8.html", desc:"Business communication methods, written and oral communication, technology in communication, and effective presentation skills.", filter:"business"},
-    {id:"20", title:"Introduction to Economics", author:"Economics", path:"Study Notes/Econ/1/index.html", desc:"Fundamental economic concepts — scarcity, choice, opportunity cost, the production possibilities frontier, and basic economic questions.", filter:"economics"},
-    {id:"21", title:"Demand, Supply & Market Equilibrium", author:"Economics", path:"Study Notes/Econ/2/index.html", desc:"The laws of demand and supply, market equilibrium, elasticity, and how prices are determined in competitive markets.", filter:"economics"},
-    {id:"22", title:"Government Intervention in Markets", author:"Economics", path:"Study Notes/Econ/3/index.html", desc:"Price controls, taxes, subsidies, and the effects of government intervention on market outcomes and welfare.", filter:"economics"},
-    {id:"23", title:"Production, Cost & Market Structures", author:"Economics", path:"Study Notes/Econ/4/index.html", desc:"Production functions, costs of production, economies of scale, and market structures from perfect competition to monopoly.", filter:"economics"},
-    {id:"24", title:"National Accounting", author:"Economics", path:"Study Notes/Econ/5/index.html", desc:"GDP measurement, national income accounting methods, circular flow of income, and limitations of national accounts.", filter:"economics"},
-    {id:"25", title:"Macroeconomic Concepts", author:"Economics", path:"Study Notes/Econ/6/index.html", desc:"Aggregate demand and supply, business cycles, unemployment, and the basic macroeconomic policy framework.", filter:"economics"},
-    {id:"26", title:"Price, Inflation, Money & Financial System", author:"Economics", path:"Study Notes/Econ/7/index.html", desc:"Price indices, inflation causes and effects, the role of money, financial intermediation, and monetary policy tools.", filter:"economics"},
-    {id:"27", title:"Market Failure, Government & Public Finance", author:"Economics", path:"Study Notes/Econ/8/index.html", desc:"Externalities, public goods, asymmetric information, taxation principles, government spending, and fiscal policy.", filter:"economics"},
-    {id:"28", title:"Protectionism & Foreign Investments", author:"Economics", path:"Study Notes/Econ/9/index.html", desc:"Trade barriers, protectionist policies, foreign direct investment, multinational corporations, and global trade dynamics.", filter:"economics"},
-    {id:"29", title:"Foreign Exchange & Balance of Payments", author:"Economics", path:"Study Notes/Econ/10/index.html", desc:"Exchange rate determination, balance of payments accounting, currency markets, and international capital flows.", filter:"economics"},
-    {id:"30", title:"Economic Growth, Development & Labour", author:"Economics", path:"Study Notes/Econ/11/index.html", desc:"Sources of economic growth, development indicators, labor markets, wage determination, and human capital theory.", filter:"economics"},
-    {id:"31", title:"Sri Lankan Economy Post-Independence", author:"Economics", path:"Study Notes/Econ/12/index.html", desc:"The evolution of Sri Lanka's economy — from independence to present, policy shifts, economic reforms, and current challenges.", filter:"economics"},
-    {id:"32", title:"Book of Wisdom", author:"Harry B. Joseph", path:"Book of Wisdom/index.html", desc:"A revival of ancient wisdom for modern living — timeless philosophical insights and practical principles for navigating life with clarity, purpose, and understanding.", filter:"philosophy"},
-    {id:"33", title:"Daily Robert Greene", author:"Robert Greene", path:"Daily Robert Greene/index.html", desc:"366 meditations on power, seduction, mastery, strategy, and human nature — a year of daily wisdom drawn from Greene's life's work.", filter:"power"},
-    {id:"34", title:"Mastery", author:"Robert Greene", path:"Mastery/index.html", desc:"The lifelong journey of mastering a craft — following your passion, undergoing apprenticeship, and achieving creative excellence through deliberate practice and perseverance.", filter:"productivity"},
-    {id:"35", title:"Read People Like a Book", author:"Patrick King", path:"Read People Like a Book/index.html", desc:"How to analyze, understand, and predict people's emotions, thoughts, intentions, and behaviors — decoding the hidden meanings behind what people say and do.", filter:"psychology"},
-    {id:"36", title:"Rich Dad Poor Dad", author:"Robert Kiyosaki", path:"Rich Dad Poor Dad/index.html", desc:"What the rich teach their kids about money that the poor and middle class do not — the timeless lessons of financial literacy, assets vs liabilities, and escaping the rat race.", filter:"finance"},
-    {id:"37", title:"Surrounded by Idiots", author:"Thomas Erikson", path:"Surrounded by Idiots/index.html", desc:"The four types of human behavior and how to effectively communicate with each in business and in life using the DISC personality framework.", filter:"psychology"},
-    {id:"38", title:"Surrounded By Psychopaths", author:"Thomas Erikson", path:"Surrounded By Psychopaths/index.html", desc:"How to identify, understand, and protect yourself from psychopathic behavior using the DISC model and recognizing the dark triad of personality traits.", filter:"psychology"},
-    {id:"39", title:"The Art of Seduction", author:"Robert Greene", path:"The Art of Seduction/index.html", desc:"The 9 types of seducers and the timeless strategies of attraction — mastering the seductive process through psychological insight and social intelligence.", filter:"power"},
-    {id:"40", title:"The Concise Laws of Human Nature", author:"Robert Greene", path:"The Concise Laws of Human Nature/index.html", desc:"A condensed guide to the 18 laws of human nature — understanding why people behave the way they do and mastering the dynamics of social behavior.", filter:"psychology"},
-    {id:"41", title:"The Laws of Human Nature", author:"Robert Greene", path:"The Laws of Human Nature/index.html", desc:"The definitive guide to understanding human behavior — 18 deep psychological laws with historical examples and strategies for mastering social dynamics.", filter:"psychology"},
-    {id:"42", title:"The Millionaire Master Plan", author:"Roger James Hamilton", path:"The Millionaire Master Plan/index.html", desc:"Your personalized path to financial success — discovering your wealth personality type and following a tailored plan to build lasting prosperity.", filter:"finance"},
-    {id:"43", title:"The Prince", author:"Niccolò Machiavelli", path:"The Prince/index.html", desc:"The classic Renaissance treatise on power, leadership, and statecraft — the timeless principles of how a ruler should acquire, maintain, and wield power.", filter:"power"},
-    {id:"44", title:"The Psychology of Money", author:"Morgan Housel", path:"The Psychology of Money/index.html", desc:"Timeless lessons on wealth, greed, and happiness — how our emotional and psychological relationship with money shapes our financial decisions more than math ever does.", filter:"finance"}
-  ];
-
-  const grid = document.getElementById('grid');
-  const search = document.getElementById('search');
-  const count = document.getElementById('count');
-  const filterBtns = document.querySelectorAll('.controls-row .filter-btn');
-  const catItems = document.querySelectorAll('.cat-item');
-  const layoutBtns = document.querySelectorAll('.layout-btn');
-  let activeFilter = 'all';
-  let searchQuery = '';
-  let layout = 'grid';
-
-  function render() {
-    grid.innerHTML = '';
-    const q = searchQuery.toLowerCase();
-    let visible = 0;
-
-    books.forEach(book => {
-      const matchFilter = activeFilter === 'all' || book.filter === activeFilter || (activeFilter === 'study-notes' && (book.filter === 'economics' || book.filter === 'business'));
-      const matchSearch = !q || book.title.toLowerCase().includes(q) || (book.author && book.author.toLowerCase().includes(q));
-      const show = matchFilter && matchSearch;
-      if (show) visible++;
-
-      const card = document.createElement('a');
-      card.className = `card${show ? '' : ' hidden'}`;
-      card.href = book.path;
-      card.setAttribute('data-filter', book.filter);
-      card.innerHTML = `
-        <div class="card-accent"></div>
-        <div class="shimmer-line"></div>
-        <div class="card-top">
-          <h3>${book.title}</h3>
-          <span class="badge ${book.filter}">${book.filter === 'economics' ? 'Economics' : book.filter === 'business' ? 'Business' : book.filter}</span>
-        </div>
-        <div class="author">${book.author}</div>
-        <div class="desc">${book.desc}</div>
-        <div class="card-footer">
-          <span class="open-hint">
-            Open
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-          </span>
-          <span class="card-num">${book.id}</span>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-
-    count.textContent = `${visible} resource${visible !== 1 ? 's' : ''}`;
-
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.card:not(.hidden)').forEach((el, i) => {
-        setTimeout(() => el.classList.add('visible'), i * 50);
-      });
-    });
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
   }
+  animate();
 
-  render();
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      render();
-    });
+  document.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
   });
+})();
 
-  catItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const f = item.dataset.filter;
-      filterBtns.forEach(b => b.classList.toggle('active', b.dataset.filter === f));
-      activeFilter = f;
-      render();
-      document.querySelector('.grid').scrollIntoView({behavior:'smooth', block:'start'});
-    });
-  });
+// =====================================================================
+// === FLOATING ORBS (upgraded opacity) ===
+// =====================================================================
+(function(){
+  const c = document.getElementById('orbs');
+  const orbColors = [
+    'rgba(46,168,76,0.18)',
+    'rgba(42,175,143,0.12)',
+    'rgba(138,90,190,0.12)',
+    'rgba(212,160,64,0.12)'
+  ];
+  for (let i = 0; i < 6; i++) {
+    const o = document.createElement('div');
+    o.className = 'orb';
+    const size = 150 + Math.random() * 250;
+    o.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      background:${orbColors[i % orbColors.length]};
+      --duration:${20 + Math.random() * 30}s;
+      --delay:${Math.random() * 10}s;
+      --max-opacity:0.5;
+      --tx:${(Math.random()-0.5)*400}px;
+      --ty:${(Math.random()-0.5)*400}px;
+    `;
+    c.appendChild(o);
+  }
+})();
 
-  search.addEventListener('input', e => {
-    searchQuery = e.target.value;
-    render();
-  });
+// =====================================================================
+// === MOUSE GLOW ===
+// =====================================================================
+const mouseGlow = document.getElementById('mouseGlow');
+document.addEventListener('mousemove', e => {
+  mouseGlow.style.left = e.clientX + 'px';
+  mouseGlow.style.top = e.clientY + 'px';
+});
 
-  layoutBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      layoutBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      layout = btn.dataset.layout;
-      grid.classList.toggle('list', layout === 'list');
-      render();
-    });
-  });
+// =====================================================================
+// === INIT ===
+// =====================================================================
+renderStudyHub();
+buildSubjectNav();
+document.getElementById('subjectNav').classList.add('show');
 </script>
 </body>
 </html>
