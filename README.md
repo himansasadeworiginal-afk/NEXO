@@ -15,14 +15,14 @@ Nexo is a self-contained, single-file HTML learning platform — no frameworks, 
 It has three main sections:
 - **Study Hub** — structured lessons organized by subject, each with interactive summary pages and built-in quizzes
 - **Book Library** — 24 interactive book summaries filterable by category
-- **ICT Terminal** — in-browser code playground for programming lessons
+- **ICT Terminal** — in-browser code playground for programming lessons (blank editor, students write their own code)
 
 ## Features
 
 - **Study Hub** — Subject-first layout with collapsible panels, progress tracking, and lesson cards
 - **Interactive Quizzes** — Multiple-choice quiz per lesson with instant feedback, explanations, and best score tracking (stored in localStorage)
 - **Book Library** — All 24 book summaries with category filters, search, and grid/list toggle
-- **ICT Terminal** — Interactive code editor with Python (Skulpt), Pseudocode tracer, and JavaScript sandbox execution
+- **ICT Terminal** — Blank-editor code playground with Python (Skulpt), Pseudocode tracer, and JavaScript sandbox execution — starts empty so students write their own code
 - **Progress Tracking** — Mark lessons as Not Started / In Progress / Done; progress rings per subject
 - **Keyboard Shortcuts** — `/` to search, `Escape` to clear, arrow keys to navigate lesson cards, `1-4` for quiz answers
 - **Expand/Collapse All** — Toggle all subject panels at once
@@ -127,7 +127,7 @@ Open `index.html` in any browser or visit the **[live site](https://himansasadew
 
 ### ICT Terminal Usage
 
-The NEXO Terminal can be embedded in any lesson page:
+Each ICT lesson page embeds a terminal configured for that lesson. The editor starts **blank** — students write their own code from scratch.
 
 ```html
 <script>
@@ -135,19 +135,17 @@ The NEXO Terminal can be embedded in any lesson page:
     lang: 'python',
     lesson: {
       title: 'Your Challenge',
-      challenge: 'Description of the coding task.',
+      challenge: 'Describe what the student needs to build.',
       expectedOutput: 'Expected output text',
-      hint: 'Helpful hint for the student.',
-      starterCode: {
-        python: '# Starter code here\n',
-        pseudocode: 'BEGIN\n  // Starter code\nEND',
-        javascript: '// Starter code here\n'
-      }
+      hint: 'A helpful hint.',
+      starterCode: { python: '', pseudocode: '', javascript: '' }
     }
   };
 </script>
-<script src="../../components/nexo-terminal-embed.js"></script>
+<script src="https://skulpt.org/js/skulpt.min.js"></script>
+<script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
 <div id="nexo-terminal-mount"></div>
+<script src="../../components/nexo-terminal-embed.js"></script>
 ```
 
 Or use the standalone iframe version:
@@ -157,9 +155,9 @@ Or use the standalone iframe version:
 ```
 
 ### Pre-loaded Challenges
-- `py-hello-world`, `py-variables`, `py-input`, `py-if-else`
-- `py-for-loop`, `py-while-loop`, `py-functions`
-- `psc-variables`, `psc-loop`
+Challenges are defined per-lesson in `NEXO_TERMINAL_CONFIG`. Built-in presets (with blank editors):
+- Python: `py-hello-world`, `py-variables`, `py-input`, `py-if-else`, `py-for-loop`, `py-while-loop`, `py-functions`
+- Pseudocode: `psc-variables`, `psc-loop`
 
 ## Keyboard Shortcuts
 
@@ -176,7 +174,7 @@ Or use the standalone iframe version:
 |-----|--------|
 | `Ctrl+Enter` | Run code |
 | `Ctrl+L` | Clear output |
-| `Ctrl+R` | Reset to starter code |
+| `Ctrl+R` | Reset editor (clear code) |
 | `Tab` | Indent (4 spaces) |
 | `Shift+Tab` | Unindent |
 | `Ctrl+/` | Toggle line comment |
@@ -188,9 +186,13 @@ Or use the standalone iframe version:
 - Single-file HTML — everything inline (HTML + CSS + JS)
 - All data in JS constants at the top of the script: `BOOKS_DATA`, `SUBJECTS_DATA`, `QUIZ_DATA`
 - localStorage keys use the `nexo_` prefix to avoid collisions
-- Canvas particle system auto-reduces to 20 particles on mobile
+- Canvas particle system auto-reduces to 20 particles on mobile (main hub only; lesson pages omit particles for performance)
 - Data-driven design — adding a subject only requires a new entry in `SUBJECTS_DATA`
 - ICT Terminal uses Skulpt (CDN) for Python execution, runs entirely client-side
+- ICT Terminal editor starts blank — no pre-written code; students write everything from scratch
+- Error messages are parsed and displayed with line numbers, error type, and student-friendly tips
+- Syntax highlighting is debounced via `requestAnimationFrame` to reduce lag while typing
+- Error lines are highlighted in the editor with a red border after a failed run
 - All component IDs use the `nxt-` prefix to avoid name collisions
 
 ## Deployment
@@ -214,7 +216,8 @@ Changes go live automatically after pushing to `main`. Make sure `.nojekyll` is 
 
 - Replace placeholder quiz questions with real questions (Econ L3-12, Business L3-8)
 - Add new subjects (Psychology, Philosophy, Power, Finance as structured subjects with lessons)
-- More ICT lessons (functions, lists, OOP, algorithms)
+- More ICT lessons (functions, lists, OOP, algorithms, file handling)
+- ICT Terminal: add more pre-loaded challenges, auto-completion, test runner mode
 - Keyboard shortcut cheat sheet overlay in Study Hub
 - Dark/light theme toggle
 - Lesson bookmarking / favorites
