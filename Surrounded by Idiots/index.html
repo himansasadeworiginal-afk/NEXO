@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surrounded by Idiots — DISC Behavioral Summary</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f4f2ee;
+    --bg-alt: #ece8e2;
+    --surface: #ffffff;
+    --surface-hover: #f6f3ee;
+    --text: #1a1815;
+    --text-dim: #7a7268;
+    --red: #E74C3C;
+    --red-bg: rgba(231,76,60,0.08);
+    --red-glow: rgba(231,76,60,0.15);
+    --yellow: #F1C40F;
+    --yellow-bg: rgba(241,196,15,0.08);
+    --yellow-glow: rgba(241,196,15,0.15);
+    --green: #2ECC71;
+    --green-bg: rgba(46,204,113,0.08);
+    --green-glow: rgba(46,204,113,0.15);
+    --blue: #3498DB;
+    --blue-bg: rgba(52,152,219,0.08);
+    --blue-glow: rgba(52,152,219,0.15);
+    --border: #ddd8d0;
+    --shadow: 0 8px 32px rgba(0,0,0,0.06);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-xs: 8px;
+    --transition: 0.45s cubic-bezier(.22,1,.36,1);
+  }
+
+  .dark {
+    --bg: #0e0d12;
+    --bg-alt: #15141b;
+    --surface: #1c1a24;
+    --surface-hover: #25222f;
+    --text: #e8e4ee;
+    --text-dim: #807a92;
+    --red-bg: rgba(231,76,60,0.12);
+    --red-glow: rgba(231,76,60,0.2);
+    --yellow-bg: rgba(241,196,15,0.12);
+    --yellow-glow: rgba(241,196,15,0.2);
+    --green-bg: rgba(46,204,113,0.12);
+    --green-glow: rgba(46,204,113,0.2);
+    --blue-bg: rgba(52,152,219,0.12);
+    --blue-glow: rgba(52,152,219,0.2);
+    --border: #2a2736;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    transition: background var(--transition), color var(--transition);
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { border-radius: 3px; }
+
+  .theme-toggle {
+    position: fixed; top: 20px; right: 20px; z-index: 1000;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); width: 46px; height: 46px; border-radius: 50%;
+    cursor: pointer; font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow); transition: all var(--transition);
+    backdrop-filter: blur(8px);
+  }
+  .theme-toggle:hover { transform: scale(1.1); }
+
+  /*  ANIMATED BG  */
+  #bgCanvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none; opacity: 0.2;
+  }
+
+  /*  KEYFRAMES  */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounce { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 10px); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px rgba(231,76,60,0.2); } 50% { box-shadow: 0 0 40px rgba(231,76,60,0.4); } }
+
+  /*  HERO  */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 2rem; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 30%, var(--red-glow) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, var(--yellow-glow) 0%, transparent 40%),
+      radial-gradient(ellipse at 30% 80%, var(--green-glow) 0%, transparent 40%),
+      radial-gradient(ellipse at 70% 70%, var(--blue-glow) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+  .hero * { position: relative; z-index: 1; }
+
+  .hero-badge {
+    display: inline-block; padding: 7px 22px; border-radius: 50px;
+    border: 1px solid var(--text-dim); color: var(--text-dim);
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 10vw, 7rem); font-weight: 900;
+    letter-spacing: -3px; line-height: 1;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero h1 .disc-r { color: var(--red); }
+  .hero h1 .disc-y { color: var(--yellow); }
+  .hero h1 .disc-g { color: var(--green); }
+  .hero h1 .disc-b { color: var(--blue); }
+  .hero h1 .sm {
+    font-size: 0.3em; display: block; font-weight: 400;
+    letter-spacing: 6px; color: var(--text-dim);
+    margin-top: 0.8rem; font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+  }
+  .hero .subtitle {
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
+    color: var(--text-dim); max-width: 550px;
+    margin-top: 1.5rem; line-height: 1.5;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero .author {
+    margin-top: 1rem; font-size: 0.85rem;
+    font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+    background: linear-gradient(90deg, var(--red), var(--yellow), var(--green), var(--blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .disc-strip {
+    margin-top: 2.5rem; display: flex; gap: 0; border-radius: 50px; overflow: hidden;
+    opacity: 0; animation: fadeUp 0.8s 1s forwards;
+  }
+  .disc-strip span {
+    padding: 6px 20px; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; color: #fff;
+  }
+  .disc-strip .r { background: var(--red); }
+  .disc-strip .y { background: var(--yellow); color: #333; }
+  .disc-strip .g { background: var(--green); }
+  .disc-strip .b { background: var(--blue); }
+
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 0.8s 1.3s forwards;
+  }
+  .scroll-hint span {
+    display: block; width: 22px; height: 36px;
+    border: 2px solid var(--text-dim); border-radius: 11px; position: relative;
+  }
+  .scroll-hint span::after {
+    content: ''; width: 3px; height: 8px;
+    background: var(--text); border-radius: 2px;
+    position: absolute; top: 6px; left: 50%;
+    transform: translateX(-50%); animation: bounce 2s infinite;
+  }
+
+  /*  SECTION  */
+  section {
+    position: relative; z-index: 1; padding: 6rem 2rem;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    display: inline-block; padding: 5px 16px; border-radius: 50px;
+    background: var(--surface); color: var(--text-dim);
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 0.8rem;
+    border: 1px solid var(--border);
+  }
+  section h2 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  section h2 .disc-r { color: var(--red); }
+  section h2 .disc-y { color: var(--yellow); }
+  section h2 .disc-g { color: var(--green); }
+  section h2 .disc-b { color: var(--blue); }
+  .section-desc {
+    color: var(--text-dim); font-size: 1rem; max-width: 620px;
+    margin-bottom: 3rem; line-height: 1.6;
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-d1 { transition-delay: 0.1s; }
+  .reveal-d2 { transition-delay: 0.2s; }
+  .reveal-d3 { transition-delay: 0.3s; }
+  .reveal-d4 { transition-delay: 0.4s; }
+
+  /*  STATS  */
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem; margin: 2rem 0;
+  }
+  .stat {
+    text-align: center; padding: 1.8rem 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-xs); transition: all var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .stat::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; transform: scaleX(0); transition: transform 0.4s; transform-origin: left;
+  }
+  .stat:nth-child(1)::before { background: var(--red); }
+  .stat:nth-child(2)::before { background: var(--yellow); }
+  .stat:nth-child(3)::before { background: var(--green); }
+  .stat:nth-child(4)::before { background: var(--blue); }
+  .stat:hover::before { transform: scaleX(1); }
+  .stat:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+  .stat:nth-child(1):hover { border-color: var(--red); }
+  .stat:nth-child(2):hover { border-color: var(--yellow); }
+  .stat:nth-child(3):hover { border-color: var(--green); }
+  .stat:nth-child(4):hover { border-color: var(--blue); }
+
+  .stat-value {
+    font-size: 2.4rem; font-weight: 800;
+  }
+  .stat:nth-child(1) .stat-value { color: var(--red); }
+  .stat:nth-child(2) .stat-value { color: var(--yellow); }
+  .stat:nth-child(3) .stat-value { color: var(--green); }
+  .stat:nth-child(4) .stat-value { color: var(--blue); }
+
+  .stat-label { font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /*  DISC CARDS  */
+  .disc-cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem; margin-top: 1rem;
+  }
+  .disc-card {
+    border-radius: var(--radius); padding: 0;
+    background: var(--surface); border: 2px solid var(--border);
+    overflow: hidden; cursor: pointer;
+    transition: all var(--transition); position: relative;
+  }
+  .disc-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+  .disc-card.card-red:hover { border-color: var(--red); }
+  .disc-card.card-yellow:hover { border-color: var(--yellow); }
+  .disc-card.card-green:hover { border-color: var(--green); }
+  .disc-card.card-blue:hover { border-color: var(--blue); }
+
+  .disc-card .card-head {
+    padding: 1.8rem 1.5rem 1.2rem; text-align: center;
+    color: #fff; position: relative; overflow: hidden;
+  }
+  .disc-card.card-red .card-head { background: var(--red); }
+  .disc-card.card-yellow .card-head { background: var(--yellow); color: #333; }
+  .disc-card.card-green .card-head { background: var(--green); }
+  .disc-card.card-blue .card-head { background: var(--blue); }
+
+  .disc-card .card-head::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .disc-card .card-head * { position: relative; z-index: 1; }
+  .disc-card .card-icon {
+    font-size: 2.8rem; font-weight: 900; line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .disc-card .card-type { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+  .disc-card .card-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; margin-top: 0.2rem; }
+  .disc-card .card-traits {
+    padding: 0.8rem 1rem; text-align: center;
+    display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center;
+  }
+  .disc-card .card-traits span {
+    font-size: 0.68rem; padding: 3px 10px; border-radius: 50px;
+    font-weight: 600; background: var(--bg-alt);
+  }
+  .disc-card.card-red .card-traits span { color: var(--red); background: var(--red-bg); }
+  .disc-card.card-yellow .card-traits span { color: #b8860b; background: var(--yellow-bg); }
+  .disc-card.card-green .card-traits span { color: #1a8a4e; background: var(--green-bg); }
+  .disc-card.card-blue .card-traits span { color: #1a6da0; background: var(--blue-bg); }
+
+  .disc-card .card-expand {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.6s ease, padding 0.6s ease;
+    padding: 0 1.5rem;
+  }
+  .disc-card.open .card-expand {
+    max-height: 500px; padding: 0 1.5rem 1.5rem;
+  }
+  .disc-card .card-expand p {
+    font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 0.8rem;
+  }
+  .disc-card .card-expand .expand-toggle {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px;
+    transition: color 0.3s;
+  }
+  .disc-card.card-red .expand-toggle { color: var(--red); }
+  .disc-card.card-yellow .expand-toggle { color: #b8860b; }
+  .disc-card.card-green .expand-toggle { color: #1a8a4e; }
+  .disc-card.card-blue .expand-toggle { color: #1a6da0; }
+  .disc-card .expand-toggle .arrow { display: inline-block; transition: transform 0.4s; }
+  .disc-card.open .expand-toggle .arrow { transform: rotate(180deg); }
+
+  /*  COLOR WHEEL  */
+  .color-wheel-section {
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .wheel-container {
+    position: relative; width: 300px; height: 300px;
+    margin: 2rem auto;
+  }
+  .wheel-svg { width: 100%; height: 100%; }
+  .wheel-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center; pointer-events: none;
+  }
+  .wheel-center strong {
+    display: block; font-size: 1.4rem; font-weight: 800;
+  }
+  .wheel-center small {
+    font-size: 0.65rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .wheel-arc { cursor: pointer; transition: opacity 0.3s; }
+  .wheel-arc:hover { opacity: 0.85; }
+  .wheel-label {
+    font-size: 0.72rem; font-weight: 700; fill: #fff;
+    text-anchor: middle; dominant-baseline: central;
+    pointer-events: none; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .wheel-arc-path { transition: all 0.3s; }
+  .wheel-arc:hover .wheel-arc-path { filter: brightness(1.15); }
+
+  .wheel-labels {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-top: 2rem; max-width: 480px;
+  }
+  .wheel-label-item {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.8rem 1rem; border-radius: var(--radius-xs);
+    background: var(--surface); border: 1px solid var(--border);
+    cursor: pointer; transition: all var(--transition);
+  }
+  .wheel-label-item:hover { transform: translateX(4px); }
+  .wheel-label-item .dot {
+    width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+  }
+  .wheel-label-item .info strong { font-size: 0.85rem; display: block; }
+  .wheel-label-item .info small { font-size: 0.68rem; color: var(--text-dim); }
+
+  /*  COMPARISON GRID  */
+  .compare-controls {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;
+  }
+  .compare-btn {
+    padding: 8px 18px; border-radius: 50px; border: 2px solid var(--border);
+    background: var(--surface); color: var(--text-dim);
+    font-size: 0.75rem; font-weight: 700; cursor: pointer;
+    transition: all var(--transition); font-family: inherit;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .compare-btn:hover { border-color: var(--text-dim); }
+  .compare-btn.active-r { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+  .compare-btn.active-y { border-color: var(--yellow); color: #b8860b; background: var(--yellow-bg); }
+  .compare-btn.active-g { border-color: var(--green); color: #1a8a4e; background: var(--green-bg); }
+  .compare-btn.active-b { border-color: var(--blue); color: #1a6da0; background: var(--blue-bg); }
+  .compare-btn.all { border-color: var(--text-dim); color: var(--text); background: var(--surface); }
+
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+  }
+  .compare-row {
+    display: grid; grid-template-columns: 140px 1fr;
+    gap: 1rem; align-items: start;
+  }
+  .compare-row .trait-label {
+    font-size: 0.78rem; font-weight: 700; padding: 0.8rem 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-xs); text-align: center;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .compare-row .trait-values {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem;
+  }
+  .compare-row .trait-val {
+    padding: 0.7rem 0.8rem; border-radius: var(--radius-xs);
+    font-size: 0.72rem; line-height: 1.4; text-align: center;
+    border: 1px solid transparent; transition: all 0.3s;
+  }
+  .compare-row .trait-val.hide { display: none; }
+  .compare-row .trait-val.r-val { background: var(--red-bg); color: var(--red); border-color: rgba(231,76,60,0.2); }
+  .compare-row .trait-val.y-val { background: var(--yellow-bg); color: #b8860b; border-color: rgba(241,196,15,0.2); }
+  .compare-row .trait-val.g-val { background: var(--green-bg); color: #1a8a4e; border-color: rgba(46,204,113,0.2); }
+  .compare-row .trait-val.b-val { background: var(--blue-bg); color: #1a6da0; border-color: rgba(52,152,219,0.2); }
+
+  /*  COMMUNICATION TIPS  */
+  .comms-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+  }
+  .comms-card {
+    padding: 1.8rem; border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--border);
+    transition: all var(--transition); cursor: pointer;
+  }
+  .comms-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .comms-card .comms-header {
+    display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;
+  }
+  .comms-card .comms-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 800; color: #fff; flex-shrink: 0;
+  }
+  .comms-card.card-red .comms-icon { background: var(--red); }
+  .comms-card.card-yellow .comms-icon { background: var(--yellow); color: #333; }
+  .comms-card.card-green .comms-icon { background: var(--green); }
+  .comms-card.card-blue .comms-icon { background: var(--blue); }
+  .comms-card .comms-header h3 { font-size: 1rem; font-weight: 700; }
+  .comms-card .comms-do, .comms-card .comms-dont {
+    font-size: 0.78rem; line-height: 1.6; margin-top: 0.4rem;
+    padding-left: 1rem; list-style: none;
+  }
+  .comms-card .comms-do li, .comms-card .comms-dont li {
+    position: relative; margin-bottom: 0.2rem;
+  }
+  .comms-card .comms-do li::before {
+    content: '✓'; position: absolute; left: -1rem; font-weight: 700;
+  }
+  .comms-card .comms-dont li::before {
+    content: '✗'; position: absolute; left: -1rem; font-weight: 700;
+  }
+  .comms-card.card-red .comms-do li::before { color: var(--red); }
+  .comms-card.card-red .comms-dont li::before { color: var(--red); }
+  .comms-card.card-yellow .comms-do li::before { color: var(--yellow); }
+  .comms-card.card-yellow .comms-dont li::before { color: var(--yellow); }
+  .comms-card.card-green .comms-do li::before { color: var(--green); }
+  .comms-card.card-green .comms-dont li::before { color: var(--green); }
+  .comms-card.card-blue .comms-do li::before { color: var(--blue); }
+  .comms-card.card-blue .comms-dont li::before { color: var(--blue); }
+
+  .comms-card .comms-details {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s ease, margin 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+  }
+  .comms-card.open .comms-details {
+    max-height: 400px; margin-top: 1rem; opacity: 1;
+  }
+  .comms-card .comms-toggle {
+    display: inline-block; margin-top: 0.7rem;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; transition: color 0.3s;
+  }
+  .comms-card.card-red .comms-toggle { color: var(--red); }
+  .comms-card.card-yellow .comms-toggle { color: #b8860b; }
+  .comms-card.card-green .comms-toggle { color: #1a8a4e; }
+  .comms-card.card-blue .comms-toggle { color: #1a6da0; }
+  .comms-card .comms-toggle .arrow { display: inline-block; transition: transform 0.4s; }
+  .comms-card.open .comms-toggle .arrow { transform: rotate(180deg); }
+
+  /*  STRENGTHS / WEAKNESSES  */
+  .sw-section { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .sw-col h3 {
+    font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .sw-col h3 .count { font-size: 0.75rem; font-weight: 600; color: var(--text-dim); }
+  .sw-item {
+    display: flex; align-items: flex-start; gap: 0.8rem;
+    padding: 1rem 1.2rem; margin-bottom: 0.7rem;
+    border-radius: var(--radius-xs); background: var(--surface);
+    border: 1px solid var(--border); transition: all 0.3s;
+  }
+  .sw-item:hover { transform: translateX(4px); }
+  .sw-item .sw-letter {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 800; color: #fff;
+  }
+  .sw-item .sw-text { font-size: 0.85rem; line-height: 1.4; }
+
+  /*  QUOTES  */
+  .quotes-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .quote-card {
+    padding: 2rem; border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--border);
+    position: relative; transition: all var(--transition);
+  }
+  .quote-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .quote-card .quote-mark {
+    font-size: 4rem; line-height: 1; position: absolute;
+    top: 0.5rem; left: 1.2rem; opacity: 0.15; font-weight: 900;
+  }
+  .quote-card:nth-child(1) .quote-mark { color: var(--red); }
+  .quote-card:nth-child(2) .quote-mark { color: var(--yellow); }
+  .quote-card:nth-child(3) .quote-mark { color: var(--green); }
+  .quote-card:nth-child(4) .quote-mark { color: var(--blue); }
+  .quote-card blockquote {
+    font-size: 0.95rem; line-height: 1.6; font-style: italic;
+    margin-bottom: 0.8rem; position: relative; z-index: 1;
+  }
+  .quote-card cite {
+    font-size: 0.75rem; font-style: normal; color: var(--text-dim);
+    display: block;
+  }
+
+  /*  FOOTER  */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem; color: var(--text-dim);
+  }
+  footer .footer-disc {
+    display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;
+  }
+  footer .footer-disc span {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 800; color: #fff;
+  }
+  footer .footer-disc .r { background: var(--red); }
+  footer .footer-disc .y { background: var(--yellow); color: #333; }
+  footer .footer-disc .g { background: var(--green); }
+  footer .footer-disc .b { background: var(--blue); }
+  footer a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+  /*  RESPONSIVE  */
+  @media (max-width: 768px) {
+    section { padding: 4rem 1.2rem; }
+    .hero h1 { letter-spacing: -1px; }
+    .disc-cards { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 1fr; }
+    .compare-row .trait-values { grid-template-columns: repeat(2, 1fr); }
+    .sw-section { grid-template-columns: 1fr; }
+    .wheel-container { width: 220px; height: 220px; }
+    .comms-grid { grid-template-columns: 1fr; }
+    .quotes-grid { grid-template-columns: 1fr; }
+    .wheel-labels { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .compare-row .trait-values { grid-template-columns: 1fr 1fr; }
+  }
+
+  .icon{width:16px;height:16px;vertical-align:middle;display:inline-block;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+
+<!--  HERO  -->
+<section class="hero">
+  <div class="hero-badge">Thomas Erikson</div>
+  <h1>
+    <span class="disc-r">S</span><span class="disc-y">u</span><span class="disc-g">r</span><span class="disc-b">r</span><span class="disc-r">o</span><span class="disc-y">u</span><span class="disc-g">n</span><span class="disc-b">d</span><span class="disc-r">e</span><span class="disc-y">d</span>
+    <span class="disc-g">b</span><span class="disc-b">y</span>
+    <span class="disc-r">I</span><span class="disc-y">d</span><span class="disc-g">i</span><span class="disc-b">o</span><span class="disc-r">t</span><span class="disc-y">s</span>
+    <span class="sm">The Four Types of Human Behavior</span>
+  </h1>
+  <p class="subtitle">How to understand the people who confuse you — and communicate with anyone using the DISC model</p>
+  <div class="author">Red · Yellow · Green · Blue</div>
+  <div class="disc-strip">
+    <span class="r">Dominant</span>
+    <span class="y">Influential</span>
+    <span class="g">Stable</span>
+    <span class="b">Conscientious</span>
+  </div>
+  <div class="scroll-hint"><span></span></div>
+</section>
+
+<!--  STATS  -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">Overview</div>
+    <h2 class="reveal reveal-d1">The <span class="disc-r">D</span><span class="disc-y">I</span><span class="disc-g">S</span><span class="disc-b">C</span> Model at a Glance</h2>
+    <p class="section-desc reveal reveal-d2">Four behavioral types that explain how people think, act, and communicate. Each has unique strengths, blind spots, and communication keys.</p>
+    <div class="stats reveal reveal-d3" id="statsContainer">
+      <div class="stat"><div class="stat-value">4</div><div class="stat-label">Behavioral Types</div></div>
+      <div class="stat"><div class="stat-value">20+</div><div class="stat-label">Key Traits</div></div>
+      <div class="stat"><div class="stat-value">~80%</div><div class="stat-label">Population Blend</div></div>
+      <div class="stat"><div class="stat-value">1</div><div class="stat-label">Framework to Understand All</div></div>
+    </div>
+  </div>
+</section>
+
+<!--  DISC TYPE CARDS  -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">The Four Types</div>
+    <h2 class="reveal reveal-d1">Who Are You <span class="disc-r">S</span><span class="disc-y">u</span><span class="disc-g">r</span><span class="disc-b">r</span><span class="disc-r">o</span><span class="disc-y">u</span><span class="disc-g">n</span><span class="disc-b">d</span><span class="disc-r">e</span><span class="disc-y">d</span> By?</h2>
+    <p class="section-desc reveal reveal-d2">Click any card to explore the type in depth.</p>
+    <div class="disc-cards reveal reveal-d3">
+
+      <!-- RED -->
+      <div class="disc-card card-red" data-type="red">
+        <div class="card-head">
+          <div class="card-icon">D</div>
+          <div class="card-type">Red</div>
+          <div class="card-label">Dominant · Driver</div>
+        </div>
+        <div class="card-traits">
+          <span>Decisive</span><span>Direct</span><span>Demanding</span><span>Results-driven</span><span>Competitive</span>
+        </div>
+        <div class="card-expand">
+          <p><strong>Core Motivation:</strong> Results, control, efficiency. Reds want action and measurable progress. They are natural leaders who thrive on challenges.</p>
+          <p><strong>Under Stress:</strong> Becomes dictatorial, impatient, and may steamroll others. Needs autonomy and tangible wins.</p>
+          <p><strong>Blind Spot:</strong> Can be insensitive, overly aggressive, and dismissive of others' feelings.</p>
+          <span class="expand-toggle">Explore <span class="arrow"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span></span>
+        </div>
+      </div>
+
+      <!-- YELLOW -->
+      <div class="disc-card card-yellow" data-type="yellow">
+        <div class="card-head">
+          <div class="card-icon">I</div>
+          <div class="card-type">Yellow</div>
+          <div class="card-label">Influential · Inspirer</div>
+        </div>
+        <div class="card-traits">
+          <span>Enthusiastic</span><span>Outgoing</span><span>Creative</span><span>Persuasive</span><span>Optimistic</span>
+        </div>
+        <div class="card-expand">
+          <p><strong>Core Motivation:</strong> Recognition, social connection, fun. Yellows energize teams and generate big ideas through charisma.</p>
+          <p><strong>Under Stress:</strong> Becomes disorganized, overly emotional, and may exaggerate. Needs praise and social interaction.</p>
+          <p><strong>Blind Spot:</strong> Can be impulsive, poor with details, and struggles with follow-through.</p>
+          <span class="expand-toggle">Explore <span class="arrow"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span></span>
+        </div>
+      </div>
+
+      <!-- GREEN -->
+      <div class="disc-card card-green" data-type="green">
+        <div class="card-head">
+          <div class="card-icon">S</div>
+          <div class="card-type">Green</div>
+          <div class="card-label">Stable · Supporter</div>
+        </div>
+        <div class="card-traits">
+          <span>Patient</span><span>Loyal</span><span>Calm</span><span>Team-oriented</span><span>Good listener</span>
+        </div>
+        <div class="card-expand">
+          <p><strong>Core Motivation:</strong> Security, harmony, belonging. Greens are the glue that holds teams together. They value deep relationships.</p>
+          <p><strong>Under Stress:</strong> Becomes overly accommodating, passive, and avoids conflict at all costs. Needs stability and appreciation.</p>
+          <p><strong>Blind Spot:</strong> Resists change, may be too indirect, and struggles with assertiveness.</p>
+          <span class="expand-toggle">Explore <span class="arrow"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span></span>
+        </div>
+      </div>
+
+      <!-- BLUE -->
+      <div class="disc-card card-blue" data-type="blue">
+        <div class="card-head">
+          <div class="card-icon">C</div>
+          <div class="card-type">Blue</div>
+          <div class="card-label">Conscientious · Analyst</div>
+        </div>
+        <div class="card-traits">
+          <span>Analytical</span><span>Precise</span><span>Systematic</span><span>Detail-oriented</span><span>Logical</span>
+        </div>
+        <div class="card-expand">
+          <p><strong>Core Motivation:</strong> Accuracy, quality, order. Blues ensure things are done right. They are the quality controllers of any team.</p>
+          <p><strong>Under Stress:</strong> Becomes overly critical, withdraws, and may get paralyzed by analysis. Needs data and clear processes.</p>
+          <p><strong>Blind Spot:</strong> Can be overly perfectionist, cold, and slow to act due to overthinking.</p>
+          <span class="expand-toggle">Explore <span class="arrow"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!--  DISC COLOR WHEEL  -->
+<section>
+  <div class="container color-wheel-section">
+    <div class="section-label reveal">Color Dynamics</div>
+    <h2 class="reveal reveal-d1">The DISC <span class="disc-r">C</span><span class="disc-y">o</span><span class="disc-g">l</span><span class="disc-b">o</span><span class="disc-r">r</span> <span class="disc-y">W</span><span class="disc-g">h</span><span class="disc-b">e</span><span class="disc-r">e</span><span class="disc-y">l</span></h2>
+    <p class="section-desc reveal reveal-d2">Each color represents a distinct behavioral dimension. Hover or tap to explore how they relate.</p>
+    <div class="wheel-container reveal reveal-d3">
+      <svg class="wheel-svg" viewBox="0 0 300 300">
+        <defs>
+          <filter id="shadow1"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.25"/></filter>
+        </defs>
+        <g class="wheel-arc" data-color="red" onclick="focusColor('red')">
+          <path class="wheel-arc-path" d="M150,150 L150,30 A120,120 0 0,1 264.85,95.36 Z" fill="#E74C3C" filter="url(#shadow1)"/>
+          <text class="wheel-label" x="215" y="75">D</text>
+        </g>
+        <g class="wheel-arc" data-color="yellow" onclick="focusColor('yellow')">
+          <path class="wheel-arc-path" d="M150,150 L264.85,95.36 A120,120 0 0,1 264.85,204.64 Z" fill="#F1C40F" filter="url(#shadow1)"/>
+          <text class="wheel-label" style="fill:#333" x="240" y="150">I</text>
+        </g>
+        <g class="wheel-arc" data-color="green" onclick="focusColor('green')">
+          <path class="wheel-arc-path" d="M150,150 L264.85,204.64 A120,120 0 0,1 150,270 Z" fill="#2ECC71" filter="url(#shadow1)"/>
+          <text class="wheel-label" x="215" y="235">S</text>
+        </g>
+        <g class="wheel-arc" data-color="blue" onclick="focusColor('blue')">
+          <path class="wheel-arc-path" d="M150,150 L150,270 A120,120 0 0,1 35.15,204.64 L150,150 Z" fill="#3498DB" filter="url(#shadow1)"/>
+          <text class="wheel-label" x="75" y="235">C</text>
+        </g>
+      </svg>
+      <div class="wheel-center">
+        <strong>DISC</strong>
+        <small>Behavioral DNA</small>
+      </div>
+    </div>
+    <div class="wheel-labels reveal reveal-d4" id="wheelLabels">
+      <div class="wheel-label-item" onclick="focusColor('red')">
+        <span class="dot" style="background:var(--red)"></span>
+        <div class="info"><strong>Red · Dominant</strong><small>Direct, results-oriented</small></div>
+      </div>
+      <div class="wheel-label-item" onclick="focusColor('yellow')">
+        <span class="dot" style="background:var(--yellow)"></span>
+        <div class="info"><strong>Yellow · Influential</strong><small>Social, enthusiastic</small></div>
+      </div>
+      <div class="wheel-label-item" onclick="focusColor('green')">
+        <span class="dot" style="background:var(--green)"></span>
+        <div class="info"><strong>Green · Stable</strong><small>Supportive, reliable</small></div>
+      </div>
+      <div class="wheel-label-item" onclick="focusColor('blue')">
+        <span class="dot" style="background:var(--blue)"></span>
+        <div class="info"><strong>Blue · Conscientious</strong><small>Analytical, precise</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  COMPARISON  -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">Side by Side</div>
+    <h2 class="reveal reveal-d1">Behavior <span class="disc-r">C</span><span class="disc-y">o</span><span class="disc-g">m</span><span class="disc-b">p</span><span class="disc-r">a</span><span class="disc-y">r</span><span class="disc-g">i</span><span class="disc-b">s</span><span class="disc-r">o</span><span class="disc-y">n</span></h2>
+    <p class="section-desc reveal reveal-d2">Filter to compare any combination of types across key behavioral dimensions.</p>
+    <div class="compare-controls reveal reveal-d3">
+      <button class="compare-btn all active" data-filter="all" onclick="filterCompare('all')">All</button>
+      <button class="compare-btn" data-filter="red" onclick="filterCompare('red')" style="border-color:var(--red);color:var(--red)">Red</button>
+      <button class="compare-btn" data-filter="yellow" onclick="filterCompare('yellow')" style="border-color:#b8860b;color:#b8860b">Yellow</button>
+      <button class="compare-btn" data-filter="green" onclick="filterCompare('green')" style="border-color:#1a8a4e;color:#1a8a4e">Green</button>
+      <button class="compare-btn" data-filter="blue" onclick="filterCompare('blue')" style="border-color:#1a6da0;color:#1a6da0">Blue</button>
+    </div>
+    <div class="compare-grid reveal reveal-d4" id="compareGrid">
+      <div class="compare-row"><div class="trait-label">Pace</div><div class="trait-values"><div class="trait-val r-val">Fast, urgent</div><div class="trait-val y-val">Fast, energetic</div><div class="trait-val g-val">Slow, steady</div><div class="trait-val b-val">Slow, methodical</div></div></div>
+      <div class="compare-row"><div class="trait-label">Priority</div><div class="trait-values"><div class="trait-val r-val">Results</div><div class="trait-val y-val">Relationships</div><div class="trait-val g-val">Harmony</div><div class="trait-val b-val">Accuracy</div></div></div>
+      <div class="compare-row"><div class="trait-label">Communication</div><div class="trait-values"><div class="trait-val r-val">Direct, blunt</div><div class="trait-val y-val">Expressive, stories</div><div class="trait-val g-val">Diplomatic, warm</div><div class="trait-val b-val">Precise, factual</div></div></div>
+      <div class="compare-row"><div class="trait-label">Decision-making</div><div class="trait-values"><div class="trait-val r-val">Quick, instinctive</div><div class="trait-val y-val">Spontaneous, gut</div><div class="trait-val g-val">Consultative, slow</div><div class="trait-val b-val">Data-driven, careful</div></div></div>
+      <div class="compare-row"><div class="trait-label">Conflict style</div><div class="trait-values"><div class="trait-val r-val">Confronts directly</div><div class="trait-val y-val">Emotional, loud</div><div class="trait-val g-val">Avoids, accommodates</div><div class="trait-val b-val">Logical debate</div></div></div>
+      <div class="compare-row"><div class="trait-label">Fear</div><div class="trait-values"><div class="trait-val r-val">Losing control</div><div class="trait-val y-val">Social rejection</div><div class="trait-val g-val">Sudden change</div><div class="trait-val b-val">Being wrong</div></div></div>
+      <div class="compare-row"><div class="trait-label">Energy source</div><div class="trait-values"><div class="trait-val r-val">Winning, achieving</div><div class="trait-val y-val">People, recognition</div><div class="trait-val g-val">Stability, belonging</div><div class="trait-val b-val">Knowledge, order</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!--  COMMUNICATION TIPS  -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">Communication</div>
+    <h2 class="reveal reveal-d1">How to Talk to Each <span class="disc-r">T</span><span class="disc-y">y</span><span class="disc-g">p</span><span class="disc-b">e</span></h2>
+    <p class="section-desc reveal reveal-d2">Click a card to reveal detailed communication strategies for each behavioral type.</p>
+    <div class="comms-grid reveal reveal-d3">
+
+      <div class="comms-card card-red">
+        <div class="comms-header">
+          <div class="comms-icon">D</div>
+          <h3>Communicating with <span style="color:var(--red)">Reds</span></h3>
+        </div>
+        <ul class="comms-do">
+          <li>Be direct and concise — get to the point</li>
+          <li>Focus on results and efficiency</li>
+          <li>Give them options and let them decide</li>
+        </ul>
+        <ul class="comms-dont">
+          <li>Don't waste time with small talk</li>
+          <li>Don't be vague or ambiguous</li>
+        </ul>
+        <div class="comms-details">
+          <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.6">Reds respect competence and brevity. Lead with the bottom line, then provide supporting details if asked. Challenge them respectfully — they respect those who stand their ground. Frame your message in terms of goals, outcomes, and competitive advantage.</p>
+        </div>
+        <span class="comms-toggle">Details <span class="arrow"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span></span>
+      </div>
+
+      <div class="comms-card card-yellow">
+        <div class="comms-header">
+          <div class="comms-icon">I</div>
+          <h3>Communicating with <span style="color:#b8860b">Yellows</span></h3>
+        </div>
+        <ul class="comms-do">
+          <li>Be enthusiastic and energetic</li>
+          <li>Show appreciation and recognition</li>
+          <li>Use stories and visual examples</li>
+        </ul>
+        <ul class="comms-dont">
+          <li>Don't bore them with excessive details</li>
+          <li>Don't dismiss their ideas harshly</li>
+        </ul>
+        <div class="comms-details">
+          <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.6">Yellows thrive on enthusiasm and social connection. Start with the big picture vision, share testimonials or stories, and give them public recognition. They need to feel inspired. Follow up in writing to ensure details aren't lost in the excitement.</p>
+        </div>
+        <span class="comms-toggle">Details <span class="arrow"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span></span>
+      </div>
+
+      <div class="comms-card card-green">
+        <div class="comms-header">
+          <div class="comms-icon">S</div>
+          <h3>Communicating with <span style="color:#1a8a4e">Greens</span></h3>
+        </div>
+        <ul class="comms-do">
+          <li>Show genuine care and listen actively</li>
+          <li>Provide stability and clear expectations</li>
+          <li>Give them time to process</li>
+        </ul>
+        <ul class="comms-dont">
+          <li>Don't push for quick decisions</li>
+          <li>Don't be aggressive or confrontational</li>
+        </ul>
+        <div class="comms-details">
+          <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.6">Greens value trust and relationships above all. Take time to build rapport before getting to business. Ask about their well-being, listen patiently, and explain how changes will affect the team. Reassure them about job security and stability.</p>
+        </div>
+        <span class="comms-toggle">Details <span class="arrow"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span></span>
+      </div>
+
+      <div class="comms-card card-blue">
+        <div class="comms-header">
+          <div class="comms-icon">C</div>
+          <h3>Communicating with <span style="color:#1a6da0">Blues</span></h3>
+        </div>
+        <ul class="comms-do">
+          <li>Present data, facts, and evidence</li>
+          <li>Be precise, logical, and well-organized</li>
+          <li>Give them time to analyze thoroughly</li>
+        </ul>
+        <ul class="comms-dont">
+          <li>Don't exaggerate or make emotional appeals</li>
+          <li>Don't rush their decision-making process</li>
+        </ul>
+        <div class="comms-details">
+          <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.6">Blues are driven by logic and accuracy. Prepare thoroughly before meeting — bring data, citations, and well-structured arguments. Anticipate their questions and address potential flaws proactively. Respect their need for quality and precision.</p>
+        </div>
+        <span class="comms-toggle">Details <span class="arrow"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span></span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!--  STRENGTHS & WEAKNESSES  -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">Growth</div>
+    <h2 class="reveal reveal-d1"><span class="disc-g">Strengths</span> &amp; <span class="disc-r">Weaknesses</span></h2>
+    <p class="section-desc reveal reveal-d2">Every type brings brilliance and blind spots. Understanding both is the key to growth.</p>
+    <div class="sw-section reveal reveal-d3">
+      <div class="sw-col">
+        <h3><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2A2.5 2.5 0 0 1 17 4.5V8"/><path d="M17 15v2.5a2.5 2.5 0 0 1-2.5 2.5"/><path d="M2 8h12a2 2 0 0 1 2 2v2"/><path d="M2 14h8"/><path d="M14 14h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2"/><path d="M8 20h2"/></svg> Strengths <span class="count">(12)</span></h3>
+        <div class="sw-item"><span class="sw-letter" style="background:var(--red)">D</span><span class="sw-text"><strong>Red:</strong> Decisiveness, leadership, drive, ability to get results quickly</span></div>
+        <div class="sw-item"><span class="sw-letter" style="background:var(--yellow)">I</span><span class="sw-text"><strong>Yellow:</strong> Charisma, optimism, creativity, ability to inspire and motivate</span></div>
+        <div class="sw-item"><span class="sw-letter" style="background:var(--green)">S</span><span class="sw-text"><strong>Green:</strong> Patience, reliability, empathy, team cohesion and loyalty</span></div>
+        <div class="sw-item"><span class="sw-letter" style="background:var(--blue)">C</span><span class="sw-text"><strong>Blue:</strong> Precision, analytical thinking, quality focus, systematic approach</span></div>
+      </div>
+      <div class="sw-col">
+        <h3><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>️ Weaknesses <span class="count">(12)</span></h3>
+        <div class="sw-item"><span class="sw-letter" style="background:var(--red)">D</span><span class="sw-text"><strong>Red:</strong> Impatience, insensitivity, dictatorial under stress, poor listener</span></div>
+        <div class="sw-item"><span class="sw-letter" style="background:var(--yellow)">I</span><span class="sw-text"><strong>Yellow:</strong> Disorganization, impulsiveness, poor follow-through, exaggeration</span></div>
+        <div class="sw-item"><span class="sw-letter" style="background:var(--green)">S</span><span class="sw-text"><strong>Green:</strong> Resistance to change, indirectness, avoids conflict, too passive</span></div>
+        <div class="sw-item"><span class="sw-letter" style="background:var(--blue)">C</span><span class="sw-text"><strong>Blue:</strong> Over-analysis, perfectionism, coldness, slow decision-making</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  QUOTES  -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">Insights</div>
+    <h2 class="reveal reveal-d1">Quotes from the <span class="disc-r">B</span><span class="disc-y">o</span><span class="disc-g">o</span><span class="disc-b">k</span></h2>
+    <p class="section-desc reveal reveal-d2">Timeless wisdom on understanding the people around you.</p>
+    <div class="quotes-grid reveal reveal-d3">
+      <div class="quote-card">
+        <div class="quote-mark">"</div>
+        <blockquote>People are not "idiots" — they're just different from you. And your way of functioning is not the only way.</blockquote>
+        <cite>— Thomas Erikson</cite>
+      </div>
+      <div class="quote-card">
+        <div class="quote-mark">"</div>
+        <blockquote>The ability to see the world through someone else's eyes is the greatest gift you can give yourself.</blockquote>
+        <cite>— Thomas Erikson</cite>
+      </div>
+      <div class="quote-card">
+        <div class="quote-mark">"</div>
+        <blockquote>A Red's motto: "My way is the fastest way." A Blue's motto: "My way is the right way."</blockquote>
+        <cite>— Thomas Erikson</cite>
+      </div>
+      <div class="quote-card">
+        <div class="quote-mark">"</div>
+        <blockquote>If you want to reach someone, you have to meet them where they are — not where you want them to be.</blockquote>
+        <cite>— Thomas Erikson</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  FOOTER  -->
+<footer>
+  <div class="footer-disc">
+    <span class="r">D</span>
+    <span class="y">I</span>
+    <span class="g">S</span>
+    <span class="b">C</span>
+  </div>
+  <p><strong>Surrounded by Idiots</strong> — Thomas Erikson</p>
+  <p style="margin-top:0.3rem">Interactive summary · Understand the 4 types of human behavior</p>
+  <p style="margin-top:1.5rem;font-size:0.7rem;opacity:0.6">Built with <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>️ for those who seek to understand</p>
+</footer>
+
+<script>
+//  PARTICLE BACKGROUND 
+(function(){
+  const c = document.getElementById('bgCanvas');
+  const ctx = c.getContext('2d');
+  let w, h, particles = [];
+
+  function resize() {
+    w = c.width = window.innerWidth;
+    h = c.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['#E74C3C','#F1C40F','#2ECC71','#3498DB'];
+  const COUNT = 50;
+
+  for (let i = 0; i < COUNT; i++) {
+    particles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 2 + Math.random() * 6,
+      dx: (Math.random() - 0.5) * 0.6,
+      dy: (Math.random() - 0.5) * 0.6,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: 0.1 + Math.random() * 0.3,
+      pulse: Math.random() * Math.PI * 2,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+      p.x += p.dx;
+      p.y += p.dy;
+      p.pulse += 0.008;
+      if (p.x < 0 || p.x > w) p.dx *= -1;
+      if (p.y < 0 || p.y > h) p.dy *= -1;
+      const alpha = p.alpha * (0.7 + 0.3 * Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+      // connection lines
+      particles.forEach(p2 => {
+        const dx = p.x - p2.x;
+        const dy = p.y - p2.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 150) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = p.color;
+          ctx.globalAlpha = alpha * 0.15 * (1 - dist/150);
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      });
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+//  THEME TOGGLE 
+(function(){
+  const btn = document.getElementById('themeToggle');
+  let dark = localStorage.getItem('disc-theme') === 'dark';
+  if (dark) document.body.classList.add('dark');
+  btn.innerHTML = dark ? '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>️' : '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+  btn.addEventListener('click', () => {
+    dark = !dark;
+    document.body.classList.toggle('dark', dark);
+    btn.innerHTML = dark ? '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>️' : '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    localStorage.setItem('disc-theme', dark ? 'dark' : 'light');
+  });
+})();
+
+//  SCROLL REVEAL 
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => observer.observe(el));
+})();
+
+//  DISC CARD EXPAND 
+document.querySelectorAll('.disc-card').forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('open');
+  });
+});
+
+//  COMMUNICATION CARD EXPAND 
+document.querySelectorAll('.comms-card').forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('open');
+  });
+});
+
+//  COMPARISON FILTER 
+function filterCompare(filter) {
+  const btns = document.querySelectorAll('.compare-btn');
+  btns.forEach(b => {
+    b.classList.remove('active', 'active-r', 'active-y', 'active-g', 'active-b');
+    if (b.dataset.filter === filter) {
+      b.classList.add('active');
+      if (filter !== 'all') b.classList.add('active-' + filter);
+    }
+    if (filter === 'all' && b.dataset.filter === 'all') {
+      b.classList.add('active');
+    }
+  });
+  const rows = document.querySelectorAll('.compare-row .trait-values');
+  rows.forEach(row => {
+    row.querySelectorAll('.trait-val').forEach(val => {
+      if (filter === 'all') { val.classList.remove('hide'); return; }
+      val.classList.toggle('hide', !val.classList.contains(filter + '-val'));
+    });
+  });
+}
+// start with all visible
+filterCompare('all');
+
+//  COLOR WHEEL FOCUS 
+function focusColor(color) {
+  const labels = document.querySelectorAll('.wheel-label-item');
+  const arcs = document.querySelectorAll('.wheel-arc');
+  const colors = { red: '#E74C3C', yellow: '#F1C40F', green: '#2ECC71', blue: '#3498DB' };
+  const names = { red: 'Dominant', yellow: 'Influential', green: 'Stable', blue: 'Conscientious' };
+
+  arcs.forEach(a => {
+    const path = a.querySelector('.wheel-arc-path');
+    const isTarget = a.dataset.color === color;
+    path.style.opacity = isTarget ? '1' : '0.3';
+    if (isTarget) {
+      path.style.transform = 'scale(1.05)';
+      path.style.transformOrigin = '150px 150px';
+      path.style.transition = 'all 0.3s';
+    } else {
+      path.style.transform = 'scale(1)';
+    }
+  });
+  labels.forEach(l => {
+    const isTarget = l.querySelector('.dot').style.backgroundColor === colors[color] ||
+                     l.textContent.toLowerCase().includes(color);
+    l.style.opacity = isTarget ? '1' : '0.4';
+  });
+
+  // scroll to wheel labels
+  document.getElementById('wheelLabels').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+
+</body>
+</html>

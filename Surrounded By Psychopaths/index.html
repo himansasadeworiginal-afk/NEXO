@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surrounded By Psychopaths — Thomas Erikson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;--crimson:#8B0000;--crimson-light:#b30000;--blood:#cc0000;--red-alert:#ff1a1a;--text:#e0e0e0;--text-muted:#888;--border:#2a2a2a;--glow:rgba(139,0,0,.3);--shadow:rgba(0,0,0,.6);--card-bg:#151515}
+.light{--bg:#f5f0eb;--surface:#ede8e3;--surface2:#e5ddd6;--surface3:#d9cfc6;--crimson:#a01020;--crimson-light:#c01030;--blood:#d01030;--red-alert:#cc0020;--text:#1a1a1a;--text-muted:#666;--border:#ccc;--glow:rgba(160,16,32,.15);--shadow:rgba(0,0,0,.1);--card-bg:#e8e2dc}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;transition:background .5s,color .5s}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0,var(--glow) 0%,transparent 70%);pointer-events:none;z-index:0;animation:ambientPulse 8s ease-in-out infinite}
+@keyframes ambientPulse{0%,100%{opacity:.3}50%{opacity:.8}}
+.container{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+/* scrollbar */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--crimson);border-radius:4px}
+/* theme toggle */
+.theme-toggle{position:fixed;top:20px;right:20px;z-index:100;background:var(--surface2);border:1px solid var(--border);color:var(--text);width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .3s;box-shadow:0 4px 20px var(--shadow)}
+.theme-toggle:hover{background:var(--crimson);color:#fff;border-color:var(--crimson);transform:scale(1.1)}
+/* hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;padding:80px 0;text-align:center}
+.hero-badge{display:inline-block;padding:8px 20px;border:1px solid var(--blood);color:var(--blood);font-size:.75rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;border-radius:4px;margin-bottom:24px;animation:fadeInUp .8s .2s both}
+.hero h1{font-size:clamp(2.5rem,8vw,5.5rem);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:16px;animation:fadeInUp .8s .4s both}
+.hero h1 .alert{color:var(--blood);position:relative;display:inline-flex;align-items:center;gap:8px}
+.hero h1 .alert .alert-icon{animation:alertPulse 2s ease-in-out infinite;display:inline-flex}
+@keyframes alertPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.hero .subtitle{font-size:clamp(1rem,2.5vw,1.35rem);color:var(--text-muted);max-width:650px;margin:0 auto 32px;font-weight:300;animation:fadeInUp .8s .6s both}
+.hero .subtitle strong{color:var(--blood);font-weight:500}
+.hero-meta{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;animation:fadeInUp .8s .8s both}
+.hero-meta span{font-size:.85rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}
+.hero-meta span i{color:var(--blood);margin-right:6px}
+.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;animation:fadeInUp .8s 1s both}
+.scroll-indicator .arrow{width:20px;height:20px;border-right:2px solid var(--blood);border-bottom:2px solid var(--blood);transform:rotate(45deg);animation:scrollBounce 2s ease-in-out infinite}
+@keyframes scrollBounce{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(4px,4px)}}
+/* section common */
+section{padding:100px 0;position:relative}
+.section-label{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--blood);margin-bottom:12px;border-left:3px solid var(--blood);padding-left:12px}
+.section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-1px;margin-bottom:16px;line-height:1.2}
+.section-desc{font-size:1.05rem;color:var(--text-muted);max-width:680px;margin-bottom:48px;font-weight:300}
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:all .7s cubic-bezier(.22,1,.36,1)}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(40px);transition:all .7s cubic-bezier(.22,1,.36,1)}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+/* stat cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px 24px;text-align:center;transition:all .4s;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--crimson);transform:scaleX(0);transform-origin:left;transition:transform .5s}
+.stat-card:hover::before{transform:scaleX(1)}
+.stat-card:hover{border-color:var(--crimson);transform:translateY(-4px);box-shadow:0 12px 40px var(--shadow)}
+.stat-number{font-size:clamp(2.2rem,4vw,3.2rem);font-weight:900;color:var(--blood);margin-bottom:8px;font-family:Inter,sans-serif}
+.stat-label{font-size:.85rem;color:var(--text-muted);font-weight:400;line-height:1.5}
+.stat-label strong{color:var(--text)}
+/* what is section */
+.what-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.what-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:28px 24px;transition:all .4s}
+.what-card:hover{border-color:var(--crimson);transform:translateY(-3px);box-shadow:0 8px 30px var(--shadow)}
+.what-card .icon{font-size:2rem;margin-bottom:12px}
+.what-card h3{font-size:1.05rem;font-weight:600;margin-bottom:8px}
+.what-card p{font-size:.9rem;color:var(--text-muted);line-height:1.6}
+/* dark triad */
+.triad-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.triad-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:36px 28px;text-align:center;transition:all .4s;cursor:pointer;position:relative;overflow:hidden}
+.triad-card::after{content:attr(data-hint);position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:.65rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;opacity:0;transition:opacity .4s}
+.triad-card:hover::after{opacity:1}
+.triad-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px var(--shadow)}
+.triad-card .triad-icon{font-size:3rem;margin-bottom:16px;display:block}
+.triad-card h3{font-size:1.2rem;font-weight:700;margin-bottom:8px}
+.triad-card .triad-sub{font-size:.8rem;color:var(--text-muted);margin-bottom:16px}
+.triad-card .triad-desc{font-size:.88rem;color:var(--text-muted);line-height:1.6;display:none;margin-top:12px;padding-top:16px;border-top:1px solid var(--border)}
+.triad-card.active .triad-desc{display:block}
+.triad-card.active{border-color:var(--blood);box-shadow:0 0 30px var(--glow)}
+.triad-card.psychopathy{border-top:3px solid var(--blood)}
+.triad-card.narcissism{border-top:3px solid #d4a017}
+.triad-card.machiavellianism{border-top:3px solid #555}
+/* DISC chart */
+.disc-section{background:var(--surface);border-radius:24px;padding:48px;margin-top:24px;border:1px solid var(--border)}
+.disc-intro{font-size:.95rem;color:var(--text-muted);margin-bottom:32px}
+.disc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.disc-card{background:var(--card-bg);border-radius:10px;padding:24px;border:1px solid var(--border);transition:all .4s;cursor:pointer}
+.disc-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px var(--shadow)}
+.disc-card .disc-letter{font-size:2rem;font-weight:900;margin-bottom:4px;letter-spacing:-1px}
+.disc-card.D .disc-letter{color:var(--blood)}
+.disc-card.I .disc-letter{color:#d4a017}
+.disc-card.S .disc-letter{color:#2e7d32}
+.disc-card.C .disc-letter{color:#1565c0}
+.disc-card .disc-name{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px}
+.disc-card .disc-risk{display:inline-block;padding:3px 10px;border-radius:4px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.disc-card .disc-risk.high{background:rgba(139,0,0,.25);color:var(--blood);border:1px solid rgba(139,0,0,.3)}
+.disc-card .disc-risk.medium{background:rgba(212,160,23,.2);color:#d4a017;border:1px solid rgba(212,160,23,.3)}
+.disc-card .disc-risk.low{background:rgba(46,125,50,.15);color:#2e7d32;border:1px solid rgba(46,125,50,.2)}
+.disc-card .disc-desc{font-size:.82rem;color:var(--text-muted);line-height:1.5}
+.disc-card .disc-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:.82rem;color:var(--text-muted);line-height:1.6}
+.disc-card.active .disc-detail{display:block}
+.disc-card.active{border-color:var(--crimson)}
+/* red flag detector */
+.flags-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.flag-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:0;transition:all .4s;cursor:pointer;overflow:hidden}
+.flag-card:hover{border-color:var(--crimson)}
+.flag-header{display:flex;align-items:center;gap:12px;padding:18px 20px;transition:background .3s}
+.flag-card.revealed .flag-header{background:rgba(139,0,0,.12)}
+.flag-icon{font-size:1.4rem;flex-shrink:0}
+.flag-title{font-size:.95rem;font-weight:600;flex:1}
+.flag-toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .4s}
+.flag-card.revealed .flag-toggle{transform:rotate(45deg);color:var(--blood)}
+.flag-content{padding:0 20px;max-height:0;overflow:hidden;transition:all .5s cubic-bezier(.22,1,.36,1)}
+.flag-card.revealed .flag-content{max-height:300px;padding:0 20px 20px}
+.flag-content p{font-size:.85rem;color:var(--text-muted);line-height:1.7}
+.flag-severity{display:inline-block;margin-top:10px;padding:4px 12px;border-radius:4px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.flag-severity.critical{background:rgba(139,0,0,.25);color:var(--blood);border:1px solid rgba(139,0,0,.3)}
+.flag-severity.high{background:rgba(212,160,23,.2);color:#d4a017;border:1px solid rgba(212,160,23,.3)}
+/* checklist */
+.checklist-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.check-item{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .3s;user-select:none}
+.check-item:hover{border-color:var(--crimson)}
+.check-item.checked{background:rgba(139,0,0,.08);border-color:var(--crimson)}
+.check-box{width:22px;height:22px;border:2px solid var(--text-muted);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .3s;margin-top:2px}
+.check-item.checked .check-box{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.check-text{font-size:.88rem;line-height:1.5;flex:1}
+.check-count{text-align:center;margin-top:20px;font-size:.85rem;color:var(--text-muted)}
+.check-count span{color:var(--blood);font-weight:700}
+/* protection guide */
+.protection-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.protection-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .4s}
+.protection-card:hover{border-color:var(--crimson)}
+.protection-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;cursor:pointer;transition:background .3s}
+.protection-card.open .protection-header{background:rgba(139,0,0,.08)}
+.protection-header h3{font-size:.95rem;font-weight:600;display:flex;align-items:center;gap:10px}
+.protection-header h3 .num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--crimson);color:#fff;font-size:.75rem;font-weight:700}
+.protection-toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .4s}
+.protection-card.open .protection-toggle{transform:rotate(180deg);color:var(--blood)}
+.protection-body{padding:0 22px;max-height:0;overflow:hidden;transition:all .5s cubic-bezier(.22,1,.36,1)}
+.protection-card.open .protection-body{max-height:400px;padding:0 22px 22px}
+.protection-body p{font-size:.85rem;color:var(--text-muted);line-height:1.7}
+/* quotes */
+.quotes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.quote-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px 28px;position:relative;transition:all .4s}
+.quote-card:hover{border-color:var(--crimson);transform:translateY(-4px);box-shadow:0 12px 40px var(--shadow)}
+.quote-card::before{content:'"';position:absolute;top:8px;left:20px;font-size:4rem;line-height:1;color:var(--crimson);opacity:.2;font-family:Georgia,serif}
+.quote-card blockquote{font-size:.95rem;font-style:italic;line-height:1.7;margin-bottom:12px;position:relative;z-index:1}
+.quote-card cite{font-size:.8rem;color:var(--text-muted);font-style:normal;display:block}
+.quote-card cite::before{content:'— '}
+/* red alert banner */
+.alert-banner{background:linear-gradient(135deg,rgba(139,0,0,.15),rgba(139,0,0,.05));border:1px solid rgba(139,0,0,.3);border-radius:12px;padding:32px;text-align:center;margin-top:48px;position:relative;overflow:hidden}
+.alert-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,0,0,.05),transparent);animation:alertPulse 3s ease-in-out infinite}
+.alert-banner .alert-icon{font-size:2.5rem;margin-bottom:12px;display:block}
+.alert-banner h3{font-size:1.2rem;font-weight:700;margin-bottom:8px;color:var(--blood)}
+.alert-banner p{font-size:.9rem;color:var(--text-muted);max-width:500px;margin:0 auto}
+/* footer */
+footer{border-top:1px solid var(--border);padding:48px 0;text-align:center}
+footer p{font-size:.8rem;color:var(--text-muted)}
+footer p a{color:var(--blood);text-decoration:none}
+footer p a:hover{text-decoration:underline}
+/* responsive */
+@media(max-width:768px){
+  section{padding:60px 0}
+  .disc-section{padding:28px 20px}
+  .hero h1 .alert::after{position:relative;top:auto;right:auto;display:inline-block;margin-left:6px;font-size:1rem}
+  .hero-meta{gap:16px}
+  .triad-grid,.what-grid,.flags-grid,.checklist-grid,.protection-grid,.quotes-grid{grid-template-columns:1fr}
+}
+/* noise overlay */
+.noise{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
+/* blood drip divider */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--crimson),transparent);margin:0 auto;max-width:200px;position:relative}
+.divider::before,.divider::after{content:'•';position:absolute;top:50%;transform:translateY(-50%);color:var(--blood);font-size:10px}
+.divider::before{left:-10px}
+.divider::after{right:-10px}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> A Cautionary Guide</div>
+    <h1>Surrounded By<br><span class="alert">Psychopaths<span class="alert-icon"><svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span></span></h1>
+    <p class="subtitle">Understanding dark personality traits, identifying <strong>manipulative behavior</strong>, and protecting yourself from those who lack empathy — through the lens of the DISC model.</p>
+    <div class="hero-meta">
+      <span><i><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></i> Thomas Erikson</span>
+      <span><i><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></i> Dark Psychology</span>
+      <span><i><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></i> DISC Framework</span>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    scroll
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section>
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card reveal"><div class="stat-number">~1%</div><div class="stat-label">of the general population meets the criteria for <strong>psychopathy</strong></div></div>
+      <div class="stat-card reveal"><div class="stat-number">3</div><div class="stat-label">personality types form the <strong>Dark Triad</strong></div></div>
+      <div class="stat-card reveal"><div class="stat-number">15–25%</div><div class="stat-label">of corporate leaders show <strong>psychopathic traits</strong> above average</div></div>
+      <div class="stat-card reveal"><div class="stat-number">4</div><div class="stat-label">DISC types — only <strong>one</strong> correlates with dark traits</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- What is a Psychopath -->
+<section>
+  <div class="container">
+    <span class="section-label reveal">Understanding</span>
+    <h2 class="section-title reveal">What Is a Psychopath?</h2>
+    <p class="section-desc reveal">Psychopathy is not a diagnosis in the DSM-5 but a construct describing a personality profile defined by a distinct set of emotional and behavioral characteristics.</p>
+    <div class="what-grid">
+      <div class="what-card reveal"><div class="icon">🧊</div><h3>Lack of Empathy</h3><p>Complete inability to emotionally connect with or understand the feelings of others. They know the words but not the music.</p></div>
+      <div class="what-card reveal"><div class="icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><h3>Superficial Charm</h3><p>Highly skilled at mimicking emotions and social cues. Can appear charismatic, confident, and engaging — a mask worn to manipulate.</p></div>
+      <div class="what-card reveal"><div class="icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><h3>Grandiose Sense of Self-Worth</h3><p>An inflated, unrealistic view of their own importance and abilities. Rules don't apply to them; they are entitled to special treatment.</p></div>
+      <div class="what-card reveal"><div class="icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg></div><h3>Pathological Lying</h3><p>Lying is a reflexive tool, not a last resort. They lie to manipulate, to gain advantage, and sometimes for no obvious reason at all.</p></div>
+      <div class="what-card reveal"><div class="icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><h3>Manipulative & Conning</h3><p>Expert at identifying and exploiting vulnerabilities in others. They view relationships as games to be won and people as pawns.</p></div>
+      <div class="what-card reveal"><div class="icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><h3>Shallow Emotions</h3><p>Emotional experience is extremely shallow and short-lived. Anger and frustration may flare but deeper feelings like love, guilt, or grief are absent.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Dark Triad -->
+<section>
+  <div class="container">
+    <span class="section-label reveal">The Personality Triad</span>
+    <h2 class="section-title reveal">The Dark Triad</h2>
+    <p class="section-desc reveal">Three distinct but overlapping personality types that share a common core of callous manipulation and self-interest. Tap each to learn more.</p>
+    <div class="triad-grid">
+      <div class="triad-card psychopathy reveal" data-hint="click to expand" onclick="this.classList.toggle('active')">
+        <span class="triad-icon">🩸</span>
+        <h3>Psychopathy</h3>
+        <div class="triad-sub">The Cold</div>
+        <p class="triad-desc">Characterized by a lack of empathy, remorse, and emotional depth. Impulsive, antisocial behavior driven by reward-seeking. The most dangerous of the triad — these individuals can cause profound harm without a second thought. They are overrepresented in prisons but also walk among us in boardrooms and positions of power.</p>
+      </div>
+      <div class="triad-card narcissism reveal" data-hint="click to expand" onclick="this.classList.toggle('active')">
+        <span class="triad-icon">🪞</span>
+        <h3>Narcissism</h3>
+        <div class="triad-sub">The Grandiose</div>
+        <p class="triad-desc">An inflated sense of self-importance, a deep need for excessive attention and admiration, troubled relationships, and a lack of empathy for others. Beneath the grandiosity lies a fragile ego that cannot handle criticism. Narcissists exploit others to maintain their self-image and react with rage when challenged.</p>
+      </div>
+      <div class="triad-card machiavellianism reveal" data-hint="click to expand" onclick="this.classList.toggle('active')">
+        <span class="triad-icon">♟️</span>
+        <h3>Machiavellianism</h3>
+        <div class="triad-sub">The Calculating</div>
+        <p class="triad-desc">A personality style characterized by manipulation, cunning, and a strategic, calculating approach to social interactions. Unlike psychopaths, they can feel emotions but suppress them to achieve long-term goals. They view people as pieces on a chessboard and excel at strategic deception.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISC & Psychopathy -->
+<section>
+  <div class="container">
+    <span class="section-label reveal">The Link</span>
+    <h2 class="section-title reveal">DISC Types & Psychopathic Tendencies</h2>
+    <p class="section-desc reveal">Erikson maps psychopathic traits onto the DISC model, showing how each type can manifest dark tendencies when exaggerated to the extreme.</p>
+    <div class="disc-section reveal">
+      <p class="disc-intro">The DISC model classifies behavior into four types. When healthy, each has strengths — but in extreme form, certain types share disturbing overlap with psychopathic traits. <strong>Click any card</strong> to see the correlation.</p>
+      <div class="disc-grid">
+        <div class="disc-card D" onclick="this.classList.toggle('active')">
+          <div class="disc-letter">D</div>
+          <div class="disc-name">Dominance</div>
+          <span class="disc-risk high"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> High Risk</span>
+          <p class="disc-desc">Direct, forceful, results-oriented — but when extreme: ruthless, remorseless, exploitative.</p>
+          <div class="disc-detail"><strong>Dark Correlation:</strong> The D-type in overdrive mirrors psychopathy most closely. High dominance + low empathy = a person who treats others as obstacles. They win at all costs, feel no guilt, and see vulnerability as weakness. Many corporate psychopaths present as extreme D-types.</div>
+        </div>
+        <div class="disc-card I" onclick="this.classList.toggle('active')">
+          <div class="disc-letter">I</div>
+          <div class="disc-name">Influence</div>
+          <span class="disc-risk medium"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Medium Risk</span>
+          <p class="disc-desc">Charismatic, persuasive, social — but when extreme: manipulative, attention-seeking, dishonest.</p>
+          <div class="disc-detail"><strong>Dark Correlation:</strong> The I-type's natural charm can become a weapon. When combined with narcissistic traits, they manipulate through charisma and social pressure. They love admiration and will lie to maintain their image. Less violent than D-type extremes, but can be deeply destructive in relationships.</div>
+        </div>
+        <div class="disc-card S" onclick="this.classList.toggle('active')">
+          <div class="disc-letter">S</div>
+          <div class="disc-name">Steadiness</div>
+          <span class="disc-risk low"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Low Risk</span>
+          <p class="disc-desc">Patient, loyal, calm — the least likely to exhibit psychopathic traits.</p>
+          <div class="disc-detail"><strong>Dark Correlation:</strong> S-types are typically the least susceptible to psychopathic tendencies. Their high empathy and need for harmony are the opposite of the psychopathic profile. However, their trusting nature makes them the most vulnerable target for psychopaths and manipulators.</div>
+        </div>
+        <div class="disc-card C" onclick="this.classList.toggle('active')">
+          <div class="disc-letter">C</div>
+          <div class="disc-name">Conscientiousness</div>
+          <span class="disc-risk low"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Low Risk</span>
+          <p class="disc-desc">Analytical, precise, systematic — but when extreme: cold, detached, perfectionistic.</p>
+          <div class="disc-detail"><strong>Dark Correlation:</strong> C-types rarely exhibit classic psychopathy but their emotional detachment can mask cold, calculated behavior. When combined with Machiavellian traits, they can become dangerously meticulous manipulators — planning every move with clinical precision and zero emotional interference.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Red Flag Detector -->
+<section>
+  <div class="container">
+    <span class="section-label reveal">Warning System</span>
+    <h2 class="section-title reveal">Red Flag Detector</h2>
+    <p class="section-desc reveal">Click each warning sign to reveal the hidden truth behind psychopathic behavior patterns. Knowledge is your first line of defense.</p>
+    <div class="flags-grid">
+      <div class="flag-card reveal" onclick="this.classList.toggle('revealed')">
+        <div class="flag-header">
+          <span class="flag-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>️</span>
+          <span class="flag-title">Rapid Talking & Dominating Conversations</span>
+          <span class="flag-toggle">+</span>
+        </div>
+        <div class="flag-content">
+          <p>Psychopaths often talk excessively, control conversations, and steer topics toward themselves. They use verbal dominance as a tool of control — overwhelming you with words so you cannot think clearly or challenge them. Pauses are uncomfortable for them; silence gives you power.</p>
+          <span class="flag-severity critical">Critical</span>
+        </div>
+      </div>
+      <div class="flag-card reveal" onclick="this.classList.toggle('revealed')">
+        <div class="flag-header">
+          <span class="flag-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
+          <span class="flag-title">Inconsistent Persona</span>
+          <span class="flag-toggle">+</span>
+        </div>
+        <div class="flag-content">
+          <p>They present different versions of themselves to different people. Colleagues see one face, family another, and romantic partners yet another. There is no stable core self — only a collection of masks optimized for each situation. If someone seems "too good to be true," they might be wearing a costume.</p>
+          <span class="flag-severity critical">Critical</span>
+        </div>
+      </div>
+      <div class="flag-card reveal" onclick="this.classList.toggle('revealed')">
+        <div class="flag-header">
+          <span class="flag-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>️</span>
+          <span class="flag-title">Pity Traps & Victim Stories</span>
+          <span class="flag-toggle">+</span>
+        </div>
+        <div class="flag-content">
+          <p>A classic manipulation tactic: they share elaborate, tragic stories designed to provoke sympathy and lower your guard. The stories are often exaggerated or entirely fabricated. The goal is to make you feel sorry for them so you'll overlook red flags and comply with their requests out of misplaced compassion.</p>
+          <span class="flag-severity high">High</span>
+        </div>
+      </div>
+      <div class="flag-card reveal" onclick="this.classList.toggle('revealed')">
+        <div class="flag-header">
+          <span class="flag-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2h-5L7 8h10l-2.5-6z"/><path d="M7 8v11a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V8"/><line x1="10" y1="12" x2="10" y2="17"/><line x1="14" y1="12" x2="14" y2="17"/></svg></span>
+          <span class="flag-title">Triangulation & Division</span>
+          <span class="flag-toggle">+</span>
+        </div>
+        <div class="flag-content">
+          <p>They pit people against each other by spreading gossip, creating jealousy, and manufacturing conflicts. This serves two purposes: it distracts everyone from the psychopath's behavior, and it positions them as the "stable center" who can "help resolve" the chaos they created. Divide and conquer is their oldest strategy.</p>
+          <span class="flag-severity critical">Critical</span>
+        </div>
+      </div>
+      <div class="flag-card reveal" onclick="this.classList.toggle('revealed')">
+        <div class="flag-header">
+          <span class="flag-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+          <span class="flag-title">Pathological Lying About Trivial Things</span>
+          <span class="flag-toggle">+</span>
+        </div>
+        <div class="flag-content">
+          <p>They lie not just when it benefits them, but about inconsequential matters where the truth would serve just as well. This is a hallmark of the psychopathic mind — lying is not a tool but a default mode. If you catch someone in frequent small lies, the big lies are almost certainly there too.</p>
+          <span class="flag-severity critical">Critical</span>
+        </div>
+      </div>
+      <div class="flag-card reveal" onclick="this.classList.toggle('revealed')">
+        <div class="flag-header">
+          <span class="flag-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>️</span>
+          <span class="flag-title">Intense Eye Contact or Complete Avoidance</span>
+          <span class="flag-toggle">+</span>
+        </div>
+        <div class="flag-content">
+          <p>Both extremes are common among psychopaths. Some use an unflinching, predatory stare as an intimidation tactic — a silent power play. Others avoid eye contact entirely because they don't experience the emotional connection that makes eye contact natural. Trust your gut when someone's gaze feels "off."</p>
+          <span class="flag-severity high">High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Self-Assessment Checklist -->
+<section>
+  <div class="container">
+    <span class="section-label reveal">Self-Assessment</span>
+    <h2 class="section-title reveal">Psychopath Trait Checklist</h2>
+    <p class="section-desc reveal">Based on the PCL-R (Hare Psychopathy Checklist) and Erikson's adaptations. This is <strong>not a diagnostic tool</strong> — use it to recognize patterns in others, not yourself.</p>
+    <div class="checklist-grid" id="checklist">
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Glib and superficial charm — smooth talker who seems too polished</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Grandiose sense of self-worth — believes they are exceptional and above rules</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Need for stimulation / proneness to boredom — constantly seeks drama or risk</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Pathological lying — lies reflexively, even when unnecessary</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Conning / manipulative — exploits others for personal gain without guilt</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Lack of remorse or guilt — never truly apologizes or takes accountability</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Shallow affect — emotional expressions feel hollow or performative</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Callous / lack of empathy — indifferent to others' suffering</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Parasitic lifestyle — financially or emotionally dependent on others</div>
+      </div>
+      <div class="check-item reveal" data-checked="false" onclick="toggleCheck(this)">
+        <div class="check-box"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="check-text">Poor behavioral controls — explosive outbursts disproportionate to triggers</div>
+      </div>
+    </div>
+    <div class="check-count reveal" id="checkCount">Red flags detected: <span id="checkScore">0</span> / 10</div>
+    <div class="alert-banner reveal">
+      <span class="alert-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>️</span>
+      <h3>Trust Your Instincts</h3>
+      <p>If someone consistently triggers 5 or more of these markers, your concern is legitimate. Your gut evolved to detect threats — listen to it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Protection Strategies -->
+<section>
+  <div class="container">
+    <span class="section-label reveal">Defense</span>
+    <h2 class="section-title reveal">How to Protect Yourself</h2>
+    <p class="section-desc reveal">Practical strategies from Erikson's work to safeguard your mental health, boundaries, and autonomy against psychopathic manipulation.</p>
+    <div class="protection-grid">
+      <div class="protection-card reveal" onclick="this.classList.toggle('open')">
+        <div class="protection-header">
+          <h3><span class="num">1</span> Set Unbreakable Boundaries</h3>
+          <span class="protection-toggle"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span>
+        </div>
+        <div class="protection-body">
+          <p>Psychopaths test boundaries constantly. Define your non-negotiables clearly and enforce them without exception. The moment you make an exception, they will exploit the opening. Learn to say no without guilt or explanation — "No" is a complete sentence. Remember: a person who doesn't respect your boundaries doesn't deserve your presence.</p>
+        </div>
+      </div>
+      <div class="protection-card reveal" onclick="this.classList.toggle('open')">
+        <div class="protection-header">
+          <h3><span class="num">2</span> Document Everything</h3>
+          <span class="protection-toggle"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span>
+        </div>
+        <div class="protection-body">
+          <p>Psychopaths are skilled at rewriting reality to their advantage. Keep written records of conversations, agreements, and incidents. Date everything. In professional settings, follow up verbal discussions with confirming emails. This creates a paper trail that counters their gaslighting and protects you when they attempt to distort the truth.</p>
+        </div>
+      </div>
+      <div class="protection-card reveal" onclick="this.classList.toggle('open')">
+        <div class="protection-header">
+          <h3><span class="num">3</span> Starve the Drama Cycle</h3>
+          <span class="protection-toggle"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span>
+        </div>
+        <div class="protection-body">
+          <p>Psychopaths thrive on emotional reactions. When you stay calm, collected, and unresponsive to their provocations, you starve them of the fuel they need. Use the "grey rock" method: become as boring and uninteresting as a grey rock. Don't react to their jabs, don't engage in their drama, and don't explain yourself. Your emotional indifference is your armor.</p>
+        </div>
+      </div>
+      <div class="protection-card reveal" onclick="this.classList.toggle('open')">
+        <div class="protection-header">
+          <h3><span class="num">4</span> Verify, Don't Trust</h3>
+          <span class="protection-toggle"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span>
+        </div>
+        <div class="protection-body">
+          <p>A healthy default in business is trust — but with suspected psychopaths, trust must be earned and verified. Fact-check their claims, talk to others who know them, and look for inconsistencies. If someone's stories change each time they tell them, pay attention. Trust patterns of behavior, not words. Words are cheap; behavior reveals truth.</p>
+        </div>
+      </div>
+      <div class="protection-card reveal" onclick="this.classList.toggle('open')">
+        <div class="protection-header">
+          <h3><span class="num">5</span> Build a Support Network</h3>
+          <span class="protection-toggle"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span>
+        </div>
+        <div class="protection-body">
+          <p>Psychopaths often isolate their targets from friends, family, and colleagues. Maintain strong connections outside the toxic relationship. A support network provides reality checks when you start doubting yourself, emotional validation, and witnesses to behavior patterns you might be too close to see clearly. Isolation is their weapon — community is your shield.</p>
+        </div>
+      </div>
+      <div class="protection-card reveal" onclick="this.classList.toggle('open')">
+        <div class="protection-header">
+          <h3><span class="num">6</span> Know When to Walk Away</h3>
+          <span class="protection-toggle"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 19 5 5 19 5 12 19"/></svg></span>
+        </div>
+        <div class="protection-body">
+          <p>The most powerful protection strategy is leaving. Psychopaths rarely change — their brain wiring is fundamentally different. If you've identified the pattern, stop trying to fix, save, or reform them. The only winning move is to exit the game entirely. Your safety, sanity, and well-being are worth more than any relationship with someone who lacks empathy.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Quotes -->
+<section>
+  <div class="container">
+    <span class="section-label reveal">The Words</span>
+    <h2 class="section-title reveal">Key Quotes</h2>
+    <div class="quotes-grid">
+      <div class="quote-card reveal">
+        <blockquote>A psychopath doesn't see people. He sees objects that can be used, manipulated, and discarded.</blockquote>
+        <cite>Thomas Erikson</cite>
+      </div>
+      <div class="quote-card reveal">
+        <blockquote>The most dangerous people are those who have no emotional connection to anything. They can do the unthinkable without losing a second of sleep.</blockquote>
+        <cite>Thomas Erikson</cite>
+      </div>
+      <div class="quote-card reveal">
+        <blockquote>Charm is the psychopath's primary weapon. It disarms you, lowers your guard, and makes you want to trust them. That is precisely the moment you are most vulnerable.</blockquote>
+        <cite>Thomas Erikson</cite>
+      </div>
+      <div class="quote-card reveal">
+        <blockquote>The difference between a healthy D-type and a psychopath is empathy. One pushes hard but feels remorse. The other pushes hard and feels nothing.</blockquote>
+        <cite>Thomas Erikson</cite>
+      </div>
+      <div class="quote-card reveal">
+        <blockquote>You cannot cure what doesn't believe it is sick. The psychopath does not think there is anything wrong with them. In their world, the problem is always you.</blockquote>
+        <cite>Thomas Erikson</cite>
+      </div>
+      <div class="quote-card reveal">
+        <blockquote>Knowing what you're dealing with is half the battle. The other half is knowing what to do about it — and having the courage to do it.</blockquote>
+        <cite>Thomas Erikson</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="divider" style="margin-bottom:24px"></div>
+    <p><strong>Surrounded By Psychopaths</strong> — Thomas Erikson</p>
+    <p style="margin-top:6px">How to protect yourself from manipulative and abusive people</p>
+    <p style="margin-top:16px;font-size:.7rem;letter-spacing:1px">This summary is for educational purposes only. Not a substitute for professional mental health advice.</p>
+  </div>
+</footer>
+
+<script>
+// Theme toggle
+const toggle = document.getElementById('themeToggle');
+toggle.addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  toggle.innerHTML = document.body.classList.contains('light') ? '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>️' : '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+});
+if (localStorage.getItem('theme') === 'light') {
+  document.body.classList.add('light');
+  toggle.innerHTML = '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>️';
+}
+
+// Scroll reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+  revealObserver.observe(el);
+});
+
+// Checklist
+function toggleCheck(el) {
+  const isChecked = el.dataset.checked === 'true';
+  el.dataset.checked = isChecked ? 'false' : 'true';
+  el.classList.toggle('checked', !isChecked);
+  updateCheckScore();
+}
+
+function updateCheckScore() {
+  const checked = document.querySelectorAll('#checklist .check-item[data-checked="true"]').length;
+  document.getElementById('checkScore').textContent = checked;
+}
+
+// Flag cards stagger
+document.querySelectorAll('.flag-card').forEach((card, i) => {
+  card.style.transitionDelay = (i * 0.05) + 's';
+});
+
+// Protection cards stagger
+document.querySelectorAll('.protection-card').forEach((card, i) => {
+  card.style.transitionDelay = (i * 0.05) + 's';
+});
+
+// Detect reduced motion
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (prefersReducedMotion.matches) {
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    el.classList.add('visible');
+    el.style.transition = 'none';
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Concise Laws of Human Nature — Interactive Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#060e1a;
+  --surface:#0a1628;
+  --surface-hover:#0f1e34;
+  --surface-raised:#12223a;
+  --text:#dce4f0;
+  --text-dim:#8898b8;
+  --text-muted:#4a5a7a;
+  --navy:#0a1628;
+  --navy-light:#162a44;
+  --silver:#c0c8d8;
+  --slate:#5a6a8a;
+  --slate-light:#7a8aaa;
+  --gold:#c8a84a;
+  --gold-light:#e8c860;
+  --gold-dim:#7a5a1a;
+  --gold-glow:rgba(200,168,74,0.15);
+  --border:#162a44;
+  --transition:0.5s cubic-bezier(.22,1,.36,1);
+  --gradient-gold:linear-gradient(135deg, #c8a84a, #e8c860);
+  --gradient-silver:linear-gradient(135deg, #c0c8d8, #e0e8f0);
+  --gradient-accent:linear-gradient(135deg, #c8a84a, #e8c860, #c0c8d8);
+  --glow-gold:0 0 30px rgba(200,168,74,0.15), 0 0 60px rgba(200,168,74,0.05);
+  --font:'Inter',-apple-system,'Segoe UI',system-ui,sans-serif;
+}
+
+body.light{
+  --bg:#edf0f5;
+  --surface:#f5f7fa;
+  --surface-hover:#eef1f6;
+  --surface-raised:#ffffff;
+  --text:#1a2a3a;
+  --text-dim:#4a5a7a;
+  --text-muted:#8a9aaa;
+  --border:#d0d8e4;
+  --navy:#0a1628;
+  --gold-glow:rgba(200,168,74,0.08);
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+  cursor:default;
+  transition:background 0.6s, color 0.6s;
+}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px}
+
+/*  SCROLL PROGRESS  */
+#progress{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--gradient-gold);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+  z-index:999;width:0%;
+  transition:width 0.1s;
+}
+
+/*  THEME TOGGLE  */
+.theme-toggle{
+  position:fixed;top:1.2rem;right:1.2rem;z-index:100;
+  width:40px;height:40px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--gold);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition);
+  font-size:1.1rem;
+  backdrop-filter:blur(10px);
+}
+.theme-toggle:hover{
+  border-color:var(--gold);transform:scale(1.1);
+  box-shadow:var(--glow-gold);
+}
+
+/*  CANVAS BG  */
+#bgCanvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;
+}
+
+/*  ORBS  */
+#orbs{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;overflow:hidden;
+}
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(80px);
+  animation:orbFloat var(--duration) ease-in-out infinite;
+  animation-delay:var(--delay);
+  opacity:0;
+}
+@keyframes orbFloat{
+  0%{transform:translate(0,0) scale(0.8);opacity:0}
+  20%{opacity:var(--max-opacity)}
+  80%{opacity:var(--max-opacity)}
+  100%{transform:translate(var(--tx),var(--ty)) scale(1.2);opacity:0}
+}
+
+/*  NOISE  */
+#noise{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;
+  opacity:0.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px 256px;
+  animation:noiseShift 0.5s steps(4) infinite;
+}
+@keyframes noiseShift{
+  0%{background-position:0 0}
+  25%{background-position:4px 8px}
+  50%{background-position:8px 2px}
+  75%{background-position:2px 6px}
+}
+
+/*  MOUSE GLOW  */
+#mouseGlow{
+  position:fixed;width:500px;height:500px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(200,168,74,0.04) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+  transform:translate(-50%,-50%);
+  transition:left 0.25s ease-out, top 0.25s ease-out;
+}
+
+/*  AMBIENT BG  */
+body::before{
+  content:'';position:fixed;top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(200,168,74,0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(192,200,216,0.02) 0%, transparent 45%),
+    radial-gradient(ellipse at 20% 80%, rgba(90,106,138,0.02) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 20%, rgba(200,168,74,0.015) 0%, transparent 40%);
+  pointer-events:none;z-index:0;
+}
+
+/*  KEYFRAMES  */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes gradientShift{
+  0%,100%{background-position:0% center}
+  50%{background-position:200% center}
+}
+@keyframes shimmer{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(200%)}
+}
+@keyframes appear{
+  from{opacity:0;transform:translateY(20px) scale(0.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes breathe{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.04)}
+}
+@keyframes goldPulse{
+  0%,100%{box-shadow:0 0 20px rgba(200,168,74,0.1)}
+  50%{box-shadow:0 0 40px rgba(200,168,74,0.2)}
+}
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-8px) scaleY(0.95)}
+  to{opacity:1;transform:translateY(0) scaleY(1)}
+}
+@keyframes countUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.container{max-width:1200px;margin:0 auto;padding:2rem;position:relative;z-index:1;}
+
+/* 
+   HERO
+    */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:3rem 2rem;
+  position:relative;z-index:1;
+}
+.hero .accent-line{
+  width:50px;height:2px;
+  background:var(--gradient-gold);
+  background-size:200% auto;
+  margin-bottom:2rem;
+  animation:fadeUp 0.8s 0.1s both;
+}
+.hero .version-badge{
+  display:inline-block;
+  font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);
+  border:1px solid var(--gold-dim);
+  padding:3px 14px;margin-bottom:1.5rem;
+  animation:fadeUp 0.8s 0.2s both;
+  transition:background 0.3s, color 0.3s;
+}
+.hero .version-badge:hover{
+  background:var(--gold-dim);color:var(--text);
+}
+.hero h1{
+  font-size:clamp(2.5rem, 10vw, 5rem);
+  font-weight:800;letter-spacing:-2px;line-height:1.1;
+  animation:fadeUp 0.8s 0.3s both;
+  margin-bottom:0.3rem;
+}
+.hero h1 .gold{
+  background:var(--gradient-gold);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gradientShift 4s ease infinite;
+}
+.hero h1 .sub-law{
+  display:block;
+  font-size:clamp(0.9rem, 2vw, 1.3rem);
+  font-weight:300;letter-spacing:4px;text-transform:uppercase;
+  color:var(--text-dim);margin-top:0.5rem;
+  -webkit-text-fill-color:var(--text-dim);background:none;
+}
+.hero .subtitle{
+  font-size:clamp(0.85rem, 1.8vw, 1.1rem);
+  color:var(--text-dim);max-width:640px;
+  font-weight:400;letter-spacing:0.3px;
+  animation:fadeUp 0.8s 0.4s both;
+  line-height:1.7;
+}
+.hero .hero-stats{
+  display:flex;gap:3rem;flex-wrap:wrap;justify-content:center;
+  margin-top:2.5rem;
+  animation:fadeUp 0.8s 0.5s both;
+}
+.hero .hero-stats .hs-item{
+  text-align:center;
+}
+.hero .hero-stats .hs-num{
+  display:block;font-size:1.8rem;font-weight:700;
+  background:var(--gradient-gold);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;
+}
+.hero .hero-stats .hs-label{
+  font-size:0.7rem;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;
+  margin-top:0.2rem;
+}
+.hero .scroll-indicator{
+  position:absolute;bottom:2rem;
+  animation:fadeUp 0.8s 1s both;
+}
+.hero .scroll-indicator svg{
+  color:var(--gold-dim);
+  animation:bounce 2s 1.5s infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:1}
+  50%{transform:translateY(8px);opacity:0.5}
+}
+
+/* 
+   SECTION HEADER
+    */
+.section-header{
+  text-align:center;margin-bottom:2.5rem;
+  position:relative;z-index:1;
+}
+.section-header .reveal{
+  opacity:0;transform:translateY(20px);
+  transition:all 0.8s cubic-bezier(.22,1,.36,1);
+}
+.section-header .reveal.visible{opacity:1;transform:translateY(0);}
+.section-header h2{
+  font-size:0.9rem;font-weight:600;letter-spacing:3px;
+  text-transform:uppercase;color:var(--gold);
+}
+.section-header .line{
+  width:24px;height:1px;margin:0.6rem auto 0;
+  background:var(--gradient-gold);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+}
+.section-header p{
+  color:var(--text-dim);font-size:0.85rem;margin-top:0.5rem;
+}
+
+/* 
+   STATS BAR
+    */
+.stats-bar{
+  padding:3rem 0;
+  position:relative;z-index:1;
+}
+.stats-bar .stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:1rem;
+}
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:1.5rem;text-align:center;
+  transition:all var(--transition);
+  position:relative;overflow:hidden;
+}
+.stat-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--gold-dim);
+  background:var(--surface-hover);
+  box-shadow:var(--glow-gold);
+}
+.stat-card .stat-icon{
+  font-size:1.5rem;margin-bottom:0.3rem;
+}
+.stat-card .stat-num{
+  font-size:1.6rem;font-weight:700;
+  background:var(--gradient-gold);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;
+}
+.stat-card .stat-label{
+  font-size:0.65rem;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;
+  margin-top:0.3rem;
+}
+
+/* 
+   CATEGORY FILTER
+    */
+.filter-bar{
+  padding:1rem 0 0;
+  position:relative;z-index:1;
+}
+.filter-bar .filter-grid{
+  display:flex;gap:0.5rem;flex-wrap:wrap;
+  justify-content:center;margin-bottom:2rem;
+}
+.filter-pill{
+  padding:6px 18px;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text-dim);font-size:0.75rem;
+  cursor:pointer;transition:all var(--transition);
+  font-family:inherit;letter-spacing:0.5px;text-transform:uppercase;
+  position:relative;overflow:hidden;
+}
+.filter-pill::before{
+  content:'';position:absolute;inset:0;
+  background:var(--gradient-gold);opacity:0;
+  transition:opacity var(--transition);z-index:-1;
+}
+.filter-pill:hover{border-color:var(--gold-dim);color:var(--text);transform:translateY(-1px);}
+.filter-pill.active{color:var(--navy);font-weight:600;border-color:var(--gold);}
+.filter-pill.active::before{opacity:1;}
+
+/* 
+   LAWS GRID
+    */
+.laws-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:1rem;
+  margin-top:1rem;
+}
+.law-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  cursor:pointer;
+  transition:all var(--transition);
+  position:relative;overflow:hidden;
+  opacity:0;
+}
+.law-card.visible{
+  animation:appear 0.45s ease forwards;
+}
+.law-card:hover{
+  background:var(--surface-hover);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  border-color:var(--gold-dim);
+}
+.law-card .shimmer-line{
+  position:absolute;top:0;left:0;width:60%;height:100%;
+  background:linear-gradient(90deg, transparent, rgba(200,168,74,0.04), transparent);
+  transform:translateX(-100%);
+  pointer-events:none;
+}
+.law-card:hover .shimmer-line{animation:shimmer 1s ease;}
+.law-card.hidden{display:none;}
+.law-card .law-number{
+  position:absolute;top:0.8rem;right:0.8rem;
+  font-size:2rem;font-weight:800;
+  color:var(--text-muted);opacity:0.15;
+  line-height:1;
+  transition:all var(--transition);
+  user-select:none;
+}
+.law-card:hover .law-number{
+  opacity:0.3;
+  color:var(--gold);
+}
+
+.law-card .law-header{
+  padding:1.5rem 1.5rem 0.8rem;
+  display:flex;align-items:flex-start;gap:1rem;
+}
+.law-card .law-num-badge{
+  flex-shrink:0;
+  width:36px;height:36px;
+  border:1px solid var(--gold-dim);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.75rem;font-weight:700;
+  color:var(--gold);
+  transition:all var(--transition);
+}
+.law-card:hover .law-num-badge{
+  background:var(--gold-dim);
+  color:var(--navy);
+}
+.law-card .law-title-group{flex:1;min-width:0;}
+.law-card .law-title{
+  font-size:1rem;font-weight:600;line-height:1.3;
+}
+.law-card .law-subtitle{
+  font-size:0.75rem;color:var(--text-dim);
+  font-style:italic;margin-top:0.1rem;
+}
+.law-card .law-body{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.6s cubic-bezier(.22,1,.36,1), padding 0.4s ease;
+  padding:0 1.5rem;
+}
+.law-card.expanded .law-body{
+  max-height:600px;
+  padding:0 1.5rem 1.5rem;
+}
+.law-card .law-body p{
+  font-size:0.85rem;color:var(--text-dim);
+  line-height:1.7;margin-bottom:0.8rem;
+}
+.law-card .law-body .law-motto{
+  font-style:italic;color:var(--gold);
+  font-size:0.8rem;border-left:2px solid var(--gold-dim);
+  padding-left:0.8rem;margin-bottom:0.8rem;
+}
+.law-card .law-body .law-key{
+  font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;
+  color:var(--text-muted);margin-top:0.5rem;
+}
+.law-card .law-body .law-key strong{
+  color:var(--gold);
+  font-weight:600;
+}
+.law-card .law-expand-hint{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.8rem 1.5rem;
+  border-top:1px solid transparent;
+  transition:all var(--transition);
+}
+.law-card.expanded .law-expand-hint{
+  border-top-color:var(--border);
+}
+.law-card .law-expand-hint .law-cat{
+  font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text-muted);
+}
+.law-card .law-expand-hint .law-toggle{
+  font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;
+  color:var(--gold-dim);
+  display:flex;align-items:center;gap:0.4rem;
+  transition:all var(--transition);
+}
+.law-card:hover .law-expand-hint .law-toggle{color:var(--gold);}
+.law-card .law-expand-hint .law-toggle svg{
+  transition:transform 0.4s var(--transition);
+}
+.law-card.expanded .law-expand-hint .law-toggle svg{
+  transform:rotate(180deg);
+}
+
+.law-card .card-accent-bar{
+  position:absolute;top:0;left:0;right:0;
+  height:2px;
+  background:var(--gradient-gold);
+  background-size:200% auto;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.5s var(--transition);
+}
+.law-card:hover .card-accent-bar{transform:scaleX(1);}
+
+/* 
+   THEMES SECTION
+    */
+.themes-section{
+  padding:3rem 0;
+  position:relative;z-index:1;
+}
+.themes-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  gap:1rem;
+}
+.theme-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:1.5rem;
+  transition:all var(--transition);
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(20px);
+}
+.theme-card.visible{
+  animation:appear 0.45s ease forwards;
+}
+.theme-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--gold-dim);
+  background:var(--surface-hover);
+}
+.theme-card .theme-icon{
+  font-size:1.3rem;margin-bottom:0.5rem;
+}
+.theme-card h3{
+  font-size:0.85rem;font-weight:600;margin-bottom:0.3rem;
+  letter-spacing:0.3px;
+}
+.theme-card p{
+  font-size:0.78rem;color:var(--text-dim);line-height:1.6;
+}
+.theme-card .theme-glow{
+  position:absolute;top:-50%;right:-50%;
+  width:100%;height:100%;
+  border-radius:50%;
+  pointer-events:none;opacity:0;
+  transition:opacity 0.5s;
+  background:radial-gradient(circle, rgba(200,168,74,0.06), transparent);
+}
+.theme-card:hover .theme-glow{opacity:1;}
+
+/* 
+   QUOTES SECTION
+    */
+.quotes-section{
+  padding:3rem 0;
+  position:relative;z-index:1;
+}
+.quotes-carousel{
+  max-width:700px;margin:0 auto;
+  position:relative;
+}
+.quote-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:2rem 2rem 1.5rem;
+  text-align:center;
+  transition:all var(--transition);
+  position:relative;
+  opacity:0;transform:translateY(20px);
+}
+.quote-card.visible{
+  animation:appear 0.45s ease forwards;
+}
+.quote-card:hover{
+  border-color:var(--gold-dim);
+}
+.quote-card .quote-mark{
+  font-size:3rem;line-height:0.8;
+  background:var(--gradient-gold);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  opacity:0.4;margin-bottom:0.5rem;
+}
+.quote-card blockquote{
+  font-size:1rem;font-weight:400;line-height:1.7;
+  color:var(--text);font-style:italic;
+  margin-bottom:0.8rem;
+}
+.quote-card .quote-attribution{
+  font-size:0.7rem;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;
+}
+.quote-card .quote-attribution::before{content:'— ';}
+
+/* 
+   SELF-REFLECTION TOOL
+    */
+.reflection-section{
+  padding:3rem 0;
+  position:relative;z-index:1;
+}
+.reflection-tool{
+  max-width:680px;margin:0 auto;
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:2rem;
+  transition:all var(--transition);
+  position:relative;
+}
+.reflection-tool:hover{
+  border-color:var(--gold-dim);
+}
+.reflection-tool h3{
+  font-size:0.9rem;font-weight:600;text-align:center;
+  margin-bottom:0.3rem;letter-spacing:1px;text-transform:uppercase;
+}
+.reflection-tool .reflection-desc{
+  text-align:center;font-size:0.8rem;
+  color:var(--text-dim);margin-bottom:1.5rem;
+}
+.reflection-tool .reflection-controls{
+  display:flex;gap:0.5rem;margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.reflection-tool .reflection-controls select,
+.reflection-tool .reflection-controls input{
+  flex:1;min-width:180px;
+  padding:8px 12px;
+  background:var(--surface-raised);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-family:var(--font);
+  font-size:0.85rem;
+  outline:none;transition:all var(--transition);
+}
+.reflection-tool .reflection-controls select:focus,
+.reflection-tool .reflection-controls input:focus{
+  border-color:var(--gold-dim);
+  box-shadow:0 0 0 3px rgba(200,168,74,0.06);
+}
+.reflection-tool .reflection-controls select option{
+  background:var(--surface);
+  color:var(--text);
+}
+.reflection-tool button{
+  padding:8px 20px;
+  background:var(--gradient-gold);
+  border:none;color:var(--navy);font-weight:600;
+  font-size:0.8rem;cursor:pointer;
+  font-family:var(--font);
+  transition:all var(--transition);
+  letter-spacing:0.5px;
+  flex-shrink:0;
+}
+.reflection-tool button:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--glow-gold);
+}
+.reflection-tool .reflection-output{
+  margin-top:1rem;
+  padding:1rem;
+  background:var(--surface-raised);
+  border:1px solid var(--border);
+  min-height:60px;
+  font-size:0.85rem;
+  color:var(--text-dim);
+  line-height:1.7;
+  display:none;
+}
+.reflection-tool .reflection-output.show{display:block;}
+.reflection-tool .reflection-output .ref-q{
+  font-weight:600;color:var(--gold);margin-bottom:0.3rem;
+}
+.reflection-tool .reflection-output .ref-prompt{
+  font-style:italic;color:var(--text);
+}
+
+/* 
+   DIVIDER
+    */
+.section-divider{
+  text-align:center;padding:2rem 0;
+  position:relative;z-index:1;
+}
+.section-divider .divider-line{
+  width:1px;height:40px;
+  margin:0 auto;
+  background:var(--gradient-gold);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+}
+
+/* 
+   FOOTER
+    */
+footer{
+  border-top:1px solid var(--border);
+  margin-top:3rem;padding:3rem 2rem;
+  position:relative;z-index:1;
+}
+footer .footer-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+}
+footer .footer-logo{
+  font-size:0.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  background:var(--gradient-gold);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gradientShift 4s ease infinite;
+}
+footer .footer-info{
+  color:var(--text-muted);font-size:0.7rem;letter-spacing:0.5px;
+}
+footer .footer-info span{margin:0 0.5rem;color:var(--border);}
+
+/* 
+   RESPONSIVE
+    */
+@media(max-width:700px){
+  .container{padding:1.5rem 1rem;}
+  .laws-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:clamp(2rem, 12vw, 3rem);}
+  .hero{padding:2rem 1.5rem;min-height:85vh;}
+  .hero .hero-stats{gap:1.5rem;}
+  .filter-bar .filter-grid{flex-direction:column;align-items:stretch;}
+  .filter-pill{text-align:center;}
+  footer .footer-inner{flex-direction:column;text-align:center;}
+  .stat-card{padding:1rem;}
+  .stats-bar .stats-grid{grid-template-columns:1fr 1fr;}
+  .reflection-tool .reflection-controls{flex-direction:column;}
+  .reflection-tool .reflection-controls select,
+  .reflection-tool .reflection-controls input{min-width:auto;width:100%;}
+  #mouseGlow{display:none}
+  .theme-toggle{top:0.8rem;right:0.8rem;width:36px;height:36px;font-size:0.95rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">&#9790;</button>
+<canvas id="bgCanvas"></canvas>
+<div id="orbs"></div>
+<div id="noise"></div>
+<div id="mouseGlow"></div>
+
+<!--  HERO  -->
+<section class="hero">
+  <div class="accent-line"></div>
+  <div class="version-badge">Robert Greene &bull; 2018</div>
+  <h1>
+    <span class="gold">The Concise Laws</span>
+    <span class="sub-law">of Human Nature</span>
+  </h1>
+  <p class="subtitle">A distilled guide to the 18 fundamental laws that govern human behavior&mdash;mastering irrationality, navigating social dynamics, and understanding the hidden forces driving everyone around you.</p>
+  <div class="hero-stats">
+    <div class="hs-item"><span class="hs-num" data-target="18">0</span><div class="hs-label">Laws</div></div>
+    <div class="hs-item"><span class="hs-num" data-target="3">0</span><div class="hs-label">Categories</div></div>
+    <div class="hs-item"><span class="hs-num" data-target="9">0</span><div class="hs-label">Key Themes</div></div>
+    <div class="hs-item"><span class="hs-num" data-target="300">0</span><div class="hs-label">Pages Distilled</div></div>
+  </div>
+  <div class="scroll-indicator">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+</section>
+
+<!--  STATS  -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="section-header">
+      <div class="reveal"><h2>Overview</h2><div class="line"></div></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">&#9819;</div><div class="stat-num">18</div><div class="stat-label">Timeless Laws</div></div>
+      <div class="stat-card"><div class="stat-icon">&#9881;</div><div class="stat-num">3</div><div class="stat-label">Core Categories</div></div>
+      <div class="stat-card"><div class="stat-icon">&#9733;</div><div class="stat-num">300+</div><div class="stat-label">Pages of Insight</div></div>
+      <div class="stat-card"><div class="stat-icon">&#9998;</div><div class="stat-num">18</div><div class="stat-label">Reflection Prompts</div></div>
+      <div class="stat-card"><div class="stat-icon">&#9776;</div><div class="stat-num">9</div><div class="stat-label">Thematic Pillars</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><div class="divider-line"></div></div>
+
+<!--  FILTER BAR  -->
+<div class="filter-bar">
+  <div class="container">
+    <div class="section-header">
+      <div class="reveal"><h2>The 18 Laws</h2><div class="line"></div><p>Click any law to expand and explore its full meaning</p></div>
+    </div>
+    <div class="filter-grid">
+      <button class="filter-pill active" data-filter="all">All Laws</button>
+      <button class="filter-pill" data-filter="self-mastery">Self-Mastery</button>
+      <button class="filter-pill" data-filter="social-dynamics">Social Dynamics</button>
+      <button class="filter-pill" data-filter="psychology">Psychology &amp; Mindset</button>
+    </div>
+    <div class="laws-grid" id="lawsGrid"></div>
+  </div>
+</div>
+
+<div class="section-divider"><div class="divider-line"></div></div>
+
+<!--  THEMES  -->
+<div class="themes-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="reveal"><h2>Key Themes</h2><div class="line"></div><p>The foundational pillars that run through Greene's work</p></div>
+    </div>
+    <div class="themes-grid">
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#9889;</div>
+        <h3>Irrationality</h3>
+        <p>Humans are fundamentally emotional creatures who rationalize after the fact. Mastery begins by recognizing your own emotional triggers and learning to pause before reacting.</p>
+      </div>
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#9733;</div>
+        <h3>Narcissism</h3>
+        <p>Everyone operates with a degree of narcissism. The key is transforming self-absorption into genuine empathy and understanding of others' perspectives.</p>
+      </div>
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#127917;</div>
+        <h3>Role-Playing</h3>
+        <p>Social life is theater. People wear masks and perform roles. Learning to see through these performances reveals true intentions and character.</p>
+      </div>
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#9876;</div>
+        <h3>The Law of Aggression</h3>
+        <p>Aggression is a natural human drive. Rather than suppressing it, channel it into productive ambition. Recognize passive aggression in others before it harms you.</p>
+      </div>
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#128214;</div>
+        <h3>Compulsive Behavior</h3>
+        <p>Character is revealed through patterns, not isolated actions. Watch how people behave under pressure&mdash;their repetitive habits expose their true nature.</p>
+      </div>
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#128065;</div>
+        <h3>Envy &amp; Covetousness</h3>
+        <p>Envy is the most toxic emotion. People rarely admit it, but it drives much of human behavior. Learn to detect it and avoid provoking it in others.</p>
+      </div>
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#128101;</div>
+        <h3>Conformity &amp; Group Dynamics</h3>
+        <p>Individuals lose themselves in groups. The pull to conform is immense. Awareness of this force is the first step to maintaining independent thought.</p>
+      </div>
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#128200;</div>
+        <h3>Generational Myopia</h3>
+        <p>Each generation believes it is unique and enlightened, yet it repeats the patterns of those before. Seeing the collective cycle frees you from its grip.</p>
+      </div>
+      <div class="theme-card">
+        <div class="theme-glow"></div>
+        <div class="theme-icon">&#9762;</div>
+        <h3>Death &amp; Grandiosity</h3>
+        <p>Awareness of mortality can either paralyze or liberate. Meditating on death reveals what truly matters and deflates the grandiose ego.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><div class="divider-line"></div></div>
+
+<!--  QUOTES  -->
+<div class="quotes-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="reveal"><h2>Essential Quotes</h2><div class="line"></div></div>
+    </div>
+    <div class="quotes-carousel">
+      <div class="quote-card">
+        <div class="quote-mark">&ldquo;</div>
+        <blockquote>The greatest enemy of rational thought is not a lack of intelligence, but the emotional currents that run beneath our conscious awareness.</blockquote>
+        <div class="quote-attribution">Robert Greene, The Concise Laws of Human Nature</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-mark">&ldquo;</div>
+        <blockquote>We imagine ourselves as the heroes of our own story, but we are often the unknowing pawns of forces we refuse to see.</blockquote>
+        <div class="quote-attribution">Robert Greene</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-mark">&ldquo;</div>
+        <blockquote>To understand human nature is to understand that people are not rational. They are emotional creatures who rationalize after the fact.</blockquote>
+        <div class="quote-attribution">Robert Greene</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><div class="divider-line"></div></div>
+
+<!--  SELF-REFLECTION TOOL  -->
+<div class="reflection-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="reveal"><h2>Self-Reflection Tool</h2><div class="line"></div><p>Choose a law and explore a guided reflection prompt to deepen your understanding</p></div>
+    </div>
+    <div class="reflection-tool">
+      <h3>Guided Reflection</h3>
+      <p class="reflection-desc">Select a law and optionally enter a personal context to generate a targeted reflection question.</p>
+      <div class="reflection-controls">
+        <select id="reflectionSelect">
+          <option value="">Choose a law...</option>
+        </select>
+        <input type="text" id="reflectionContext" placeholder="Your context (e.g., a situation at work)..." maxlength="100">
+        <button id="reflectBtn">Reflect</button>
+      </div>
+      <div class="reflection-output" id="reflectionOutput"></div>
+    </div>
+  </div>
+</div>
+
+<!--  FOOTER  -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">The Concise Laws of Human Nature</div>
+    <div class="footer-info">
+      Interactive Summary <span>|</span> Based on Robert Greene's work <span>|</span> 18 Laws of Human Nature
+    </div>
+  </div>
+</footer>
+
+<script>
+//  CANVAS PARTICLES 
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let mouse = {x: -1000, y: -1000};
+
+  function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const colors = ['#c8a84a', '#e8c860', '#c0c8d8', '#7a8aaa', '#5a6a8a'];
+
+  class Particle {
+    constructor(){this.reset();}
+    reset(){
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.2;
+      this.vy = (Math.random() - 0.5) * 0.2;
+      this.r = Math.random() * 1.5 + 0.5;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.alpha = Math.random() * 0.15 + 0.05;
+    }
+    update(){
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    draw(){
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = this.alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+  function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = particles[i].color;
+          ctx.globalAlpha = 0.04 * (1 - d/120);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+    particles.forEach(p => {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 150) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = 0.06 * (1 - d/150);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    });
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  document.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+})();
+
+//  FLOATING ORBS 
+(function(){
+  const c = document.getElementById('orbs');
+  const orbColors = [
+    'rgba(200,168,74,0.10)',
+    'rgba(192,200,216,0.06)',
+    'rgba(90,106,138,0.06)',
+    'rgba(200,168,74,0.08)'
+  ];
+  for (let i = 0; i < 5; i++) {
+    const o = document.createElement('div');
+    o.className = 'orb';
+    const size = 150 + Math.random() * 250;
+    o.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      background:${orbColors[i % orbColors.length]};
+      --duration:${20 + Math.random() * 30}s;
+      --delay:${Math.random() * 10}s;
+      --max-opacity:0.35;
+      --tx:${(Math.random()-0.5)*400}px;
+      --ty:${(Math.random()-0.5)*400}px;
+    `;
+    c.appendChild(o);
+  }
+})();
+
+//  MOUSE GLOW 
+const mouseGlow = document.getElementById('mouseGlow');
+document.addEventListener('mousemove', e => {
+  mouseGlow.style.left = e.clientX + 'px';
+  mouseGlow.style.top = e.clientY + 'px';
+});
+
+//  SCROLL PROGRESS 
+window.addEventListener('scroll', () => {
+  const s = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('progress').style.width = s + '%';
+});
+
+//  COUNTER ANIMATION 
+(function(){
+  const counters = document.querySelectorAll('.hs-num');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.target);
+        let current = 0;
+        const step = Math.max(1, Math.floor(target / 40));
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= target) { current = target; clearInterval(interval); }
+          el.textContent = current + (target > 100 ? '+' : '');
+        }, 25);
+        observer.unobserve(el);
+      }
+    });
+  }, {threshold: 0.5});
+  counters.forEach(c => observer.observe(c));
+})();
+
+//  SCROLL REVEAL 
+(function(){
+  const reveals = document.querySelectorAll('.reveal, .theme-card, .quote-card');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.15});
+  reveals.forEach(el => observer.observe(el));
+})();
+
+//  THEME TOGGLE 
+(function(){
+  const btn = document.getElementById('themeToggle');
+  let dark = true;
+  btn.addEventListener('click', () => {
+    dark = !dark;
+    document.body.classList.toggle('light', !dark);
+    btn.innerHTML = dark ? '&#9790;' : '&#9788;';
+  });
+})();
+
+//  LAWS DATA 
+const laws = [
+  {
+    id:1, title:'The Law of Irrationality', subtitle:'Master Your Emotional Self',
+    cat:'self-mastery',
+    desc:'You are not rational. You are an emotional creature who rationalizes. The first law of human nature is to recognize that your emotions drive your decisions more than your logic. Until you master this, you will remain a slave to unconscious impulses.',
+    motto:'Think twice before you act — your first instinct is often your emotions speaking.',
+    key:'Practice the 6-second rule: pause for six seconds before responding to any emotional trigger.'
+  },
+  {
+    id:2, title:'The Law of Narcissism', subtitle:'Transform Self-love into Empathy',
+    cat:'psychology',
+    desc:'Everyone suffers from some degree of narcissism. The key is to recognize it in yourself and others. Transform your self-absorption into genuine empathy by learning to see the world from another person\'s perspective without judgment.',
+    motto:'The most attractive quality is the ability to make others feel seen and understood.',
+    key:'Practice active listening — focus entirely on the other person without preparing your response.'
+  },
+  {
+    id:3, title:'The Law of Role-Playing', subtitle:'See Through People\'s Masks',
+    cat:'social-dynamics',
+    desc:'Social life is a theater. Everyone adopts a persona, a mask they wear for the world. To understand human nature, you must learn to see past these performances and recognize the unconscious roles people play.',
+    motto:'Pay more attention to what people do than what they say — actions reveal the true script.',
+    key:'Observe discrepancies between a person\'s words and their nonverbal behavior.'
+  },
+  {
+    id:4, title:'The Law of Compulsive Behavior', subtitle:'Determine the Strength of People\'s Character',
+    cat:'social-dynamics',
+    desc:'Character is not defined by isolated actions but by consistent patterns of behavior. Watch how people act under pressure, how they treat those beneath them, and how they handle small temptations. These patterns reveal their true nature.',
+    motto:'A single act of kindness means little; a pattern of behavior means everything.',
+    key:'Pay attention to how people react to boredom, frustration, and small annoyances.'
+  },
+  {
+    id:5, title:'The Law of Covetousness', subtitle:'Become an Elusive Object of Desire',
+    cat:'psychology',
+    desc:'People desire what they cannot have. The more accessible you are, the less you are valued. To command attention and respect, cultivate an air of mystery and scarcity. Make others work for your approval.',
+    motto:'What is rare and difficult to obtain is valued; what is abundant is taken for granted.',
+    key:'Withhold full disclosure — let people discover you gradually.'
+  },
+  {
+    id:6, title:'The Law of Shortsightedness', subtitle:'Elevate Your Perspective',
+    cat:'self-mastery',
+    desc:'Humans are wired to focus on the immediate and the visible. We sacrifice long-term gain for short-term pleasure. The rational mind can override this impulse if you train yourself to step back and see the bigger picture.',
+    motto:'The best decisions are made by those who can see beyond the present moment.',
+    key:'Before any major decision, ask: "What will the consequences be in 6 months? 5 years?"'
+  },
+  {
+    id:7, title:'The Law of Defensiveness', subtitle:'Soften People\'s Resistance',
+    cat:'psychology',
+    desc:'People are deeply invested in their self-opinion. Criticizing or attacking someone\'s self-image triggers immediate defensiveness. To influence others, first validate their sense of self — then gently guide them toward your perspective.',
+    motto:'Criticism is the fastest way to make someone dig in their heels.',
+    key:'Frame feedback as a shared exploration: "I wonder if we might consider..."'
+  },
+  {
+    id:8, title:'The Law of Self-Sabotage', subtitle:'Change Your Narrative',
+    cat:'self-mastery',
+    desc:'Your past does not determine your future — your interpretation of your past does. We all carry internal narratives that either empower or limit us. By rewriting your story, you can break free from patterns of self-sabotage.',
+    motto:'You are not the victim of your past; you are the author of your future.',
+    key:'Identify the core belief underlying a repeated self-sabotaging pattern.'
+  },
+  {
+    id:9, title:'The Law of Repression', subtitle:'Confront Your Dark Side',
+    cat:'self-mastery',
+    desc:'The traits you repress in yourself — your shadow — will control you from the unconscious. What you deny in yourself, you will project onto others. Integration of your dark side is essential for genuine self-mastery.',
+    motto:'What you resist in yourself, you will despise in others.',
+    key:'Notice what irritates you most about others — it often reflects what you deny in yourself.'
+  },
+  {
+    id:10, title:'The Law of Envy', subtitle:'Beware the Splintered Eye',
+    cat:'psychology',
+    desc:'Envy is the most dangerous and hidden emotion. People rarely admit to it, but it poisons relationships and drives irrational behavior. Learn to detect the subtle signs of envy and avoid displaying your success in ways that provoke it.',
+    motto:'The greatest insults come not from enemies, but from those who envy you.',
+    key:'Downplay your successes in the presence of those who may feel inferior.'
+  },
+  {
+    id:11, title:'The Law of Grandiosity', subtitle:'Know Your Limits',
+    cat:'psychology',
+    desc:'The grandiose person believes they are special, unique, and above the rules that apply to everyone else. This delusion inevitably leads to downfall. True power lies in knowing your limitations and maintaining a realistic self-assessment.',
+    motto:'The taller the tower of ego, the harder the fall.',
+    key:'Seek honest feedback from trusted sources who will tell you what you need to hear.'
+  },
+  {
+    id:12, title:'The Law of Gender Rigidity', subtitle:'Reconnect to the Masculine or Feminine Within',
+    cat:'psychology',
+    desc:'Each person contains both masculine and feminine qualities. Rigid adherence to gender roles limits your psychological range and effectiveness. The most adaptive individuals cultivate access to the full spectrum of human traits.',
+    motto:'Strength without empathy is brutality; empathy without strength is weakness.',
+    key:'Develop the qualities you have rejected as "not like me" — they are latent strengths.'
+  },
+  {
+    id:13, title:'The Law of Aimlessness', subtitle:'Advance with a Sense of Purpose',
+    cat:'psychology',
+    desc:'Without a clear sense of purpose, you drift through life at the mercy of circumstance and other people\'s agendas. A defined purpose focuses your energy, attracts opportunities, and gives you the resilience to weather setbacks.',
+    motto:'Those with a clear purpose shape the world; those without are shaped by it.',
+    key:'Articulate your purpose in one sentence — if you can\'t, you haven\'t found it yet.'
+  },
+  {
+    id:14, title:'The Law of Conformity', subtitle:'Resist the Group\'s Pull',
+    cat:'social-dynamics',
+    desc:'Humans are social animals with a deep need to belong. Groups exert an invisible pressure to conform that can override individual judgment and morality. Awareness of this force is the first and most critical step to maintaining your independence.',
+    motto:'The group is not always right — history proves the crowd is often dangerously wrong.',
+    key:'When everyone agrees, appoint someone to play devil\'s advocate.'
+  },
+  {
+    id:15, title:'The Law of Fickleness', subtitle:'Make Them Want to Follow You',
+    cat:'social-dynamics',
+    desc:'People are fickle — their loyalties shift based on their perceived self-interest. To create lasting influence, you must appeal to people\'s deeper needs: security, belonging, status, and meaning. Give them a compelling reason to stay.',
+    motto:'Loyalty is not given freely; it is earned through consistent value.',
+    key:'Focus on what you can give, not what you can take — generosity builds lasting bonds.'
+  },
+  {
+    id:16, title:'The Law of Aggression', subtitle:'Be the Master of Your Aggression',
+    cat:'psychology',
+    desc:'Aggression is a natural, primal drive that society teaches us to suppress. But suppressed aggression turns inward or emerges as passive-aggression. The goal is not to eliminate aggression but to channel it into productive assertiveness.',
+    motto:'Suppressed aggression doesn\'t disappear — it finds toxic outlets.',
+    key:'Use controlled confrontation as a tool for clarity, not as a weapon for destruction.'
+  },
+  {
+    id:17, title:'The Law of Generational Myopia', subtitle:'See the Collective',
+    cat:'social-dynamics',
+    desc:'Each generation believes it is unique, more enlightened, and free from the biases of the past. Yet the same cycles repeat — rebellion, materialism, disillusionment, and return to tradition. Seeing the pattern frees you from it.',
+    motto:'Those who cannot see the generational cycle are doomed to repeat its mistakes.',
+    key:'Study history not for facts, but for patterns — human nature changes little.'
+  },
+  {
+    id:18, title:'The Law of Death Denial', subtitle:'Meditate on Your Death',
+    cat:'self-mastery',
+    desc:'Modern society denies death, pushing it out of sight and mind. But avoiding death awareness makes you live superficially. Regular contemplation of mortality strips away trivial concerns and reveals what truly matters.',
+    motto:'Death is not the end of life but the intensifier of it.',
+    key:'Ask yourself daily: "If this were my last year, how would I spend it?"'
+  }
+];
+
+const catDisplay = {
+  'self-mastery': 'Self-Mastery',
+  'social-dynamics': 'Social Dynamics',
+  'psychology': 'Psychology & Mindset'
+};
+
+//  RENDER LAWS 
+const grid = document.getElementById('lawsGrid');
+const filterPills = document.querySelectorAll('.filter-pill');
+let activeFilter = 'all';
+
+function renderLaws(){
+  grid.innerHTML = '';
+  const filtered = activeFilter === 'all' ? laws : laws.filter(l => l.cat === activeFilter);
+
+  filtered.forEach((law, i) => {
+    const card = document.createElement('div');
+    card.className = 'law-card';
+    card.dataset.id = law.id;
+    card.innerHTML = `
+      <div class="card-accent-bar"></div>
+      <div class="shimmer-line"></div>
+      <div class="law-number">${String(law.id).padStart(2,'0')}</div>
+      <div class="law-header">
+        <div class="law-num-badge">${law.id}</div>
+        <div class="law-title-group">
+          <div class="law-title">${law.title}</div>
+          <div class="law-subtitle">${law.subtitle}</div>
+        </div>
+      </div>
+      <div class="law-body">
+        <div class="law-motto">${law.motto}</div>
+        <p>${law.desc}</p>
+        <div class="law-key"><strong>&#9656; Key Practice:</strong> ${law.key}</div>
+      </div>
+      <div class="law-expand-hint">
+        <span class="law-cat">${catDisplay[law.cat] || law.cat}</span>
+        <span class="law-toggle">
+          <span>Expand</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </span>
+      </div>
+    `;
+
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.law-body')) return;
+      card.classList.toggle('expanded');
+      const toggle = card.querySelector('.law-toggle span');
+      toggle.textContent = card.classList.contains('expanded') ? 'Collapse' : 'Expand';
+    });
+
+    grid.appendChild(card);
+  });
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.law-card').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 60);
+    });
+  });
+}
+
+renderLaws();
+
+filterPills.forEach(pill => {
+  pill.addEventListener('click', () => {
+    filterPills.forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeFilter = pill.dataset.filter;
+    renderLaws();
+  });
+});
+
+//  SELF-REFLECTION TOOL 
+(function(){
+  const select = document.getElementById('reflectionSelect');
+  const ctxInput = document.getElementById('reflectionContext');
+  const btn = document.getElementById('reflectBtn');
+  const output = document.getElementById('reflectionOutput');
+
+  const reflectionPrompts = {
+    self_mastery: [
+      'What emotional trigger most often leads you to act against your own best interest?',
+      'Where in your life are you prioritizing short-term comfort over long-term growth?',
+      'What story have you been telling yourself that may no longer be true?',
+      'What aspect of yourself do you judge most harshly in others?',
+      'If you had one year to live, what would you stop doing immediately?'
+    ],
+    social_dynamics: [
+      'Who in your life wears a mask that differs most from their true self?',
+      'In what situations do you find yourself conforming against your better judgment?',
+      'How do you react when someone criticizes you — do you become defensive?',
+      'What patterns do you notice in how people behave when they think no one is watching?',
+      'How can you make the people in your life feel more genuinely seen?'
+    ],
+    psychology: [
+      'Where does envy subtly influence your feelings toward others?',
+      'In what area of your life do you overestimate your abilities or importance?',
+      'How can you cultivate the qualities you have rejected as "not like me"?',
+      'What is your one-sentence life purpose — and is it truly yours or someone else\'s?',
+      'How do you channel your aggressive drives into productive assertiveness?'
+    ]
+  };
+
+  laws.forEach(l => {
+    const opt = document.createElement('option');
+    opt.value = l.id;
+    opt.textContent = `Law ${l.id}: ${l.title}`;
+    select.appendChild(opt);
+  });
+
+  btn.addEventListener('click', () => {
+    const lawId = parseInt(select.value);
+    const context = ctxInput.value.trim();
+    if (!lawId) { output.textContent = 'Please select a law.'; output.classList.add('show'); return; }
+
+    const law = laws.find(l => l.id === lawId);
+    const prompts = reflectionPrompts[law.cat.replace('-','_')] || reflectionPrompts.self_mastery;
+    const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+
+    output.innerHTML = '';
+    output.classList.add('show');
+
+    const q = document.createElement('div');
+    q.className = 'ref-q';
+    q.textContent = `Law ${law.id}: ${law.title}`;
+
+    const p = document.createElement('div');
+    p.className = 'ref-prompt';
+    p.textContent = prompt;
+
+    if (context) {
+      const c = document.createElement('div');
+      c.style.cssText = 'font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;';
+      c.innerHTML = 'Context: <em>' + context + '</em>';
+      output.append(q, p, c);
+    } else {
+      output.append(q, p);
+    }
+  });
+
+  select.addEventListener('change', () => { output.classList.remove('show'); });
+  ctxInput.addEventListener('input', () => { output.classList.remove('show'); });
+})();
+</script>
+</body>
+</html>

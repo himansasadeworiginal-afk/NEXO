@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mastery — The Lifelong Journey by Robert Greene</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f1eb;
+    --bg-alt: #ede7de;
+    --surface: #ffffff;
+    --surface-hover: #f3efe8;
+    --text: #1a1512;
+    --text-dim: #7a7068;
+    --indigo: #2d1b69;
+    --indigo-light: #5a3d9e;
+    --indigo-dim: #1a0f3e;
+    --gold: #c9a84c;
+    --gold-light: #e8cd7a;
+    --gold-dim: #a08030;
+    --cream: #f5f1eb;
+    --navy: #0f0d24;
+    --border: #e0d9d0;
+    --shadow: 0 8px 32px rgba(0,0,0,0.06);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: 0.45s cubic-bezier(.22,1,.36,1);
+  }
+
+  .dark {
+    --bg: #0e0b18;
+    --bg-alt: #161222;
+    --surface: #1c1730;
+    --surface-hover: #262044;
+    --text: #e8e2f0;
+    --text-dim: #8a7ea8;
+    --indigo: #7c5fbf;
+    --indigo-light: #a68ae0;
+    --indigo-dim: #5a3d9e;
+    --gold: #e8cd7a;
+    --gold-light: #f5e3a0;
+    --gold-dim: #c9a84c;
+    --cream: #1c1730;
+    --navy: #05040e;
+    --border: #2e254a;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    transition: background var(--transition), color var(--transition);
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--indigo); border-radius: 3px; }
+
+  .theme-toggle {
+    position: fixed; top: 20px; right: 20px; z-index: 1000;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); width: 46px; height: 46px; border-radius: 50%;
+    cursor: pointer; font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow); transition: all var(--transition);
+    backdrop-filter: blur(8px);
+  }
+  .theme-toggle:hover { transform: scale(1.1); border-color: var(--gold); }
+
+  /*  ANIMATED BG  */
+  #bgCanvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none; opacity: 0.25;
+  }
+
+  /*  HERO  */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 2rem; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(45,27,105,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(201,168,76,0.06) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+  .hero * { position: relative; z-index: 1; }
+
+  .hero-badge {
+    display: inline-block; padding: 7px 22px; border-radius: 50px;
+    border: 1px solid var(--gold); color: var(--gold);
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 12vw, 8rem); font-weight: 800;
+    letter-spacing: -2px; line-height: 1;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero h1 .hl { color: var(--gold); }
+  .hero h1 .sm {
+    font-size: 0.35em; display: block; font-weight: 400;
+    letter-spacing: 6px; color: var(--text-dim);
+    margin-top: 0.7rem; font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+  }
+  .hero .subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem); font-style: italic;
+    color: var(--text-dim); max-width: 550px;
+    margin-top: 1.2rem; line-height: 1.5;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero .author {
+    margin-top: 1rem; font-size: 0.85rem; color: var(--gold);
+    font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .hero .heritage {
+    margin-top: 2rem; display: flex; gap: 2rem; flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0; animation: fadeUp 0.8s 1s forwards;
+  }
+  .hero .heritage span {
+    font-size: 0.75rem; color: var(--text-dim);
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .hero .heritage span strong { color: var(--gold); font-weight: 700; }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 0.8s 1.2s forwards;
+  }
+  .scroll-hint span {
+    display: block; width: 22px; height: 36px;
+    border: 2px solid var(--gold-dim); border-radius: 11px; position: relative;
+  }
+  .scroll-hint span::after {
+    content: ''; width: 3px; height: 8px;
+    background: var(--gold); border-radius: 2px;
+    position: absolute; top: 6px; left: 50%;
+    transform: translateX(-50%); animation: bounce 2s infinite;
+  }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounce { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 10px); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /*  SECTION  */
+  section { position: relative; z-index: 1; padding: 6rem 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    display: inline-block; padding: 5px 16px; border-radius: 50px;
+    background: rgba(45,27,105,0.08); color: var(--indigo);
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 0.8rem;
+  }
+  .dark .section-label { background: rgba(124,95,191,0.15); }
+  section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 700; letter-spacing: -1px; margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  section h2 .hl { color: var(--gold); }
+  section h2 .hl-indigo { color: var(--indigo); }
+  .dark section h2 .hl-indigo { color: var(--indigo-light); }
+  .section-desc {
+    color: var(--text-dim); font-size: 1rem; max-width: 620px;
+    margin-bottom: 3rem; line-height: 1.6;
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-d1 { transition-delay: 0.1s; }
+  .reveal-d2 { transition-delay: 0.2s; }
+  .reveal-d3 { transition-delay: 0.3s; }
+  .reveal-d4 { transition-delay: 0.4s; }
+
+  /*  STATS  */
+  .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.2rem; margin: 2rem 0;
+  }
+  .stat {
+    text-align: center; padding: 1.8rem 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); transition: all var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .stat::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: linear-gradient(90deg, var(--indigo), var(--gold));
+    transform: scaleX(0); transition: transform 0.4s; transform-origin: left;
+  }
+  .stat:hover::before { transform: scaleX(1); }
+  .stat:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .stat-value { font-size: 2.4rem; font-weight: 800; background: linear-gradient(135deg, var(--indigo), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-label { font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /*  TIMELINE  */
+  .timeline {
+    position: relative; padding: 2rem 0;
+  }
+  .timeline::before {
+    content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--indigo), var(--gold), var(--indigo));
+    transform: translateX(-50%);
+  }
+  .tl-item {
+    display: flex; align-items: center; margin-bottom: 3rem;
+    position: relative;
+  }
+  .tl-item:nth-child(odd) { flex-direction: row; }
+  .tl-item:nth-child(even) { flex-direction: row-reverse; }
+  .tl-content {
+    width: 42%; padding: 2rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); cursor: pointer;
+    transition: all var(--transition); position: relative;
+  }
+  .tl-content:hover {
+    border-color: var(--gold); box-shadow: 0 8px 32px rgba(201,168,76,0.1);
+    transform: translateY(-3px);
+  }
+  .tl-content .tl-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 800; color: var(--gold);
+    line-height: 1; margin-bottom: 0.5rem;
+  }
+  .tl-content h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .tl-content p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
+  .tl-content .tl-expand {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s ease, margin 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+  }
+  .tl-content.open .tl-expand {
+    max-height: 300px; margin-top: 1rem; opacity: 1;
+  }
+  .tl-content .tl-toggle {
+    color: var(--gold); font-size: 0.75rem; margin-top: 0.6rem;
+    display: inline-block; transition: transform 0.3s; font-weight: 600;
+  }
+  .tl-content.open .tl-toggle { transform: rotate(180deg); }
+  .tl-dot {
+    position: absolute; left: 50%; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--gold);
+    border: 3px solid var(--bg); transform: translateX(-50%);
+    z-index: 2; box-shadow: 0 0 0 3px var(--indigo-dim);
+  }
+  .tl-spacer { width: 50%; }
+
+  @media (max-width: 768px) {
+    .timeline::before { left: 20px; }
+    .tl-item, .tl-item:nth-child(even) { flex-direction: row; }
+    .tl-content { width: calc(100% - 50px); margin-left: 50px; }
+    .tl-spacer { display: none; }
+    .tl-dot { left: 20px; }
+  }
+
+  /*  GRID  */
+  .grid { display: grid; gap: 1.2rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.8rem;
+    transition: all var(--transition); cursor: default;
+  }
+  .card:hover { border-color: var(--indigo); box-shadow: 0 8px 28px rgba(45,27,105,0.08); transform: translateY(-2px); }
+  .card .icon { font-size: 2rem; margin-bottom: 0.8rem; display: block; }
+  .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.55; }
+
+  /*  MASTERS GALLERY  */
+  .masters-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem; margin-top: 2rem;
+  }
+  .master-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.8rem 1.5rem;
+    text-align: center; cursor: pointer;
+    transition: all var(--transition); position: relative;
+    overflow: hidden;
+  }
+  .master-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(45,27,105,0.05), rgba(201,168,76,0.05));
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .master-card:hover::before { opacity: 1; }
+  .master-card:hover {
+    transform: translateY(-6px); border-color: var(--gold);
+    box-shadow: 0 12px 36px rgba(201,168,76,0.12);
+  }
+  .master-card .avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    margin: 0 auto 1rem; display: flex; align-items: center;
+    justify-content: center; font-size: 2.4rem;
+    background: linear-gradient(135deg, var(--indigo), var(--gold));
+    color: #fff; position: relative; z-index: 1;
+    transition: transform 0.4s;
+  }
+  .master-card:hover .avatar { transform: scale(1.08); }
+  .master-card h4 { font-size: 1rem; font-weight: 700; position: relative; z-index: 1; }
+  .master-card .era {
+    font-size: 0.75rem; color: var(--gold); font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-top: 0.2rem; position: relative; z-index: 1;
+  }
+  .master-card p {
+    font-size: 0.8rem; color: var(--text-dim); margin-top: 0.5rem;
+    line-height: 1.4; position: relative; z-index: 1;
+  }
+  .master-card .master-expand {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s ease, margin 0.5s ease, opacity 0.5s ease;
+    opacity: 0; position: relative; z-index: 1;
+  }
+  .master-card.open .master-expand {
+    max-height: 250px; margin-top: 0.8rem; opacity: 1;
+  }
+  .master-card .master-toggle {
+    color: var(--gold); font-size: 0.7rem; margin-top: 0.5rem;
+    display: inline-block; font-weight: 600; position: relative; z-index: 1;
+    transition: transform 0.3s;
+  }
+  .master-card.open .master-toggle { transform: rotate(180deg); }
+
+  /*  QUOTE  */
+  .quote-section {
+    text-align: center; padding: 5rem 2rem;
+    position: relative; z-index: 1;
+  }
+  .quote-section::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(45,27,105,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .quote-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem; max-width: 1100px; margin: 0 auto;
+  }
+  .quote-card {
+    padding: 2.5rem 2rem; text-align: left;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); position: relative;
+    transition: all var(--transition);
+  }
+  .quote-card:hover { border-color: var(--gold); }
+  .quote-card .q-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem; line-height: 1; color: var(--gold);
+    opacity: 0.3; margin-bottom: -1.5rem;
+  }
+  .quote-card blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-style: italic; line-height: 1.6;
+    color: var(--text);
+  }
+  .quote-card cite {
+    display: block; margin-top: 1rem;
+    color: var(--gold); font-style: normal;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px;
+  }
+
+  /*  SELF ASSESSMENT  */
+  .assessment {
+    background: var(--surface); border: 2px solid var(--gold-dim);
+    border-radius: var(--radius); padding: 2.5rem;
+    margin: 3rem 0; position: relative;
+    overflow: hidden;
+  }
+  .assessment::before {
+    content: ''; position: absolute; top: -50%; right: -30%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(201,168,76,0.06), transparent 70%);
+    border-radius: 50%;
+  }
+  .assessment h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; margin-bottom: 0.5rem;
+  }
+  .assessment .assess-desc {
+    color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem;
+  }
+  .assess-question { margin-bottom: 1.5rem; }
+  .assess-question label {
+    display: block; font-weight: 600; font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  .assess-question label small {
+    font-weight: 400; color: var(--text-dim);
+  }
+  .assess-options {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .assess-options button {
+    padding: 0.5rem 1rem; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text);
+    border-radius: 8px; cursor: pointer; font-size: 0.8rem;
+    font-weight: 500; transition: all 0.3s;
+  }
+  .assess-options button:hover { border-color: var(--indigo); }
+  .assess-options button.selected {
+    background: var(--indigo); color: #fff; border-color: var(--indigo);
+  }
+  .dark .assess-options button.selected {
+    background: var(--indigo-light);
+  }
+  .assess-result {
+    margin-top: 1.5rem; padding: 1.5rem;
+    border-radius: var(--radius-sm);
+    background: rgba(201,168,76,0.08);
+    border: 1px solid var(--gold-dim);
+    display: none;
+  }
+  .assess-result.show { display: block; }
+  .assess-result h4 { font-size: 1.1rem; color: var(--gold); margin-bottom: 0.5rem; }
+  .assess-result p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; }
+  .assess-result .stage-badge {
+    display: inline-block; padding: 3px 12px; border-radius: 50px;
+    background: var(--gold); color: var(--navy); font-size: 0.7rem;
+    font-weight: 700; margin-top: 0.5rem;
+  }
+  .assess-reset {
+    margin-top: 1rem; padding: 0.5rem 1.2rem;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-dim); border-radius: 8px; cursor: pointer;
+    font-size: 0.8rem; transition: all 0.3s;
+  }
+  .assess-reset:hover { border-color: var(--gold); color: var(--gold); }
+
+  /*  CONCEPT CARDS  */
+  .concept-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem;
+    transition: all var(--transition);
+  }
+  .concept-card:hover { border-color: var(--indigo); transform: translateY(-3px); box-shadow: 0 8px 28px rgba(45,27,105,0.08); }
+  .concept-card .c-icon { font-size: 1.8rem; margin-bottom: 0.8rem; display: block; }
+  .concept-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .concept-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.55; }
+  .concept-card ul { list-style: none; margin-top: 0.8rem; }
+  .concept-card ul li {
+    font-size: 0.82rem; color: var(--text-dim);
+    padding: 0.3rem 0 0.3rem 1.2rem; position: relative;
+  }
+  .concept-card ul li::before {
+    content: ''; position: absolute; left: 0; top: 0.65rem;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold);
+  }
+
+  /*  PRINCIPLE FLOW  */
+  .principle-flow {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; margin: 2rem 0;
+  }
+  .principle {
+    flex: 1; min-width: 160px; max-width: 220px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 1.5rem 1.2rem;
+    text-align: center; transition: all var(--transition);
+  }
+  .principle:hover { border-color: var(--gold); transform: translateY(-4px); }
+  .principle .p-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--indigo), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; line-height: 1;
+  }
+  .principle h4 { font-size: 0.9rem; font-weight: 700; margin: 0.4rem 0; }
+  .principle p { font-size: 0.78rem; color: var(--text-dim); }
+
+  /*  PART DIVIDER  */
+  .part-divider { text-align: center; padding: 3rem 2rem; position: relative; z-index: 1; }
+  .part-divider .line { width: 1px; height: 50px; background: linear-gradient(to bottom, transparent, var(--gold), transparent); margin: 0 auto 1.5rem; }
+  .part-divider h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem, 3vw, 2rem); color: var(--gold); }
+  .part-divider p { color: var(--text-dim); margin-top: 0.3rem; font-size: 0.9rem; }
+
+  /*  FOOTER  */
+  footer {
+    text-align: center; padding: 4rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim); position: relative; z-index: 1;
+  }
+  footer .quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-style: italic;
+    color: var(--text); max-width: 650px;
+    margin: 0 auto 1rem; line-height: 1.5;
+  }
+  footer .quote-author { color: var(--gold); font-size: 0.9rem; }
+
+  /*  RESPONSIVE  */
+  @media (max-width: 768px) {
+    section { padding: 4rem 1.2rem; }
+    .hero h1 { letter-spacing: -1px; }
+    .principle-flow { flex-direction: column; align-items: center; }
+    .principle { max-width: 100%; }
+    .assessment { padding: 1.5rem; }
+    .quote-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .hero h1 .sm { letter-spacing: 3px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">&#x263E;</button>
+<canvas id="bgCanvas"></canvas>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge">&#x2696; The Lifelong Path</div>
+  <h1>
+    Mastery
+    <span class="sm">Robert Greene</span>
+  </h1>
+  <p class="subtitle">"The ultimate power in life is to be completely self-reliant, completely yourself."</p>
+  <p class="author">&#x2014; The lifelong journey of discovering your calling</p>
+  <div class="heritage">
+    <span>4 <strong>Stages</strong></span>
+    <span>6 <strong>Historical Masters</strong></span>
+    <span>7 <strong>Key Principles</strong></span>
+  </div>
+  <div class="scroll-hint"><span></span></div>
+</header>
+
+<!-- STATS -->
+<section>
+  <div class="container">
+    <div class="stats">
+      <div class="stat reveal"><div class="stat-value">4</div><div class="stat-label">Stages of Mastery</div></div>
+      <div class="stat reveal reveal-d1"><div class="stat-value">12</div><div class="stat-label">Historical Masters</div></div>
+      <div class="stat reveal reveal-d2"><div class="stat-value">7</div><div class="stat-label">Key Principles</div></div>
+      <div class="stat reveal reveal-d3"><div class="stat-value">3</div><div class="stat-label">Phases of Apprenticeship</div></div>
+      <div class="stat reveal reveal-d4"><div class="stat-value">&#x221E;</div><div class="stat-label">Lifelong Growth</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES OVERVIEW -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Foundation</span>
+      <h2>The Seven Key <span class="hl">Principles</span></h2>
+      <p class="section-desc">Mastery is not a gift, but a process. These principles form the bedrock of Robert Greene's philosophy.</p>
+    </div>
+    <div class="principle-flow">
+      <div class="principle reveal reveal-d1">
+        <div class="p-num">1</div>
+        <h4>Discover Your Calling</h4>
+        <p>Connect with your innate inclinations &#x2014; your Life's Task.</p>
+      </div>
+      <div class="principle reveal reveal-d2">
+        <div class="p-num">2</div>
+        <h4>Apprenticeship</h4>
+        <p>Deep observation, skill acquisition, and patient practice.</p>
+      </div>
+      <div class="principle reveal reveal-d3">
+        <div class="p-num">3</div>
+        <h4>Social Intelligence</h4>
+        <p>Navigate politics, read people, build strategic relationships.</p>
+      </div>
+      <div class="principle reveal reveal-d1">
+        <div class="p-num">4</div>
+        <h4>Creative-Active</h4>
+        <p>Break rules, experiment, and let your originality emerge.</p>
+      </div>
+      <div class="principle reveal reveal-d2">
+        <div class="p-num">5</div>
+        <h4>Mastery</h4>
+        <p>Combine intuition with skill to reach effortless excellence.</p>
+      </div>
+      <div class="principle reveal reveal-d3">
+        <div class="p-num">6</div>
+        <h4>Elaboration</h4>
+        <p>Refine, teach, and extend your knowledge to new domains.</p>
+      </div>
+      <div class="principle reveal reveal-d1">
+        <div class="p-num">7</div>
+        <h4>Facing Your Shadow</h4>
+        <p>Confront ego, resistance, and the dark side of power.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE FOUR STAGES: TIMELINE -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">The Journey</span>
+      <h2>The Four Stages of <span class="hl">Mastery</span></h2>
+      <p class="section-desc">Every master walks the same arc. Click each stage to reveal its deeper wisdom.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-content" onclick="toggleTimeline(this)">
+          <div class="tl-num">I</div>
+          <h3>Apprenticeship</h3>
+          <p>The foundational phase of deep learning, observation, and patient skill-building.</p>
+          <div class="tl-expand">
+            <p style="margin-bottom:0.5rem;">The apprenticeship is divided into three sub-phases:</p>
+            <p style="margin-bottom:0.3rem;"><strong style="color:var(--gold);">Deep Observation</strong> &#x2014; Watch and absorb without judgment. Understand the rules of your field before attempting to change them.</p>
+            <p style="margin-bottom:0.3rem;"><strong style="color:var(--gold);">Skills Acquisition</strong> &#x2014; Practice deliberately. Embrace repetition. Quantity leads to quality. The master has failed more times than the beginner has tried.</p>
+            <p><strong style="color:var(--gold);">Experimentation</strong> &#x2014; Apply what you've learned in novel contexts. Develop your own variants. Move from follower to creator.</p>
+          </div>
+          <span class="tl-toggle">&#x25BC; Expand</span>
+        </div>
+        <div class="tl-dot"></div>
+        <div class="tl-spacer"></div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-content" onclick="toggleTimeline(this)">
+          <div class="tl-num">II</div>
+          <h3>Creative-Active</h3>
+          <p>Transform accumulated knowledge into original work. Break established patterns.</p>
+          <div class="tl-expand">
+            <p style="margin-bottom:0.3rem;">After years of apprenticeship, you have internalized the rules. Now you begin to break them.</p>
+            <p style="margin-bottom:0.3rem;">This phase is marked by <strong style="color:var(--gold);">creative restlessness</strong> &#x2014; the need to express your unique voice. You combine ideas from different domains, challenge orthodoxies, and produce work that reflects your authentic self.</p>
+            <p>Embrace the <strong style="color:var(--gold);">open-ended</strong> nature of this phase. Not every experiment will succeed, but each failure is data. The goal is full creative expression.</p>
+          </div>
+          <span class="tl-toggle">&#x25BC; Expand</span>
+        </div>
+        <div class="tl-dot"></div>
+        <div class="tl-spacer"></div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-content" onclick="toggleTimeline(this)">
+          <div class="tl-num">III</div>
+          <h3>Mastery</h3>
+          <p>Intuition blends with technical skill. You see the whole picture effortlessly.</p>
+          <div class="tl-expand">
+            <p style="margin-bottom:0.3rem;"><strong style="color:var(--gold);">The Master's Mind</strong> &#x2014; At this stage, you have practiced so deeply that conscious thought becomes unnecessary. Your intuition is now a form of high-speed reasoning.</p>
+            <p style="margin-bottom:0.3rem;">You can <strong style="color:var(--gold);">sense patterns</strong> invisible to others. Problems that baffle experts seem simple. Your work has a fluid, almost effortless quality.</p>
+            <p>This is not the end. Mastery is a <strong style="color:var(--gold);">dynamic state</strong> &#x2014; you continue to learn, but now from a position of strength rather than weakness.</p>
+          </div>
+          <span class="tl-toggle">&#x25BC; Expand</span>
+        </div>
+        <div class="tl-dot"></div>
+        <div class="tl-spacer"></div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-content" onclick="toggleTimeline(this)">
+          <div class="tl-num">IV</div>
+          <h3>Elaboration</h3>
+          <p>Refine your craft, teach others, and extend mastery into new territories.</p>
+          <div class="tl-expand">
+            <p style="margin-bottom:0.3rem;"><strong style="color:var(--gold);">The Final Stage</strong> &#x2014; Having reached mastery, you now face a choice: coast on your reputation, or continue to evolve.</p>
+            <p style="margin-bottom:0.3rem;">Elaboration is about <strong style="color:var(--gold);">deepening</strong> &#x2014; finding the nuances and subtleties you missed before. You teach what you know, which forces you to organize your thoughts. In teaching, you discover gaps and new questions.</p>
+            <p>You also extend your mastery to <strong style="color:var(--gold);">adjacent fields</strong>, making connections that younger practitioners cannot see. Your work becomes interdisciplinary synthesis.</p>
+          </div>
+          <span class="tl-toggle">&#x25BC; Expand</span>
+        </div>
+        <div class="tl-dot"></div>
+        <div class="tl-spacer"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY CONCEPTS -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Deep Knowledge</span>
+      <h2>Core Concepts of <span class="hl">Mastery</span></h2>
+      <p class="section-desc">The essential ideas that underpin Robert Greene's philosophy of becoming a master.</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="concept-card reveal">
+        <span class="c-icon">&#x1F9E0;</span>
+        <h3>Social Intelligence</h3>
+        <p>The ability to read people, navigate hierarchies, and build strategic relationships is as important as technical skill.</p>
+        <ul>
+          <li>See through people's masks</li>
+          <li>Create win-win dynamics</li>
+          <li>Avoid unnecessary conflict</li>
+          <li>Build a reputation that precedes you</li>
+        </ul>
+      </div>
+      <div class="concept-card reveal reveal-d1">
+        <span class="c-icon">&#x1F50D;</span>
+        <h3>Life's Task</h3>
+        <p>Your unique calling &#x2014; the intersection of innate talent and deep fascination. Discovering it is the first step to mastery.</p>
+        <ul>
+          <li>Return to your childhood passions</li>
+          <li>Identify what others find tedious</li>
+          <li>Follow the energy of curiosity</li>
+          <li>Resist societal pressure to conform</li>
+        </ul>
+      </div>
+      <div class="concept-card reveal reveal-d2">
+        <span class="c-icon">&#x2696;</span>
+        <h3>The Apprenticeship Phase</h3>
+        <p>Learning through deep observation, skill acquisition, and experimentation. The most critical phase of the journey.</p>
+        <ul>
+          <li>Move toward challenges</li>
+          <li>Embrace boredom and repetition</li>
+          <li>Trust the process over results</li>
+          <li>Find mentors who challenge you</li>
+        </ul>
+      </div>
+      <div class="concept-card reveal">
+        <span class="c-icon">&#x2728;</span>
+        <h3>Creative Strategies</h3>
+        <p>Break established patterns, combine disparate domains, and let your unique perspective emerge through disciplined practice.</p>
+        <ul>
+          <li>Cultivate negative capability</li>
+          <li>Alternate between focus and drift</li>
+          <li>Court serendipity</li>
+          <li>Create constraints to free creativity</li>
+        </ul>
+      </div>
+      <div class="concept-card reveal reveal-d1">
+        <span class="c-icon">&#x1F5E3;</span>
+        <h3>The Mentor Dynamic</h3>
+        <p>The right mentor provides not just knowledge but a living example of mastery in action. Choose your teachers carefully.</p>
+        <ul>
+          <li>Seek out the best in your field</li>
+          <li>Serve before you lead</li>
+          <li>Absorb their way of thinking</li>
+          <li>Eventually surpass them</li>
+        </ul>
+      </div>
+      <div class="concept-card reveal reveal-d2">
+        <span class="c-icon">&#x1F3AF;</span>
+        <h3>High-Level Intuition</h3>
+        <p>After years of practice, your unconscious mind becomes a powerful decision-making engine. Trust your trained instincts.</p>
+        <ul>
+          <li>Recognize pattern recognition</li>
+          <li>Learn to trust your gut (once trained)</li>
+          <li>Balance intuition with analysis</li>
+          <li>Stay open to new information</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORICAL MASTERS -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">The Masters</span>
+      <h2>Historical <span class="hl">Exemplars</span></h2>
+      <p class="section-desc">Greene draws on the lives of history's greatest masters to illustrate the timeless path. Click to explore their wisdom.</p>
+    </div>
+    <div class="masters-grid">
+      <div class="master-card reveal" onclick="toggleMaster(this)">
+        <div class="avatar">&#x1F9DD;</div>
+        <h4>Leonardo da Vinci</h4>
+        <div class="era">1452 &#x2013; 1519</div>
+        <p>The quintessential Renaissance master, embodiment of insatiable curiosity.</p>
+        <div class="master-expand">
+          <p>Leonardo's apprenticeship under Verrocchio taught him the discipline of observation. He filled thousands of pages with notes and sketches, drawing connections between art, anatomy, engineering, and nature. His mastery came from relentless curiosity and refusing to be boxed into one field.</p>
+        </div>
+        <span class="master-toggle">&#x25BC;</span>
+      </div>
+      <div class="master-card reveal reveal-d1" onclick="toggleMaster(this)">
+        <div class="avatar">&#x1F331;</div>
+        <h4>Charles Darwin</h4>
+        <div class="era">1809 &#x2013; 1882</div>
+        <p>Revolutionized biology through decades of patient observation.</p>
+        <div class="master-expand">
+          <p>Darwin's five-year voyage on the Beagle was his apprenticeship. He spent 20 years gathering evidence before publishing <em>On the Origin of Species</em>. His mastery came from deep patience, meticulous data collection, and the courage to challenge established dogma.</p>
+        </div>
+        <span class="master-toggle">&#x25BC;</span>
+      </div>
+      <div class="master-card reveal reveal-d2" onclick="toggleMaster(this)">
+        <div class="avatar">&#x1F3A8;</div>
+        <h4>Michelangelo</h4>
+        <div class="era">1475 &#x2013; 1564</div>
+        <p>Sculptor, painter, architect &#x2014; a master of multiple arts.</p>
+        <div class="master-expand">
+          <p>Michelangelo apprenticed under Ghirlandaio but surpassed his master through obsessive self-directed study. He dissected cadavers to understand anatomy, worked alone for years on the Sistine Chapel, and treated every commission as an opportunity to push the boundaries of his craft.</p>
+        </div>
+        <span class="master-toggle">&#x25BC;</span>
+      </div>
+      <div class="master-card reveal reveal-d3" onclick="toggleMaster(this)">
+        <div class="avatar">&#x1F4D6;</div>
+        <h4>Johann Wolfgang von Goethe</h4>
+        <div class="era">1749 &#x2013; 1832</div>
+        <p>Poet, scientist, philosopher &#x2014; a master of the inner life.</p>
+        <div class="master-expand">
+          <p>Goethe's apprenticeship was one of wide-ranging study: law, alchemy, art, literature. He refused specialization, believing that mastery requires engaging with the whole of human experience. His work on color theory and his epic <em>Faust</em> represent the elaboration phase of a long life.</p>
+        </div>
+        <span class="master-toggle">&#x25BC;</span>
+      </div>
+      <div class="master-card reveal" onclick="toggleMaster(this)">
+        <div class="avatar">&#x2697;</div>
+        <h4>Albert Einstein</h4>
+        <div class="era">1879 &#x2013; 1955</div>
+        <p>Reimagined the universe through thought experiments and persistence.</p>
+        <div class="master-expand">
+          <p>Einstein's apprenticeship was solitary &#x2014; he worked in a patent office while developing his theories. His mastery came from the ability to hold seemingly contradictory ideas in tension, to visualize problems physically, and to persist for a decade on general relativity while his peers dismissed him.</p>
+        </div>
+        <span class="master-toggle">&#x25BC;</span>
+      </div>
+      <div class="master-card reveal reveal-d2" onclick="toggleMaster(this)">
+        <div class="avatar">&#x1F3B5;</div>
+        <h4>Martha Graham</h4>
+        <div class="era">1894 &#x2013; 1991</div>
+        <p>Revolutionized modern dance through raw emotional expression.</p>
+        <div class="master-expand">
+          <p>Graham's apprenticeship at Denishawn taught her technique, but her creative-active phase broke every rule. She developed a completely new dance vocabulary based on contraction and release. Her mastery was built on decades of daily practice and an unshakable commitment to her artistic vision.</p>
+        </div>
+        <span class="master-toggle">&#x25BC;</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- YOUR PATH ASSESSMENT -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Your Journey</span>
+      <h2>The Path <span class="hl">Assessment</span></h2>
+      <p class="section-desc">Reflect on where you are in your own mastery journey. Answer honestly to discover your current stage and what comes next.</p>
+    </div>
+    <div class="assessment reveal" id="assessment">
+      <h3>&#x1F3AF; Your Mastery Stage</h3>
+      <p class="assess-desc">Select the option that best describes you for each question.</p>
+
+      <div class="assess-question">
+        <label>1. Your approach to learning <small>(choose closest)</small></label>
+        <div class="assess-options" data-q="0">
+          <button onclick="selectAssess(this,0)">Seeking teachers &amp; mentors</button>
+          <button onclick="selectAssess(this,1)">Practicing skills deliberately</button>
+          <button onclick="selectAssess(this,2)">Creating original work</button>
+          <button onclick="selectAssess(this,3)">Teaching &amp; refining</button>
+        </div>
+      </div>
+      <div class="assess-question">
+        <label>2. Your relationship with rules <small>(choose closest)</small></label>
+        <div class="assess-options" data-q="1">
+          <button onclick="selectAssess(this,0)">Learning established rules</button>
+          <button onclick="selectAssess(this,1)">Applying rules with consistency</button>
+          <button onclick="selectAssess(this,2)">Breaking &amp; rewriting rules</button>
+          <button onclick="selectAssess(this,3)">Synthesizing across fields</button>
+        </div>
+      </div>
+      <div class="assess-question">
+        <label>3. Your creative output <small>(choose closest)</small></label>
+        <div class="assess-options" data-q="2">
+          <button onclick="selectAssess(this,0)">Still building foundation</button>
+          <button onclick="selectAssess(this,1)">Competent but not original</button>
+          <button onclick="selectAssess(this,2)">Producing consistent original work</button>
+          <button onclick="selectAssess(this,3)">Connecting deep ideas</button>
+        </div>
+      </div>
+
+      <div class="assess-result" id="assessResult">
+        <h4 id="assessStageTitle"></h4>
+        <p id="assessStageDesc"></p>
+        <div class="stage-badge" id="assessStageBadge"></div>
+      </div>
+      <br>
+      <button class="assess-reset" onclick="resetAssessment()">&#x21BA; Reset</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section class="quote-section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Wisdom</span>
+      <h2>Words from the <span class="hl">Master</span></h2>
+      <p class="section-desc" style="margin:0 auto 3rem;">The defining ideas that cut to the heart of the mastery philosophy.</p>
+    </div>
+    <div class="quote-grid">
+      <div class="quote-card reveal">
+        <div class="q-mark">&ldquo;</div>
+        <blockquote>The future belongs to those who learn more skills and combine them in creative ways.</blockquote>
+        <cite>&#x2014; Robert Greene</cite>
+      </div>
+      <div class="quote-card reveal reveal-d1">
+        <div class="q-mark">&ldquo;</div>
+        <blockquote>In the apprenticeship phase, you are not merely learning skills. You are learning how to learn.</blockquote>
+        <cite>&#x2014; Robert Greene</cite>
+      </div>
+      <div class="quote-card reveal reveal-d2">
+        <div class="q-mark">&ldquo;</div>
+        <blockquote>The greatest mistake you can make in life is to be continually fearing you will make one.</blockquote>
+        <cite>&#x2014; Robert Greene</cite>
+      </div>
+      <div class="quote-card reveal">
+        <div class="q-mark">&ldquo;</div>
+        <blockquote>Mastery is not a function of genius or talent. It is a function of time and intense focus applied to a particular field.</blockquote>
+        <cite>&#x2014; Robert Greene</cite>
+      </div>
+      <div class="quote-card reveal reveal-d1">
+        <div class="q-mark">&ldquo;</div>
+        <blockquote>In the end, the ability to learn faster than your competitors may be the only sustainable competitive advantage.</blockquote>
+        <cite>&#x2014; Robert Greene</cite>
+      </div>
+      <div class="quote-card reveal reveal-d2">
+        <div class="q-mark">&ldquo;</div>
+        <blockquote>The key to power is to be able to see people as they are, not as you want them to be.</blockquote>
+        <cite>&#x2014; Robert Greene</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="quote">"The ultimate power in life is to be completely self-reliant, completely yourself."</p>
+  <p class="quote-author">&#x2014; Robert Greene, <em>Mastery</em></p>
+  <br>
+  <p style="font-size:0.8rem;">Interactive Summary &middot; Based on the lifelong philosophy of Robert Greene</p>
+</footer>
+
+<script>
+  //  CANVAS BG 
+  const canvas = document.getElementById('bgCanvas'), ctx = canvas.getContext('2d');
+  let particles = [];
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.25;
+      this.vy = (Math.random() - 0.5) * 0.25;
+      this.r = Math.random() * 2 + 0.5;
+      this.a = Math.random() * 0.4 + 0.1;
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      const isDark = document.body.classList.contains('dark');
+      ctx.fillStyle = isDark ? `rgba(201,168,76,${this.a})` : `rgba(45,27,105,${this.a})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    const isDark = document.body.classList.contains('dark');
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 140) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          const color = isDark ? '201,168,76' : '45,27,105';
+          ctx.strokeStyle = `rgba(${color},${0.06 * (1 - d / 140)})`;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  //  THEME 
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    themeToggle.textContent = document.body.classList.contains('dark') ? '\u2600' : '\u263E';
+  });
+
+  //  SCROLL REVEAL 
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal, .tl-item').forEach(el => observer.observe(el));
+
+  //  TIMELINE TOGGLE 
+  function toggleTimeline(el) {
+    el.classList.toggle('open');
+  }
+
+  //  MASTER TOGGLE 
+  function toggleMaster(el) {
+    el.classList.toggle('open');
+  }
+
+  //  SELF ASSESSMENT 
+  const stageInfo = [
+    {
+      title: 'Apprenticeship',
+      badge: 'Phase I: Learning',
+      desc: 'You are in the foundational phase. Your focus should be on finding mentors, observing deeply, and building skills through deliberate practice. Embrace repetition and don\u2019t rush for originality. The best masters spend years in apprenticeship before creating anything new.'
+    },
+    {
+      title: 'Creative-Active',
+      badge: 'Phase II: Creation',
+      desc: 'You have built a solid foundation and are now developing your unique voice. Start breaking established rules, combining ideas from different fields, and producing original work. Not everything will succeed \u2014 that\u2019s part of the process. Trust your accumulated knowledge.'
+    },
+    {
+      title: 'Mastery',
+      badge: 'Phase III: Mastery',
+      desc: 'Your skills have become second nature. You see patterns others miss and work with fluid intuition. Continue to challenge yourself, seek harder problems, and remain a student. Mastery is not a destination but a dynamic state of continuous growth.'
+    },
+    {
+      title: 'Elaboration',
+      badge: 'Phase IV: Teaching',
+      desc: 'You have reached a level where you can teach, mentor, and extend your knowledge to new domains. Your work now involves synthesis across fields and deepening existing insights. Focus on legacy, teaching others, and exploring adjacent territories.'
+    }
+  ];
+
+  let assessAnswers = [];
+  const assessResult = document.getElementById('assessResult');
+
+  function selectAssess(btn, val) {
+    const parent = btn.parentElement;
+    parent.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const qIdx = parseInt(parent.dataset.q);
+    assessAnswers[qIdx] = val;
+    if (assessAnswers.length >= 3 && assessAnswers[0] !== undefined && assessAnswers[1] !== undefined && assessAnswers[2] !== undefined) {
+      updateAssessment();
+    }
+  }
+
+  function updateAssessment() {
+    const avg = Math.round(assessAnswers.reduce((a, b) => a + b, 0) / assessAnswers.length);
+    const stage = stageInfo[avg];
+    document.getElementById('assessStageTitle').textContent = '\u2192 ' + stage.title;
+    document.getElementById('assessStageDesc').textContent = stage.desc;
+    document.getElementById('assessStageBadge').textContent = stage.badge;
+    assessResult.classList.add('show');
+    assessResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function resetAssessment() {
+    assessAnswers = [];
+    document.querySelectorAll('.assess-options button').forEach(b => b.classList.remove('selected'));
+    assessResult.classList.remove('show');
+  }
+</script>
+</body>
+</html>

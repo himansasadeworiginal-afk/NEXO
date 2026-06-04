@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Art of Seduction — Interactive Summary</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --bg:#0d0812;
+    --bg-alt:#120a1a;
+    --surface:#1a0f24;
+    --surface-hover:#241536;
+    --text:#f0e6e8;
+    --text-dim:#b8a0b0;
+    --text-muted:#7a5a6a;
+    --purple:#4A0E4E;
+    --purple-dark:#2a062e;
+    --purple-glow:rgba(74,14,78,0.4);
+    --rose:#B76E79;
+    --rose-light:#d4929c;
+    --rose-dark:#8a4a54;
+    --rose-glow:rgba(183,110,121,0.3);
+    --burgundy:#800020;
+    --burgundy-light:#a02030;
+    --burgundy-dark:#500010;
+    --cream:#f5e6d8;
+    --cream-dim:#d4bfb0;
+    --border:#2a1a30;
+    --border-light:#3a2840;
+    --shadow:0 8px 40px rgba(0,0,0,0.5);
+    --radius:16px;
+    --radius-sm:10px;
+    --transition:0.5s cubic-bezier(.22,1,.36,1);
+    --font-serif:'Playfair Display',Georgia,serif;
+    --font-sans:'Inter',system-ui,sans-serif;
+  }
+
+  .light{
+    --bg:#f5ede8;
+    --bg-alt:#ede2da;
+    --surface:#fffaf5;
+    --surface-hover:#f5ede8;
+    --text:#1a0e12;
+    --text-dim:#6a4a5a;
+    --text-muted:#9a7a8a;
+    --purple:#6a2a6e;
+    --purple-dark:#4a0e4e;
+    --purple-glow:rgba(106,42,110,0.15);
+    --rose:#b76e79;
+    --rose-light:#d4929c;
+    --rose-dark:#8a4a54;
+    --rose-glow:rgba(183,110,121,0.12);
+    --burgundy:#800020;
+    --burgundy-light:#a02030;
+    --burgundy-dark:#500010;
+    --cream:#fff5ee;
+    --cream-dim:#e8d8d0;
+    --border:#ddd0c8;
+    --border-light:#e8ddd5;
+    --shadow:0 8px 32px rgba(0,0,0,0.06);
+  }
+
+  html{scroll-behavior:smooth}
+
+  body{
+    font-family:var(--font-sans);
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.7;
+    overflow-x:hidden;
+    transition:background var(--transition),color var(--transition);
+  }
+
+  ::-webkit-scrollbar{width:5px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--rose-dark);border-radius:3px}
+
+  #progress{
+    position:fixed;top:0;left:0;height:2px;
+    background:linear-gradient(90deg,var(--purple),var(--rose),var(--burgundy),var(--rose),var(--purple));
+    background-size:300% auto;
+    animation:gradientShift 4s ease infinite;
+    z-index:9999;width:0%;transition:width .1s;
+  }
+
+  @keyframes gradientShift{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+
+  .theme-toggle{
+    position:fixed;top:20px;right:20px;z-index:1000;
+    background:var(--surface);border:1px solid var(--rose-dark);
+    color:var(--rose);width:46px;height:46px;border-radius:50%;
+    cursor:pointer;font-size:1.3rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);transition:all var(--transition);
+    backdrop-filter:blur(12px);
+  }
+  .theme-toggle:hover{transform:scale(1.1);border-color:var(--rose);box-shadow:0 0 30px var(--rose-glow);}
+
+  /*  PETALS CANVAS  */
+  #petalsCanvas{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:0;pointer-events:none;
+  }
+
+  /*  AMBIENT GLOW  */
+  body::before{
+    content:'';position:fixed;top:-50%;left:-50%;
+    width:200%;height:200%;
+    background:
+      radial-gradient(ellipse at 40% 30%, rgba(74,14,78,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(183,110,121,0.05) 0%, transparent 45%),
+      radial-gradient(ellipse at 20% 80%, rgba(128,0,32,0.04) 0%, transparent 40%),
+      radial-gradient(ellipse at 80% 20%, rgba(183,110,121,0.03) 0%, transparent 40%);
+    pointer-events:none;z-index:0;
+  }
+
+  /*  KEYFRAMES  */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes fadeInScale{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+  @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+  /*  HERO  */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+    padding:2rem;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(183,110,121,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 70%, rgba(74,14,78,0.08) 0%, transparent 50%);
+    pointer-events:none;
+  }
+  .hero-line{
+    width:60px;height:2px;background:var(--rose);margin-bottom:2rem;
+    opacity:0;animation:fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-badge{
+    display:inline-block;padding:8px 24px;
+    border:1px solid var(--rose-dark);border-radius:0;
+    color:var(--rose);font-size:0.7rem;
+    font-weight:500;letter-spacing:4px;text-transform:uppercase;
+    margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s 0.3s forwards;
+    font-family:var(--font-serif);
+  }
+  .hero h1{
+    font-family:var(--font-serif);
+    font-size:clamp(2.5rem, 8vw, 6rem);
+    font-weight:700;letter-spacing:1px;
+    color:var(--cream);margin-bottom:0.3rem;
+    opacity:0;animation:fadeUp 0.8s 0.5s forwards;
+    text-shadow:0 0 60px rgba(183,110,121,0.15);
+  }
+  .hero h1 .sm{
+    font-size:0.35em;display:block;color:var(--rose);
+    font-family:var(--font-sans);font-weight:300;letter-spacing:8px;
+    margin-top:0.4rem;
+  }
+  .hero p{
+    font-size:1.05rem;color:var(--text-dim);max-width:520px;
+    line-height:1.6;font-weight:300;
+    opacity:0;animation:fadeUp 0.8s 0.7s forwards;
+  }
+  .hero-author{
+    margin-top:0.6rem;color:var(--rose);font-size:0.85rem;
+    letter-spacing:3px;font-weight:400;font-family:var(--font-serif);font-style:italic;
+    opacity:0;animation:fadeUp 0.8s 0.8s forwards;
+  }
+  .hero-arrow{
+    margin-top:3rem;font-size:1.5rem;color:var(--rose);
+    opacity:0;animation:fadeUp 0.8s 1s forwards, bounce 2s 1s infinite;
+  }
+  @keyframes bounce{0%,100%{transform:translateY(0);opacity:0.6}50%{transform:translateY(10px);opacity:1}}
+
+  /*  SECTION  */
+  section{padding:5rem 2rem;max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+
+  .section-ornament{
+    text-align:center;color:var(--rose);font-size:1.5rem;
+    letter-spacing:12px;margin-bottom:1.5rem;
+    font-family:var(--font-serif);
+  }
+  .section-label{
+    font-family:var(--font-serif);font-size:0.7rem;letter-spacing:5px;
+    text-transform:uppercase;color:var(--rose);margin-bottom:0.5rem;
+    font-weight:500;
+  }
+  section h2{
+    font-family:var(--font-serif);
+    font-size:clamp(1.6rem, 4vw, 2.8rem);
+    font-weight:700;letter-spacing:0.5px;
+    margin-bottom:0.6rem;
+  }
+  section h2 .hl{color:var(--rose);}
+  section h2 .hl2{color:var(--purple);}
+  .section-desc{
+    color:var(--text-dim);font-size:0.95rem;max-width:600px;
+    margin-bottom:2.5rem;font-weight:300;
+  }
+
+  /*  STATS  */
+  .stats{
+    display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+    gap:1rem;margin:2rem 0;
+  }
+  .stat{
+    text-align:center;padding:1.8rem 1rem;
+    background:var(--surface);border:1px solid var(--border);
+    transition:all var(--transition);position:relative;overflow:hidden;
+  }
+  .stat::before{
+    content:'';position:absolute;top:0;left:0;right:0;
+    height:2px;
+    background:linear-gradient(90deg,transparent,var(--rose),transparent);
+    opacity:0;transition:opacity var(--transition);
+  }
+  .stat:hover::before{opacity:1;}
+  .stat:hover{border-color:var(--rose-dark);background:var(--surface-hover);transform:translateY(-2px);}
+  .stat-value{
+    font-size:2.5rem;font-weight:700;color:var(--rose);
+    font-family:var(--font-serif);
+  }
+  .stat-label{font-size:0.75rem;color:var(--text-dim);margin-top:0.3rem;letter-spacing:1.5px;text-transform:uppercase;}
+
+  /*  SEDUCER CARDS  */
+  .seducer-grid{
+    display:grid;gap:1.2rem;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+  }
+  .seducer-card{
+    background:var(--surface);border:1px solid var(--border);
+    padding:1.8rem;transition:all var(--transition);
+    cursor:pointer;position:relative;overflow:hidden;
+    opacity:0;transform:translateY(16px);
+  }
+  .seducer-card.visible{opacity:1;transform:translateY(0);}
+  .seducer-card::before{
+    content:'';position:absolute;top:0;left:0;width:100%;height:100%;
+    background:linear-gradient(135deg, rgba(183,110,121,0.04), transparent);
+    opacity:0;transition:opacity var(--transition);pointer-events:none;
+  }
+  .seducer-card:hover::before{opacity:1;}
+  .seducer-card:hover{
+    border-color:var(--rose-dark);background:var(--surface-hover);
+    transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3);
+  }
+  .seducer-card .num{
+    font-family:var(--font-serif);
+    font-size:0.7rem;letter-spacing:3px;color:var(--rose);
+    margin-bottom:0.4rem;
+  }
+  .seducer-card .type-icon{
+    font-size:2rem;margin-bottom:0.6rem;display:block;
+  }
+  .seducer-card h3{
+    font-family:var(--font-serif);
+    font-size:1.15rem;font-weight:700;line-height:1.3;
+    margin-bottom:0.4rem;
+    color:var(--cream);
+  }
+  .light .seducer-card h3{color:var(--text);}
+  .seducer-card .tagline{
+    font-style:italic;color:var(--rose);font-size:0.85rem;
+    margin-bottom:0.6rem;font-family:var(--font-serif);
+  }
+  .seducer-card .preview{
+    font-size:0.85rem;color:var(--text-dim);line-height:1.5;
+    transition:all 0.4s ease;
+  }
+  .seducer-card .full{
+    max-height:0;overflow:hidden;
+    transition:max-height 0.6s ease, margin 0.4s ease;
+    margin-top:0;
+  }
+  .seducer-card .full-inner{
+    font-size:0.85rem;color:var(--text-dim);line-height:1.7;
+    border-top:1px solid var(--border);padding-top:0.8rem;margin-top:0.4rem;
+  }
+  .seducer-card .full-inner strong{color:var(--rose);font-weight:600;}
+  .seducer-card .expand-icon{
+    position:absolute;top:1.5rem;right:1.5rem;
+    color:var(--rose);font-size:1.5rem;transition:transform 0.5s ease;
+    font-family:var(--font-serif);line-height:1;
+  }
+  .seducer-card.open .expand-icon{transform:rotate(135deg);}
+  .seducer-card.open .full{max-height:500px;margin-top:0.8rem;}
+
+  .seducer-card .card-shimmer{
+    position:absolute;top:0;left:0;width:60%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(183,110,121,0.04),transparent);
+    transform:translateX(-100%);pointer-events:none;
+  }
+  .seducer-card:hover .card-shimmer{animation:shimmer 1.2s ease;}
+
+  /*  TIMELINE  */
+  .timeline-wrap{position:relative;padding:1rem 0;}
+  .timeline-wrap::before{
+    content:'';position:absolute;left:24px;top:0;bottom:0;
+    width:1px;background:linear-gradient(to bottom,var(--rose),var(--purple),var(--burgundy));
+  }
+  .tl-item{
+    padding-left:60px;position:relative;margin-bottom:2rem;
+    opacity:0;transform:translateX(-15px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .tl-item.visible{opacity:1;transform:translateX(0);}
+  .tl-item::before{
+    content:'';position:absolute;left:17px;top:6px;
+    width:14px;height:14px;border-radius:50%;
+    background:var(--rose);border:2px solid var(--bg);
+    box-shadow:0 0 16px var(--rose-glow);
+    z-index:1;
+  }
+  .tl-item:nth-child(2)::before{background:var(--purple);box-shadow:0 0 16px var(--purple-glow);}
+  .tl-item:nth-child(3)::before{background:var(--burgundy);}
+  .tl-item:nth-child(4)::before{background:var(--rose);box-shadow:0 0 16px var(--rose-glow);}
+  .tl-item .tl-phase{
+    font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;
+    color:var(--rose);font-weight:600;margin-bottom:0.1rem;
+  }
+  .tl-item:nth-child(2) .tl-phase{color:var(--purple);}
+  .light .tl-item:nth-child(2) .tl-phase{color:var(--purple-dark);}
+  .tl-item:nth-child(3) .tl-phase{color:var(--burgundy);}
+  .tl-item:nth-child(4) .tl-phase{color:var(--rose);}
+  .tl-item h4{font-family:var(--font-serif);font-size:1.1rem;font-weight:600;}
+  .tl-item p{font-size:0.85rem;color:var(--text-dim);margin-top:0.3rem;line-height:1.6;}
+
+  .tl-toggle{
+    text-align:center;margin-top:1rem;
+  }
+  .tl-toggle .btn{
+    background:transparent;border:1px solid var(--rose-dark);
+    color:var(--rose);padding:10px 28px;cursor:pointer;
+    font-size:0.8rem;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+    transition:all var(--transition);font-family:var(--font-sans);
+  }
+  .tl-toggle .btn:hover{background:var(--rose-dark);color:var(--cream);border-color:var(--rose);}
+
+  /*  KEYS GRID  */
+  .keys-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+    gap:1rem;
+  }
+  .key-item{
+    background:var(--surface);border:1px solid var(--border);
+    border-left:3px solid var(--rose);
+    padding:1.2rem 1.5rem;
+    transition:all var(--transition);
+    opacity:0;transform:translateY(12px);
+  }
+  .key-item.visible{opacity:1;transform:translateY(0);}
+  .key-item:hover{background:var(--surface-hover);border-color:var(--rose);border-left-width:4px;}
+  .key-item .key-icon{color:var(--rose);font-size:1.2rem;margin-bottom:0.3rem;display:block;}
+  .key-item h4{font-family:var(--font-serif);font-size:0.95rem;font-weight:600;margin-bottom:0.2rem;}
+  .key-item p{font-size:0.8rem;color:var(--text-dim);line-height:1.5;}
+
+  /*  ANTI-SEDUCTION  */
+  .anti-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:0.8rem;
+  }
+  .anti-item{
+    background:var(--surface);border:1px solid var(--border);
+    padding:1.2rem;text-align:center;
+    transition:all var(--transition);
+    opacity:0;transform:translateY(12px);
+    position:relative;overflow:hidden;
+  }
+  .anti-item.visible{opacity:1;transform:translateY(0);}
+  .anti-item::before{
+    content:'';position:absolute;bottom:0;left:0;right:0;
+    height:2px;background:var(--burgundy);
+    transform:scaleX(0);transition:transform var(--transition);
+  }
+  .anti-item:hover::before{transform:scaleX(1);}
+  .anti-item:hover{border-color:var(--burgundy);background:var(--surface-hover);}
+  .anti-item .anti-icon{font-size:1.8rem;display:block;margin-bottom:0.3rem;}
+  .anti-item h4{font-family:var(--font-serif);font-size:0.9rem;font-weight:600;margin-bottom:0.15rem;}
+  .anti-item p{font-size:0.75rem;color:var(--text-dim);line-height:1.4;}
+
+  /*  QUOTE  */
+  .quote-block{
+    text-align:center;max-width:650px;margin:3rem auto;
+    padding:2rem 0;position:relative;z-index:1;
+  }
+  .quote-block .ornament{color:var(--rose);font-size:2.5rem;margin-bottom:1rem;font-family:var(--font-serif);}
+  .quote-block blockquote{
+    font-family:var(--font-serif);
+    font-size:1.25rem;font-style:italic;line-height:1.7;
+    color:var(--text);font-weight:400;
+  }
+  .quote-block cite{
+    display:block;margin-top:0.8rem;color:var(--rose);
+    font-style:normal;font-size:0.85rem;letter-spacing:2px;
+  }
+
+  .quote-slider{
+    display:flex;overflow:hidden;position:relative;
+  }
+  .quote-slide{
+    min-width:100%;transition:transform 0.6s ease;
+    padding:0 1rem;
+  }
+  .quote-nav{
+    display:flex;justify-content:center;gap:0.5rem;margin-top:1.2rem;
+  }
+  .quote-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--border);border:none;cursor:pointer;
+    transition:all var(--transition);
+  }
+  .quote-dot.active{background:var(--rose);box-shadow:0 0 12px var(--rose-glow);}
+  .quote-dot:hover{background:var(--rose-dark);}
+
+  /*  FOOTER  */
+  footer{
+    text-align:center;padding:3rem 2rem;color:var(--text-muted);
+    font-size:0.8rem;border-top:1px solid var(--border);
+    margin-top:2rem;position:relative;z-index:1;
+  }
+
+  /*  BACK LINK  */
+  .back-link{
+    display:inline-flex;align-items:center;gap:0.4rem;
+    color:var(--text-muted);text-decoration:none;
+    font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;
+    transition:color var(--transition);margin-bottom:1rem;
+  }
+  .back-link:hover{color:var(--rose);}
+
+  /*  RESPONSIVE  */
+  @media(max-width:700px){
+    section{padding:3rem 1.2rem;}
+    .seducer-grid{grid-template-columns:1fr;}
+    .keys-grid{grid-template-columns:1fr;}
+    .anti-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:clamp(2rem, 12vw, 3.5rem);}
+    .hero{padding:2rem 1.5rem;min-height:85vh;}
+    .stats{grid-template-columns:1fr 1fr;}
+    .tl-item{padding-left:50px;}
+    .timeline-wrap::before{left:18px;}
+    .tl-item::before{left:11px;width:12px;height:12px;}
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+<div id="progress"></div>
+<canvas id="petalsCanvas"></canvas>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-line"></div>
+  <div class="hero-badge">A Masterwork on Desire</div>
+  <h1>
+    The Art<br>of Seduction
+    <span class="sm">Robert Greene</span>
+  </h1>
+  <p>The strategies, psychology and timeless principles of attraction — how to captivate, enchant, and wield the most subtle form of power.</p>
+  <div class="hero-author"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> &nbsp;Know Human Nature, Master the Game&nbsp; <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+  <div class="hero-arrow">↓</div>
+</header>
+
+<!-- STATS -->
+<section>
+  <div class="stats">
+    <div class="stat"><div class="stat-value">9</div><div class="stat-label">Seducer Types</div></div>
+    <div class="stat"><div class="stat-value">4</div><div class="stat-label">Seduction Phases</div></div>
+    <div class="stat"><div class="stat-value">24</div><div class="stat-label">Key Tactics</div></div>
+    <div class="stat"><div class="stat-value">∞</div><div class="stat-label">Ways to Captivate</div></div>
+  </div>
+</section>
+
+<!-- THE 9 TYPES OF SEDUCERS -->
+<section id="seducers">
+  <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+  <div class="section-label">The Archetypes</div>
+  <h2>The 9 Types of <span class="hl">Seducers</span></h2>
+  <p class="section-desc">Click each card to explore the full profile. Each type embodies a distinct strategy of attraction.</p>
+
+  <div class="seducer-grid" id="seducerGrid"></div>
+</section>
+
+<!-- THE SEDUCTIVE PROCESS -->
+<section id="phases">
+  <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+  <div class="section-label">The Strategy</div>
+  <h2>The <span class="hl">Seductive Process</span></h2>
+  <p class="section-desc">Seduction unfolds in four distinct phases. Click each to reveal the deeper tactics.</p>
+
+  <div class="timeline-wrap" id="timeline">
+    <div class="tl-item">
+      <div class="tl-phase">Phase I</div>
+      <h4>Separation — The First Strike</h4>
+      <p>Single out your target from the crowd. Create a feeling of emptiness that only you can fill. Stand apart through mystery, absence, and the art of not trying. The initial attraction is born from contrast — you must seem different from everyone else.</p>
+      <div class="tl-details" style="max-height:0;overflow:hidden;transition:max-height 0.6s ease;">
+        <p style="margin-top:0.6rem;font-size:0.8rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:0.6rem;"><strong style="color:var(--rose);">Tactics:</strong> Choose the right victim, create a void, keep your distance, insert yourself into their mind through absence. The key is to make them notice you without realizing they've been targeted.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Phase II</div>
+      <h4>Attention — The Spell Begins</h4>
+      <p>Draw them in through a mixture of charm and provocation. Use words to create a dreamlike state, to lead them astray. Play on their insecurities and desires. Make them feel seen, understood, and desired — but never completely satisfied.</p>
+      <div class="tl-details" style="max-height:0;overflow:hidden;transition:max-height 0.6s ease;">
+        <p style="margin-top:0.6rem;font-size:0.8rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:0.6rem;"><strong style="color:var(--rose);">Tactics:</strong> Use poetic language, create shared secrets, hint at forbidden pleasures, play the push-pull game. Make your attention feel like a gift while keeping them slightly off-balance.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Phase III</div>
+      <h4>The Spell — Deep Engagement</h4>
+      <p>Now the target is emotionally invested. Deepen the connection by probing their psychology, finding their weaknesses, and becoming indispensable. Create dependency through alternating warmth and withdrawal. They should feel they cannot live without you.</p>
+      <div class="tl-details" style="max-height:0;overflow:hidden;transition:max-height 0.6s ease;">
+        <p style="margin-top:0.6rem;font-size:0.8rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:0.6rem;"><strong style="color:var(--rose);">Tactics:</strong> The deep probe — discover their fantasies and insecurities. Play on emotional extremes. Use the poison approach (gentle insinuations). Create rituals and shared experiences that bind them to you.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-phase">Phase IV</div>
+      <h4>The Final Act — Surrender &amp; Aftermath</h4>
+      <p>The moment of surrender is both an ending and a beginning. Handle it with grace — never gloat, never show your hand completely. The seduction must transform into a lasting bond, or dissolve cleanly. The greatest seducers leave their targets grateful, not resentful.</p>
+      <div class="tl-details" style="max-height:0;overflow:hidden;transition:max-height 0.6s ease;">
+        <p style="margin-top:0.6rem;font-size:0.8rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:0.6rem;"><strong style="color:var(--rose);">Tactics:</strong> Know when to stop, let them come to you for the final surrender, create an unforgettable final act, and decide whether to transform or exit. The aftermath is where the true art reveals itself.</p>
+      </div>
+    </div>
+  </div>
+  <div class="tl-toggle">
+    <button class="btn" id="expandTimeline"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> Reveal Tactics <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></button>
+  </div>
+</section>
+
+<!-- KEYS TO SEDUCTION -->
+<section id="keys">
+  <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+  <div class="section-label">The Principles</div>
+  <h2>Keys to <span class="hl">Seduction</span></h2>
+  <p class="section-desc">The timeless principles that underpin every successful seduction.</p>
+
+  <div class="keys-grid">
+    <div class="key-item"><span class="key-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v12"/><path d="M12 14a4 4 0 0 0 4-4V3"/><path d="M8 3v7a4 4 0 0 0 4 4"/><path d="M8 7h8"/></svg>️</span><h4>Create Mystery</h4><p>Reveal less than they want to know. Mystery creates tension, curiosity, and desire. The more they wonder, the more they're hooked.</p></div>
+    <div class="key-item"><span class="key-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span><h4>Master the Mask</h4><p>Everyone wears masks. The seducer's art is knowing which mask to wear, when, and for whom. Adaptability is everything.</p></div>
+    <div class="key-item"><span class="key-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg></span><h4>Push &amp; Pull</h4><p>Alternate warmth with coldness, attention with withdrawal. This emotional seesaw creates obsession and deepens desire.</p></div>
+    <div class="key-item"><span class="key-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>️</span><h4>Target the Weakness</h4><p>Every person has a hidden insecurity, a secret fantasy. Find it and you hold the key to their heart — and their surrender.</p></div>
+    <div class="key-item"><span class="key-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><h4>Stoke the Fantasy</h4><p>People fall in love with a fantasy, not a reality. Sell them a dream of who they could be with you. The real is disappointing; the imagined is intoxicating.</p></div>
+    <div class="key-item"><span class="key-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><h4>Use Time &amp; Absence</h4><p>Scarcity increases value. Absence makes the heart grow fonder — but only if the foundation is already laid. Time is your ally when used strategically.</p></div>
+    <div class="key-item"><span class="key-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22 16 8"/><path d="M21 2l-5 5"/><path d="M14 7l3-3"/></svg></span><h4>Play on Emotions</h4><p>Logic is the enemy of seduction. Appeal to emotions — insecurity, desire, fear, hope. The rational mind must be bypassed, not convinced.</p></div>
+    <div class="key-item"><span class="key-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><h4>Know When to Retreat</h4><p>The strategic retreat is often more powerful than advance. Withdrawal ignites pursuit. The chased becomes the chaser.</p></div>
+  </div>
+</section>
+
+<!-- ANTI-SEDUCTION -->
+<section id="anti">
+  <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+  <div class="section-label">The Pitfalls</div>
+  <h2>Anti-<span class="hl">Seduction</span></h2>
+  <p class="section-desc">Traits and behaviors that repel rather than attract. Avoid these at all costs.</p>
+
+  <div class="anti-grid">
+    <div class="anti-item"><span class="anti-icon">🥺</span><h4>Neediness</h4><p>Desperation is the most repellent quality. Need nothing from anyone and they will flock to you.</p></div>
+    <div class="anti-item"><span class="anti-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><h4>Predictability</h4><p>Routine kills desire. If they can predict your every move, you cease to be interesting.</p></div>
+    <div class="anti-item"><span class="anti-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><h4>Over-Talking</h4><p>Talking too much reveals insecurity and destroys mystery. Silence is more seductive than speech.</p></div>
+    <div class="anti-item"><span class="anti-icon">🫂</span><h4>Eagerness to Please</h4><p>The desperate need for approval signals weakness. Confidence comes from not needing anyone's validation.</p></div>
+    <div class="anti-item"><span class="anti-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 15h8"/><path d="M8 9h2"/><path d="M14 9h2"/></svg></span><h4>Negativity</h4><p>Complaining and pessimism drain energy. Seduction requires lightness, playfulness, an air of possibility.</p></div>
+    <div class="anti-item"><span class="anti-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4s3 4 10 4 10-4 10-4"/><path d="M4 4v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4"/><path d="M12 8v14"/></svg></span><h4>Arrogance</h4><p>Arrogance without substance is a mask for insecurity. True confidence is quiet, self-contained, unprovoked.</p></div>
+    <div class="anti-item"><span class="anti-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span><h4>Inauthenticity</h4><p>People can sense a fake. The best seducers are genuine in their seduction — they believe in the spell they cast.</p></div>
+    <div class="anti-item"><span class="anti-icon">🪞</span><h4>Self-Absorption</h4><p>Obsession with oneself leaves no room for the other. Seduction is about making <em>them</em> feel extraordinary.</p></div>
+    <div class="anti-item"><span class="anti-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span><h4>Impatience</h4><p>Rushing ruins everything. Seduction requires time, patience, and the willingness to wait for the perfect moment.</p></div>
+    <div class="anti-item"><span class="anti-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 8 14 2 18 6 20 2 22 8 17 11 21 15 18 18 12 10 9 16 12 20 8 22 2 18 7 14 4 10 8 6"/></svg></span><h4>Bragging</h4><p>Announcing your virtues diminishes them. Let others discover your qualities — the discovery is half the pleasure.</p></div>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section>
+  <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+  <div class="section-label">The Wisdom</div>
+  <h2>Words to <span class="hl">Seduce By</span></h2>
+  <p class="section-desc">Key passages from <em>The Art of Seduction</em> that capture its essence.</p>
+
+  <div class="quote-block">
+    <div class="quote-slider" id="quoteSlider">
+      <div class="quote-slide">
+        <div class="ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+        <blockquote>"The seducer's power lies in the ability to make people feel special, to make them feel that they are the only one. And in that feeling, they lower their defenses."</blockquote>
+        <cite>— Robert Greene, The Art of Seduction</cite>
+      </div>
+      <div class="quote-slide">
+        <div class="ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+        <blockquote>"What seduces is not what you give them, but what you make them feel. The seducer creates a void, an emptiness that only they can fill."</blockquote>
+        <cite>— Robert Greene, The Art of Seduction</cite>
+      </div>
+      <div class="quote-slide">
+        <div class="ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+        <blockquote>"The most effective seducers are those who understand that seduction is not about sex, but about power — the power to make someone lose control."</blockquote>
+        <cite>— Robert Greene, The Art of Seduction</cite>
+      </div>
+      <div class="quote-slide">
+        <div class="ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+        <blockquote>"In the game of seduction, the one who is most comfortable with solitude and silence has the upper hand. Neediness is the death of desire."</blockquote>
+        <cite>— Robert Greene, The Art of Seduction</cite>
+      </div>
+      <div class="quote-slide">
+        <div class="ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+        <blockquote>"The seducer looks at people differently than the rest of us. Where others see flaws and weaknesses, the seducer sees levers to push, hooks to set, opportunities for enchantment."</blockquote>
+        <cite>— Robert Greene, The Art of Seduction</cite>
+      </div>
+    </div>
+    <div class="quote-nav" id="quoteNav"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Based on <em>The Art of Seduction</em> by Robert Greene &mdash; Interactive Summary &mdash; Part of the NEXO collection</p>
+</footer>
+
+<script>
+  //  PETALS CANVAS 
+  (function(){
+    const canvas = document.getElementById('petalsCanvas');
+    const ctx = canvas.getContext('2d');
+    let petals = [];
+    let W, H;
+
+    function resize(){
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const colors = [
+      'rgba(183,110,121,{a})',
+      'rgba(183,110,121,{a})',
+      'rgba(128,0,32,{a})',
+      'rgba(74,14,78,{a})',
+      'rgba(212,146,156,{a})'
+    ];
+
+    class Petal {
+      constructor(){
+        this.reset();
+        this.y = Math.random() * H;
+      }
+      reset(){
+        this.x = Math.random() * W;
+        this.y = -30;
+        this.size = 6 + Math.random() * 12;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = 0.3 + Math.random() * 0.6;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.02;
+        this.swing = Math.random() * 100 + 50;
+        this.swingSpeed = 0.01 + Math.random() * 0.02;
+        this.swingOffset = Math.random() * Math.PI * 2;
+        this.alpha = 0.3 + Math.random() * 0.4;
+        this.color = colors[Math.floor(Math.random() * colors.length)].replace('{a}', this.alpha);
+        this.petal = this.createPetalShape();
+      }
+      createPetalShape(){
+        const offscreen = document.createElement('canvas');
+        offscreen.width = this.size * 2;
+        offscreen.height = this.size * 2;
+        const oc = offscreen.getContext('2d');
+        const cx = this.size, cy = this.size;
+        const w = this.size * 0.7;
+        const h = this.size * 0.3;
+        oc.beginPath();
+        oc.ellipse(cx, cy, w, h, 0, 0, Math.PI * 2);
+        oc.fillStyle = this.color;
+        oc.fill();
+        oc.beginPath();
+        oc.ellipse(cx - w * 0.2, cy - h * 0.1, w * 0.5, h * 0.5, -0.3, 0, Math.PI * 2);
+        oc.fillStyle = this.color.replace('0.4', '0.3').replace('0.3', '0.2');
+        oc.fill();
+        return offscreen;
+      }
+      update(){
+        this.vy += 0.001;
+        this.x += this.vx + Math.sin(this.swingOffset + performance.now() * this.swingSpeed) * 0.5;
+        this.y += this.vy;
+        this.rotation += this.rotSpeed;
+        if (this.y > H + 30 || this.x < -50 || this.x > W + 50) this.reset();
+      }
+      draw(){
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.globalAlpha = this.alpha;
+        ctx.drawImage(this.petal, -this.size, -this.size, this.size * 2, this.size * 2);
+        ctx.restore();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    const count = Math.min(Math.floor(W * H / 15000), 30);
+    for (let i = 0; i < count; i++){
+      const p = new Petal();
+      p.y = Math.random() * H;
+      petals.push(p);
+    }
+
+    function animate(){
+      ctx.clearRect(0, 0, W, H);
+      petals.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  })();
+
+  //  THEME 
+  (function(){
+    const toggle = document.getElementById('themeToggle');
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      toggle.innerHTML = document.body.classList.contains('light') ? '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>️' : '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    });
+  })();
+
+  //  SCROLL PROGRESS 
+  window.addEventListener('scroll', () => {
+    const s = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    document.getElementById('progress').style.width = s + '%';
+  });
+
+  //  9 TYPES OF SEDUCERS 
+  const seducers = [
+    {n:1, icon:"🧜‍♀️", type:"The Siren", tagline:"The Feminine Trap", preview:"The Siren is the archetypal feminine seducer — dangerous, alluring, and utterly captivating. She wields her power through the promise of pleasure and the threat of destruction.", full:"The Siren operates through <strong>indirect power</strong> — she never pursues, she attracts. Her weapon is <strong>desire</strong>; she creates such longing that her target will do anything to possess her. She is mysterious, sensual, and just out of reach. Her danger is what makes her irresistible — to possess her is to risk being consumed. <strong>Key tactic:</strong> Create an aura of forbidden pleasure. Make yourself the object of fantasy, not reality. The chase IS the seduction."},
+    {n:2, icon:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2h-5L7 8h10l-2.5-6z"/><path d="M7 8v11a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V8"/></svg>️', type:"The Rake", tagline:"The Masculine Hunter", preview:"The Rake is the masculine counterpart — a man obsessed with the art of seduction itself. His drive is not for love but for conquest, and his enthusiasm becomes infectious.", full:"The Rake's power lies in his <strong>single-minded intensity</strong>. He pursues with relentless charm, wearing down resistance through persistence. He is often a <strong>reformed rake</strong> — a man who has lived hard and now directs all that energy into seduction. His past gives him depth, his focus gives him power. <strong>Key tactic:</strong> Pursue with such passion that your target feels like the center of the universe. Make the seduction itself feel like an adventure, a story worth being part of."},
+    {n:3, icon:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.5 5.5L19 7l-5.5 1.5L12 14l-1.5-5.5L5 7l5.5-1.5z"/><path d="M19 17l-5.5-1.5L12 11l-1.5 4.5L5 17l5.5 1.5L12 23l1.5-4.5z"/></svg>', type:"The Ideal Lover", tagline:"The Romantic Fantasist", preview:"The Ideal Lover creates the perfect romantic fantasy — attentive, poetic, utterly devoted. They make each person feel like the sole object of their affection, the hero of a love story.", full:"This type succeeds by <strong>embodying the target's fantasy</strong>. They study their prey, learning what kind of love story they secretly crave, then become the perfect protagonist. The Ideal Lover is <strong>adaptable</strong>, shaping themselves to fit the dream. They speak in the language of romance, create moments of perfect intimacy. <strong>Key tactic:</strong> Mirror their unspoken desires. Become the character they've always wanted to meet. Let them project their fantasies onto you — never break the spell by being too real."},
+    {n:4, icon:"🪞", type:"The Dandy", tagline:"The Provocative Rebel", preview:"The Dandy challenges conventions of gender, style, and behavior. They court controversy and fascination through audacity, becoming objects of curiosity and desire.", full:"The Dandy's power comes from <strong>transgression</strong>. By blurring lines, they create fascination. They are theatrical, self-consciously artificial, and deliberately provocative. In a world of conformity, the Dandy stands out as a work of art. They use <strong>shock and ambiguity</strong> to keep people off-balance and intrigued. <strong>Key tactic:</strong> Challenge expectations. Be deliberately ambiguous. Make yourself a walking spectacle — people are drawn to what they cannot categorize or understand."},
+    {n:5, icon:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-1.5 0-3-1-3-2.5 0-1.5 1.5-2.5 3-2.5s3 1 3 2.5c0 1.5-1.5 2.5-3 2.5z"/><path d="M12 2v3"/><path d="M12 9v1"/><path d="M12 14v1"/></svg>', type:"The Natural", tagline:"The Spontaneous Innocent", preview:"The Natural is childlike, spontaneous, and disarmingly sincere. They seduce not through strategy but through apparent innocence — they say and do what others only think.", full:"The Natural's power is <strong>authenticity in a world of artifice</strong>. They seem to have no guile, no hidden agenda. Their impulsiveness is refreshing. They say shocking things with a smile, touch without self-consciousness, live entirely in the moment. This <strong>unpredictability</strong> is intoxicating. <strong>Key tactic:</strong> Be unselfconsciously yourself — or appear to be. Say what others suppress. Act on impulse. The appearance of authenticity is often more seductive than authenticity itself."},
+    {n:6, icon:"🪢", type:"The Coquette", tagline:"The Master of Withdrawal", preview:"The Coquette is the ultimate strategist of desire — they give just enough hope to keep the target engaged, then withdraw, creating obsessive longing.", full:"The Coquette understands a fundamental truth: <strong>desire thrives on frustration</strong>. They alternate warmth and coldness, attention and neglect, hope and disappointment. Each time they return, the target is more desperate. The Coquette <strong>never fully surrenders</strong> — their power lies in perpetual withholding. <strong>Key tactic:</strong> Give just enough to keep them hooked, then pull away. Make them work for your affection. The harder they try, the more they convince themselves they're in love."},
+    {n:7, icon:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>', type:"The Charmer", tagline:"The Social Chameleon", preview:"The Charmer adapts to each person's nature, making everyone feel uniquely understood. They pick up on tastes, values, and desires — reflecting them back magnified.", full:"The Charmer's gift is <strong>empathy weaponized</strong>. They notice everything — a turn of phrase, a style preference, a hidden insecurity — and mirror it back. They make people feel <strong>seen, heard, and validated</strong> in a way no one else does. The Charmer collects followers by making each feel like a friend. <strong>Key tactic:</strong> Listen more than you speak. Mirror their gestures, vocabulary, and values. Make them feel like the most fascinating person in the room — and they will associate that feeling with you."},
+    {n:8, icon:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', type:"The Charismatic", tagline:"The Magnetic Presence", preview:"The Charismatic exudes an intensity that draws others in like a gravitational field. They radiate confidence, purpose, and a sense of destiny that others want to share.", full:"The Charismatic's power is <strong>presence</strong>. They have a quality of absolute self-belief that is deeply attractive. They seem to have access to a higher energy, a deeper truth. People <strong>want to be near them</strong>, hoping some of that intensity will rub off. The Charismatic often cultivates an air of <strong>mysterious suffering or profound insight</strong> — they have seen the abyss and returned. <strong>Key tactic:</strong> Cultivate intense self-belief. Develop a compelling life narrative. Speak with absolute conviction. Energy is contagious — make yours the most powerful in the room."},
+    {n:9, icon:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', type:"The Star", tagline:"The Distant Luminary", preview:"The Star creates a larger-than-life persona that transfixes through distance and mystery. They are adored not for who they are, but for the image they project.", full:"The Star understands that <strong>distance creates desire</strong>. They construct a persona — a carefully crafted image — and maintain it with discipline. The real person is hidden; the crowd adores the illusion. Stars are <strong>worshiped because they are inaccessible</strong>. Their glamour is a form of power — it sets them apart, makes them objects of fantasy. <strong>Key tactic:</strong> Craft a compelling persona and never break character. Maintain distance — familiarity breeds contempt. Let people project their fantasies onto your image. Be seen but never fully known."}
+  ];
+
+  const grid = document.getElementById('seducerGrid');
+
+  function renderSeducers(){
+    seducers.forEach((s, i) => {
+      const card = document.createElement('div');
+      card.className = 'seducer-card';
+      card.dataset.n = s.n;
+      card.innerHTML = `
+        <div class="num">TYPE ${s.n}</div>
+        <span class="type-icon">${s.icon}</span>
+        <h3>${s.type}</h3>
+        <div class="tagline">${s.tagline}</div>
+        <div class="preview">${s.preview}</div>
+        <div class="full"><div class="full-inner">${s.full}</div></div>
+        <div class="expand-icon">+</div>
+        <div class="card-shimmer"></div>
+      `;
+      card.addEventListener('click', () => {
+        const wasOpen = card.classList.contains('open');
+        document.querySelectorAll('.seducer-card.open').forEach(c => c.classList.remove('open'));
+        if (!wasOpen) card.classList.add('open');
+      });
+      grid.appendChild(card);
+    });
+  }
+  renderSeducers();
+
+  //  TIMELINE EXPAND 
+  const expandBtn = document.getElementById('expandTimeline');
+  let timelineExpanded = false;
+  expandBtn.addEventListener('click', () => {
+    timelineExpanded = !timelineExpanded;
+    document.querySelectorAll('.tl-details').forEach(d => {
+      d.style.maxHeight = timelineExpanded ? d.scrollHeight + 80 + 'px' : '0';
+    });
+    expandBtn.innerHTML = timelineExpanded ? '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> Hide Tactics <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg>' : '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> Reveal Tactics <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg>';
+  });
+
+  //  TIMELINE CLICK 
+  document.querySelectorAll('.tl-item').forEach(item => {
+    item.addEventListener('click', function(){
+      const details = this.querySelector('.tl-details');
+      const isOpen = details.style.maxHeight && details.style.maxHeight !== '0px';
+      document.querySelectorAll('.tl-details').forEach(d => d.style.maxHeight = '0');
+      if (!isOpen) {
+        details.style.maxHeight = details.scrollHeight + 80 + 'px';
+      }
+    });
+  });
+
+  //  QUOTE SLIDER 
+  (function(){
+    const slider = document.getElementById('quoteSlider');
+    const nav = document.getElementById('quoteNav');
+    const slides = slider.querySelectorAll('.quote-slide');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'quote-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      nav.appendChild(dot);
+    });
+
+    function goTo(i){
+      current = i;
+      slides.forEach((slide, idx) => {
+        slide.style.transform = `translateX(-${current * 100}%)`;
+      });
+      nav.querySelectorAll('.quote-dot').forEach((d, idx) => {
+        d.classList.toggle('active', idx === current);
+      });
+    }
+
+    setInterval(() => {
+      goTo((current + 1) % slides.length);
+    }, 5000);
+  })();
+
+  //  SCROLL REVEAL 
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.seducer-card, .key-item, .anti-item, .tl-item').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

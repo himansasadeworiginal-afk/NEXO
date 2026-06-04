@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Millionaire Master Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--emerald:#046A38;--emerald-dark:#023a1e;--emerald-light:#0a8a4a;--gold:#D4AF37;--gold-light:#e8c84a;--gold-dark:#b8960e;--charcoal:#1a1a1a;--charcoal-light:#2a2a2a;--white:#ffffff;--off-white:#f5f2eb;--cream:#faf8f3;--bg:#0d0d0d;--bg-card:#1a1a1a;--text:#e0e0e0;--text-muted:#999;--heading:#ffffff;--border:#2a2a2a;--glow:rgba(4,106,56,0.3);--gold-glow:rgba(212,175,55,0.2);--transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94)}
+[data-theme="light"]{--bg:#faf8f3;--bg-card:#ffffff;--text:#333333;--text-muted:#777777;--heading:#1a1a1a;--border:#e0dcd3;--glow:rgba(4,106,56,0.15);--gold-glow:rgba(212,175,55,0.1);--charcoal-light:#f0ede6}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;transition:background var(--transition),color var(--transition)}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--charcoal)}
+::-webkit-scrollbar-thumb{background:var(--emerald);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+/* Animated Background */
+#particles-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.content{position:relative;z-index:1}
+
+/* Theme Toggle */
+.theme-toggle{position:fixed;top:24px;right:24px;z-index:100;background:var(--bg-card);border:1px solid var(--border);border-radius:50px;width:56px;height:28px;cursor:pointer;display:flex;align-items:center;padding:3px;transition:all var(--transition);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.theme-toggle:hover{border-color:var(--gold)}
+.theme-toggle .toggle-knob{width:22px;height:22px;border-radius:50%;background:var(--gold);transition:transform var(--transition);display:flex;align-items:center;justify-content:center;font-size:12px}
+[data-theme="light"] .theme-toggle .toggle-knob{transform:translateX(28px)}
+.theme-toggle .toggle-knob .icon{transition:opacity 0.3s}
+[data-theme="dark"] .theme-toggle .toggle-knob .sun{display:none}
+[data-theme="light"] .theme-toggle .toggle-knob .moon{display:none}
+.theme-toggle .toggle-knob .sun,.theme-toggle .toggle-knob .moon{line-height:1}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;position:relative}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center, rgba(4,106,56,0.15) 0%, transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border:1px solid var(--gold);border-radius:50px;font-size:0.8rem;font-weight:500;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:2rem;backdrop-filter:blur(10px);background:rgba(212,175,55,0.05)}
+.hero h1{font-size:clamp(2.5rem,8vw,6rem);font-weight:900;color:var(--heading);line-height:1.05;margin-bottom:1.5rem;letter-spacing:-2px}
+.hero h1 .emerald{color:var(--emerald-light)}
+.hero h1 .gold{color:var(--gold)}
+.hero-subtitle{font-size:clamp(1rem,2vw,1.3rem);color:var(--text-muted);max-width:600px;margin-bottom:2.5rem;font-weight:300;line-height:1.7}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.hero-cta a{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;border-radius:50px;font-weight:600;font-size:0.95rem;text-decoration:none;transition:all 0.3s;letter-spacing:0.5px}
+.hero-cta .primary{background:linear-gradient(135deg,var(--emerald),var(--emerald-light));color:var(--white);border:none;box-shadow:0 4px 20px rgba(4,106,56,0.4)}
+.hero-cta .primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(4,106,56,0.5)}
+.hero-cta .secondary{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.hero-cta .secondary:hover{background:rgba(212,175,55,0.1);transform:translateY(-2px)}
+.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;animation:bounce 2s infinite}
+.scroll-indicator .arrow{width:20px;height:20px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg);animation:arrowPulse 2s infinite}
+@keyframes bounce{0%,20%,50%,80%,100%{transform:translateX(-50%) translateY(0)}40%{transform:translateX(-50%) translateY(-10px)}60%{transform:translateX(-50%) translateY(-5px)}}
+@keyframes arrowPulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+/* Sections */
+section{padding:6rem 2rem;max-width:1200px;margin:0 auto}
+.section-label{display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.section-title{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;color:var(--heading);margin-bottom:1rem;letter-spacing:-1px}
+.section-subtitle{font-size:1.1rem;color:var(--text-muted);max-width:650px;margin-bottom:3rem;font-weight:300;line-height:1.7}
+
+/* Fade Reveal */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s ease,transform 0.8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+.reveal-delay-4{transition-delay:0.4s}
+
+/* Stats Section */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:2rem}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;text-align:center;transition:all 0.3s}
+.stat-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 12px 40px var(--gold-glow)}
+.stat-number{font-size:2.8rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--emerald-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2}
+.stat-label{font-size:0.85rem;color:var(--text-muted);margin-top:0.5rem;font-weight:500}
+
+/* Wealth Spectrum */
+.spectrum-section{background:linear-gradient(180deg,transparent,var(--bg-card),transparent);padding:6rem 2rem;margin:0}
+.spectrum-section .section-inner{max-width:1200px;margin:0 auto}
+.spectrum-ladder{display:flex;flex-direction:column;gap:6px;padding:1rem 0}
+.spectrum-stage{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-radius:12px;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:all 0.4s;position:relative;overflow:hidden}
+.spectrum-stage::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--emerald);transition:width 0.4s}
+.spectrum-stage:hover{transform:translateX(8px);border-color:var(--emerald);box-shadow:0 4px 20px var(--glow)}
+.spectrum-stage.active{border-color:var(--gold);box-shadow:0 4px 30px var(--gold-glow)}
+.spectrum-stage.active::before{background:var(--gold);width:6px}
+.spectrum-stage .stage-num{font-size:1.5rem;font-weight:900;color:var(--gold);min-width:40px;text-align:center;font-feature-settings:"tnum"}
+.spectrum-stage .stage-name{font-size:1.05rem;font-weight:700;color:var(--heading);flex:1}
+.spectrum-stage .stage-desc{font-size:0.85rem;color:var(--text-muted);display:none;max-width:400px}
+.spectrum-stage.expanded .stage-desc{display:block}
+.spectrum-stage .stage-icon{font-size:1.5rem;width:40px;text-align:center}
+.spectrum-stage .stage-status{width:12px;height:12px;border-radius:50%;background:var(--border);flex-shrink:0;transition:all 0.4s}
+.spectrum-stage .stage-status.completed{background:var(--emerald);box-shadow:0 0 10px var(--glow)}
+.spectrum-stage .stage-status.current{background:var(--gold);box-shadow:0 0 15px var(--gold-glow)}
+
+/* Thermometer visualization */
+.thermometer-container{margin:2rem 0;padding:0 1rem}
+.thermometer{width:100%;height:12px;background:var(--border);border-radius:6px;position:relative;overflow:hidden}
+.thermometer-fill{height:100%;background:linear-gradient(90deg,var(--emerald),var(--gold));border-radius:6px;transition:width 1.5s cubic-bezier(0.25,0.46,0.45,0.94);width:0%}
+.thermometer-labels{display:flex;justify-content:space-between;margin-top:0.5rem;font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+
+/* Wealth DNA / Personality Types */
+.dna-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem}
+.dna-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;text-align:center;transition:all 0.4s;cursor:pointer;position:relative;overflow:hidden}
+.dna-card::after{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,var(--gold-glow),transparent 70%);opacity:0;transition:opacity 0.4s;pointer-events:none}
+.dna-card:hover::after{opacity:1}
+.dna-card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 12px 40px var(--gold-glow)}
+.dna-card.selected{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 12px 40px var(--gold-glow)}
+.dna-card .dna-icon{width:72px;height:72px;border-radius:50%;margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center;font-size:2rem;border:2px solid var(--border);transition:all 0.4s}
+.dna-card:hover .dna-icon{border-color:var(--gold);transform:scale(1.1)}
+.dna-card .dna-name{font-size:1.25rem;font-weight:700;color:var(--heading);margin-bottom:0.3rem}
+.dna-card .dna-type{font-size:0.8rem;color:var(--gold);font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.8rem}
+.dna-card .dna-desc{font-size:0.85rem;color:var(--text-muted);line-height:1.6}
+.dna-card .dna-traits{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:1rem}
+.dna-card .dna-traits span{padding:3px 12px;border-radius:50px;background:rgba(4,106,56,0.1);border:1px solid rgba(4,106,56,0.2);font-size:0.7rem;font-weight:500;color:var(--emerald-light)}
+[data-theme="light"] .dna-card .dna-traits span{background:rgba(4,106,56,0.05)}
+
+/* Pathways */
+.pathways-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem}
+.pathway-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all 0.4s;position:relative}
+.pathway-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--emerald),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform 0.4s}
+.pathway-card:hover::before{transform:scaleX(1)}
+.pathway-card:hover{transform:translateY(-6px);border-color:var(--emerald);box-shadow:0 12px 40px var(--glow)}
+.pathway-card .path-icon{font-size:2.2rem;margin-bottom:1rem}
+.pathway-card .path-name{font-size:1.15rem;font-weight:700;color:var(--heading);margin-bottom:0.5rem}
+.pathway-card .path-desc{font-size:0.85rem;color:var(--text-muted);line-height:1.6}
+.pathway-card .path-link{display:inline-flex;align-items:center;gap:6px;margin-top:1rem;font-size:0.85rem;font-weight:600;color:var(--gold);text-decoration:none;transition:gap 0.3s}
+.pathway-card .path-link:hover{gap:12px}
+
+/* Quiz */
+.quiz-section{background:linear-gradient(135deg,rgba(4,106,56,0.05),rgba(212,175,55,0.05));border-radius:24px;padding:4rem 3rem;margin:4rem auto;max-width:900px}
+.quiz-question{font-size:1.3rem;font-weight:700;color:var(--heading);margin-bottom:1.5rem}
+.quiz-options{display:flex;flex-direction:column;gap:0.8rem}
+.quiz-option{display:flex;align-items:center;gap:12px;padding:1rem 1.5rem;border-radius:12px;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:all 0.3s;font-size:0.95rem;color:var(--text)}
+.quiz-option:hover{border-color:var(--gold);background:rgba(212,175,55,0.05)}
+.quiz-option.selected{border-color:var(--gold);background:rgba(212,175,55,0.1);box-shadow:0 0 0 1px var(--gold)}
+.quiz-option .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s}
+.quiz-option.selected .radio{border-color:var(--gold)}
+.quiz-option.selected .radio::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--gold)}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:2rem}
+.quiz-btn{padding:12px 28px;border-radius:50px;font-weight:600;font-size:0.9rem;cursor:pointer;transition:all 0.3s;border:none}
+.quiz-btn.prev{background:transparent;border:1px solid var(--border);color:var(--text)}
+.quiz-btn.prev:hover{border-color:var(--gold);color:var(--gold)}
+.quiz-btn.next,.quiz-btn.submit{background:linear-gradient(135deg,var(--emerald),var(--emerald-light));color:var(--white);box-shadow:0 4px 15px var(--glow)}
+.quiz-btn.next:hover,.quiz-btn.submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px var(--glow)}
+.quiz-progress{display:flex;gap:6px;justify-content:center;margin-bottom:2rem}
+.quiz-progress .dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:all 0.3s}
+.quiz-progress .dot.active{background:var(--gold);transform:scale(1.3)}
+.quiz-progress .dot.done{background:var(--emerald)}
+.quiz-result{text-align:center;padding:2rem}
+.quiz-result .result-type{font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--emerald-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem}
+.quiz-result .result-desc{font-size:1rem;color:var(--text-muted);max-width:500px;margin:0 auto 1.5rem;line-height:1.7}
+.quiz-result .result-traits{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.5rem}
+.quiz-result .result-traits span{padding:5px 16px;border-radius:50px;background:rgba(4,106,56,0.1);border:1px solid var(--emerald);color:var(--emerald-light);font-size:0.85rem;font-weight:500}
+
+/* Pathway Generator */
+.generator-container{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;margin-top:2rem}
+.generator-container select,.generator-container input{width:100%;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.95rem;font-family:'Inter',sans-serif;transition:all 0.3s;margin-bottom:1rem}
+.generator-container select:focus,.generator-container input:focus{outline:none;border-color:var(--gold)}
+.generator-container select option{background:var(--bg-card);color:var(--text)}
+.generator-output{display:none;padding:1.5rem;border-radius:12px;background:linear-gradient(135deg,rgba(4,106,56,0.1),rgba(212,175,55,0.05));border:1px solid var(--emerald);margin-top:1.5rem;line-height:1.8;color:var(--text)}
+.generator-output.show{display:block}
+.generator-output strong{color:var(--gold)}
+
+/* Milestone Tracker */
+.milestones{display:flex;flex-direction:column;gap:0.5rem;margin-top:2rem}
+.milestone-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-radius:12px;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:all 0.3s}
+.milestone-item:hover{border-color:var(--emerald);transform:translateX(4px)}
+.milestone-item.completed{opacity:0.6}
+.milestone-item.completed .milestone-check{background:var(--emerald);color:var(--white)}
+.milestone-item.active{border-color:var(--gold);box-shadow:0 4px 20px var(--gold-glow)}
+.milestone-check{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s;font-size:0.8rem}
+.milestone-item.active .milestone-check{border-color:var(--gold);background:rgba(212,175,55,0.1)}
+.milestone-info{flex:1}
+.milestone-info .ms-title{font-size:0.95rem;font-weight:600;color:var(--heading)}
+.milestone-info .ms-desc{font-size:0.8rem;color:var(--text-muted)}
+
+/* Quotes */
+.quotes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-top:2rem}
+.quote-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2.5rem 2rem;position:relative;transition:all 0.3s}
+.quote-card:hover{border-color:var(--gold);transform:translateY(-4px)}
+.quote-card::before{content:'\201C';position:absolute;top:10px;left:20px;font-size:4rem;color:var(--gold);opacity:0.2;font-family:Georgia,serif;line-height:1}
+.quote-card blockquote{font-size:1rem;font-style:italic;color:var(--text);line-height:1.7;margin-bottom:1rem}
+.quote-card .attribution{font-size:0.8rem;font-weight:600;color:var(--gold);letter-spacing:1px}
+
+/* Principles */
+.principles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.principle-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;display:flex;gap:1rem;align-items:flex-start;transition:all 0.3s}
+.principle-card:hover{border-color:var(--emerald);transform:translateY(-2px)}
+.principle-card .p-num{font-size:2rem;font-weight:900;color:var(--gold);opacity:0.5;line-height:1;min-width:40px}
+.principle-card .p-content h4{font-size:1rem;font-weight:700;color:var(--heading);margin-bottom:0.4rem}
+.principle-card .p-content p{font-size:0.85rem;color:var(--text-muted);line-height:1.6}
+
+/* Footer */
+footer{background:var(--charcoal);border-top:1px solid var(--border);padding:4rem 2rem;text-align:center;margin-top:4rem}
+[data-theme="light"] footer{background:var(--off-white)}
+footer .footer-brand{font-size:1.3rem;font-weight:800;color:var(--gold);margin-bottom:0.5rem;letter-spacing:-0.5px}
+footer .footer-text{font-size:0.85rem;color:var(--text-muted);max-width:500px;margin:0 auto 1.5rem}
+footer .footer-divider{width:60px;height:2px;background:linear-gradient(90deg,var(--emerald),var(--gold));margin:0 auto 1.5rem;border-radius:2px}
+footer .footer-copy{font-size:0.75rem;color:var(--text-muted);opacity:0.6}
+
+/* Mobile */
+@media(max-width:768px){
+  section{padding:4rem 1.5rem}
+  .hero h1{letter-spacing:-1px}
+  .quiz-section{padding:2rem 1.5rem}
+  .quiz-result .result-type{font-size:1.8rem}
+  .spectrum-stage{padding:0.8rem 1rem}
+  .spectrum-stage .stage-desc{font-size:0.78rem}
+  .generator-container{padding:1.5rem}
+}
+@media(max-width:480px){
+  .hero-cta a{padding:14px 28px;font-size:0.85rem}
+  .stat-card{padding:1.5rem}
+  .dna-card{padding:1.5rem}
+  .quotes-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+  <span class="toggle-knob">
+    <span class="icon sun">&#9788;</span>
+    <span class="icon moon">&#9790;</span>
+  </span>
+</button>
+
+<div class="content">
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">&#9733; Your Personal Path to Financial Freedom</div>
+  <h1>The Millionaire<br><span class="emerald">Master</span> <span class="gold">Plan</span></h1>
+  <p class="hero-subtitle">Discover your Wealth DNA, unlock your unique path through the Wealth Spectrum, and build a life of purpose, prosperity, and freedom.</p>
+  <div class="hero-cta">
+    <a href="#quiz" class="primary">&#9878; Find Your Wealth Type</a>
+    <a href="#spectrum" class="secondary">&#8595; Explore the Spectrum</a>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section>
+  <div class="reveal">
+    <div class="section-label">&#9889; At a Glance</div>
+    <h2 class="section-title">The Framework for Wealth</h2>
+    <p class="section-subtitle">Roger James Hamilton's proven system has helped thousands discover their financial path.</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card reveal reveal-delay-1"><div class="stat-number">9</div><div class="stat-label">Wealth Spectrum Stages</div></div>
+    <div class="stat-card reveal reveal-delay-2"><div class="stat-number">4</div><div class="stat-label">Wealth DNA Types</div></div>
+    <div class="stat-card reveal reveal-delay-3"><div class="stat-number">4</div><div class="stat-label">Pathways to Wealth</div></div>
+    <div class="stat-card reveal reveal-delay-4"><div class="stat-number">10</div><div class="stat-label">Key Principles</div></div>
+  </div>
+</section>
+
+<!-- Wealth Spectrum -->
+<section id="spectrum" class="spectrum-section">
+<div class="section-inner">
+  <div class="reveal">
+    <div class="section-label">&#9650; The Wealth Spectrum</div>
+    <h2 class="section-title">From Survival to Abundance</h2>
+    <p class="section-subtitle">Nine stages that map your journey from financial struggle to total freedom. Click each stage to learn more.</p>
+  </div>
+
+  <div class="thermometer-container reveal">
+    <div class="thermometer"><div class="thermometer-fill" id="thermometerFill"></div></div>
+    <div class="thermometer-labels"><span>Survival</span><span>Abundance</span></div>
+  </div>
+
+  <div class="spectrum-ladder" id="spectrumLadder">
+    <div class="spectrum-stage" data-stage="-1" onclick="toggleStage(this)">
+      <span class="stage-icon">&#9762;</span>
+      <span class="stage-num">-1</span>
+      <span class="stage-name">Survival</span>
+      <span class="stage-desc">Scrambling to meet basic needs. Living paycheck to paycheck, focused on day-to-day survival with no financial cushion.</span>
+      <span class="stage-status" id="status--1"></span>
+    </div>
+    <div class="spectrum-stage" data-stage="0" onclick="toggleStage(this)">
+      <span class="stage-icon">&#9971;</span>
+      <span class="stage-num">0</span>
+      <span class="stage-name">Stability</span>
+      <span class="stage-desc">Expenses are covered. You have a reliable income stream and are no longer in crisis mode, but savings are minimal.</span>
+      <span class="stage-status" id="status-0"></span>
+    </div>
+    <div class="spectrum-stage" data-stage="1" onclick="toggleStage(this)">
+      <span class="stage-icon">&#9733;</span>
+      <span class="stage-num">1</span>
+      <span class="stage-name">Success</span>
+      <span class="stage-desc">Income exceeds expenses. You're building momentum, growing your skills, and starting to accumulate wealth intentionally.</span>
+      <span class="stage-status" id="status-1"></span>
+    </div>
+    <div class="spectrum-stage" data-stage="2" onclick="toggleStage(this)">
+      <span class="stage-icon">&#128737;</span>
+      <span class="stage-num">2</span>
+      <span class="stage-name">Security</span>
+      <span class="stage-desc">Financial safety net in place. Multiple income streams, emergency fund secured, and wealth preservation becomes the focus.</span>
+      <span class="stage-status" id="status-2"></span>
+    </div>
+    <div class="spectrum-stage" data-stage="3" onclick="toggleStage(this)">
+      <span class="stage-icon">&#127775;</span>
+      <span class="stage-num">3</span>
+      <span class="stage-name">Significance</span>
+      <span class="stage-desc">Wealth with purpose. You begin using your resources to make a difference — philanthropy, mentoring, and impact investing.</span>
+      <span class="stage-status" id="status-3"></span>
+    </div>
+    <div class="spectrum-stage" data-stage="4" onclick="toggleStage(this)">
+      <span class="stage-icon">&#128742;</span>
+      <span class="stage-num">4</span>
+      <span class="stage-name">Succession</span>
+      <span class="stage-desc">Building legacy systems. You create structures and systems that generate wealth without your direct involvement.</span>
+      <span class="stage-status" id="status-4"></span>
+    </div>
+    <div class="spectrum-stage" data-stage="5" onclick="toggleStage(this)">
+      <span class="stage-icon">&#9788;</span>
+      <span class="stage-num">5</span>
+      <span class="stage-name">Serenity</span>
+      <span class="stage-desc">Complete peace of mind. Wealth serves you, not the other way around. You operate from a place of calm abundance.</span>
+      <span class="stage-status" id="status-5"></span>
+    </div>
+    <div class="spectrum-stage" data-stage="6" onclick="toggleStage(this)">
+      <span class="stage-icon">&#10024;</span>
+      <span class="stage-num">6</span>
+      <span class="stage-name">Simplicity</span>
+      <span class="stage-desc">Freedom from complexity. You've streamlined your life and wealth to focus only on what truly matters to you.</span>
+      <span class="stage-status" id="status-6"></span>
+    </div>
+    <div class="spectrum-stage" data-stage="7" onclick="toggleStage(this)">
+      <span class="stage-icon">&#9851;</span>
+      <span class="stage-num">7</span>
+      <span class="stage-name">Abundance</span>
+      <span class="stage-desc">Infinite flow. Wealth circulates freely through you and from you. You live in complete alignment with your purpose.</span>
+      <span class="stage-status" id="status-7"></span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Wealth DNA -->
+<section id="dna">
+  <div class="reveal">
+    <div class="section-label">&#129497; Your Wealth DNA</div>
+    <h2 class="section-title">Find Your Wealth Personality</h2>
+    <p class="section-subtitle">Everyone has a natural wealth archetype. Discover yours and unlock the pathway that aligns with who you truly are.</p>
+  </div>
+
+  <div class="dna-grid">
+    <div class="dna-card reveal reveal-delay-1" onclick="selectDna(this)" data-type="dynamo">
+      <div class="dna-icon" style="border-color:var(--gold)">&#9889;</div>
+      <div class="dna-name">Dynamo</div>
+      <div class="dna-type">The Creator</div>
+      <div class="dna-desc">High energy, visionary, and idea-driven. You thrive on innovation and turning concepts into reality. Your wealth comes from creating value others haven't imagined.</div>
+      <div class="dna-traits"><span>Visionary</span><span>Innovator</span><span>Risk-Taker</span><span>Leader</span></div>
+    </div>
+    <div class="dna-card reveal reveal-delay-2" onclick="selectDna(this)" data-type="blaze">
+      <div class="dna-icon" style="border-color:var(--gold)">&#127775;</div>
+      <div class="dna-name">Blaze</div>
+      <div class="dna-type">The Star</div>
+      <div class="dna-desc">Charismatic, expressive, and people-focused. You inspire others and build wealth through influence, networks, and personal brand.</div>
+      <div class="dna-traits"><span>Charismatic</span><span>Influencer</span><span>Connector</span><span>Communicator</span></div>
+    </div>
+    <div class="dna-card reveal reveal-delay-3" onclick="selectDna(this)" data-type="tempo">
+      <div class="dna-icon" style="border-color:var(--gold)">&#128154;</div>
+      <div class="dna-name">Tempo</div>
+      <div class="dna-type">The Supporter</div>
+      <div class="dna-desc">Nurturing, reliable, and relationship-driven. You build wealth through trust, service, and long-term partnerships that create lasting value.</div>
+      <div class="dna-traits"><span>Nurturer</span><span>Loyal</span><span>Empathetic</span><span>Steadfast</span></div>
+    </div>
+    <div class="dna-card reveal reveal-delay-4" onclick="selectDna(this)" data-type="steel">
+      <div class="dna-icon" style="border-color:var(--gold)">&#9878;</div>
+      <div class="dna-name">Steel</div>
+      <div class="dna-type">The Dealer</div>
+      <div class="dna-desc">Analytical, strategic, and system-driven. You build wealth through precision, optimization, and mastering the mechanics of money.</div>
+      <div class="dna-traits"><span>Analytical</span><span>Strategic</span><span>Disciplined</span><span>Precise</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Quiz -->
+<section id="quiz" class="quiz-section reveal">
+  <div class="section-label" style="text-align:center;display:flex;justify-content:center">&#128220; Discover Your Type</div>
+  <h2 class="section-title" style="text-align:center">Wealth DNA Quiz</h2>
+  <p class="section-subtitle" style="text-align:center;margin:0 auto 2rem">Answer a few questions to find your natural wealth personality.</p>
+
+  <div id="quizContainer">
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div id="quizContent"></div>
+    <div class="quiz-nav" id="quizNav"></div>
+  </div>
+</section>
+
+<!-- Pathways -->
+<section id="pathways">
+  <div class="reveal">
+    <div class="section-label">&#128640; Your Pathway</div>
+    <h2 class="section-title">The 4 Pathways to Wealth</h2>
+    <p class="section-subtitle">Each Wealth DNA type has a natural pathway. Align yours and accelerate your journey.</p>
+  </div>
+
+  <div class="pathways-grid">
+    <div class="pathway-card reveal reveal-delay-1">
+      <div class="path-icon">&#9889;</div>
+      <div class="path-name">The Creator Pathway</div>
+      <div class="path-desc">Build new products, services, and ventures. Your wealth grows through innovation, intellectual property, and bringing bold ideas to market. Best for: Dynamos.</div>
+      <a class="path-link" href="#quiz">Find your path &#8594;</a>
+    </div>
+    <div class="pathway-card reveal reveal-delay-2">
+      <div class="path-icon">&#127775;</div>
+      <div class="path-name">The Star Pathway</div>
+      <div class="path-desc">Leverage your influence, network, and personal brand. Your wealth grows through visibility, relationships, and inspiring others to action. Best for: Blazes.</div>
+      <a class="path-link" href="#quiz">Find your path &#8594;</a>
+    </div>
+    <div class="pathway-card reveal reveal-delay-3">
+      <div class="path-icon">&#128154;</div>
+      <div class="path-name">The Supporter Pathway</div>
+      <div class="path-desc">Build deep relationships and provide unmatched service. Your wealth grows through trust, referrals, and long-term client partnerships. Best for: Tempos.</div>
+      <a class="path-link" href="#quiz">Find your path &#8594;</a>
+    </div>
+    <div class="pathway-card reveal reveal-delay-4">
+      <div class="path-icon">&#9878;</div>
+      <div class="path-name">The Dealer Pathway</div>
+      <div class="path-desc">Master systems, data, and strategic plays. Your wealth grows through efficiency, arbitrage, and building scalable automated engines. Best for: Steels.</div>
+      <a class="path-link" href="#quiz">Find your path &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<!-- Milestone Tracker -->
+<section>
+  <div class="reveal">
+    <div class="section-label">&#128204; Milestones</div>
+    <h2 class="section-title">Your Wealth Journey Tracker</h2>
+    <p class="section-subtitle">Click milestones to mark your progress along the Wealth Spectrum.</p>
+  </div>
+  <div class="milestones" id="milestones">
+    <div class="milestone-item" onclick="toggleMilestone(this)">
+      <div class="milestone-check">&#10003;</div>
+      <div class="milestone-info"><div class="ms-title">Achieve Financial Stability</div><div class="ms-desc">Cover all expenses with income to spare</div></div>
+    </div>
+    <div class="milestone-item" onclick="toggleMilestone(this)">
+      <div class="milestone-check">&#10003;</div>
+      <div class="milestone-info"><div class="ms-title">Build Your Emergency Fund</div><div class="ms-desc">6 months of living expenses saved</div></div>
+    </div>
+    <div class="milestone-item" onclick="toggleMilestone(this)">
+      <div class="milestone-check">&#10003;</div>
+      <div class="milestone-info"><div class="ms-title">Create Multiple Income Streams</div><div class="ms-desc">Diversify beyond your primary source</div></div>
+    </div>
+    <div class="milestone-item" onclick="toggleMilestone(this)">
+      <div class="milestone-check">&#10003;</div>
+      <div class="milestone-info"><div class="ms-title">Achieve Financial Security</div><div class="ms-desc">Assets generate enough to sustain your lifestyle</div></div>
+    </div>
+    <div class="milestone-item" onclick="toggleMilestone(this)">
+      <div class="milestone-check">&#10003;</div>
+      <div class="milestone-info"><div class="ms-title">Make Your First Impact</div><div class="ms-desc">Use wealth for a cause beyond yourself</div></div>
+    </div>
+    <div class="milestone-item" onclick="toggleMilestone(this)">
+      <div class="milestone-check">&#10003;</div>
+      <div class="milestone-info"><div class="ms-title">Build Legacy Systems</div><div class="ms-desc">Wealth-generating systems that run without you</div></div>
+    </div>
+    <div class="milestone-item" onclick="toggleMilestone(this)">
+      <div class="milestone-check">&#10003;</div>
+      <div class="milestone-info"><div class="ms-title">Live in Full Abundance</div><div class="ms-desc">Complete alignment with purpose and infinite flow</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Personalized Pathway Generator -->
+<section>
+  <div class="reveal">
+    <div class="section-label">&#128736; Custom Blueprint</div>
+    <h2 class="section-title">Personalized Pathway Generator</h2>
+    <p class="section-subtitle">Combine your Wealth DNA type and current spectrum stage to generate your custom action plan.</p>
+  </div>
+  <div class="generator-container reveal">
+    <label style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.3rem;display:block">Your Wealth DNA Type</label>
+    <select id="genDna">
+      <option value="dynamo">Dynamo — The Creator</option>
+      <option value="blaze">Blaze — The Star</option>
+      <option value="tempo">Tempo — The Supporter</option>
+      <option value="steel">Steel — The Dealer</option>
+    </select>
+    <label style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.3rem;display:block">Your Current Spectrum Stage</label>
+    <select id="genStage">
+      <option value="-1">-1: Survival</option>
+      <option value="0">0: Stability</option>
+      <option value="1">1: Success</option>
+      <option value="2">2: Security</option>
+      <option value="3">3: Significance</option>
+      <option value="4">4: Succession</option>
+      <option value="5">5: Serenity</option>
+      <option value="6">6: Simplicity</option>
+      <option value="7">7: Abundance</option>
+    </select>
+    <button class="quiz-btn submit" onclick="generatePathway()" style="width:100%;margin-top:0.5rem">&#9889; Generate My Pathway</button>
+    <div class="generator-output" id="genOutput"></div>
+  </div>
+</section>
+
+<!-- Principles -->
+<section>
+  <div class="reveal">
+    <div class="section-label">&#128214; Core Wisdom</div>
+    <h2 class="section-title">Key Principles &amp; Mindset Shifts</h2>
+    <p class="section-subtitle">The foundational beliefs that separate the wealthy from the rest.</p>
+  </div>
+
+  <div class="principles-grid">
+    <div class="principle-card reveal reveal-delay-1">
+      <span class="p-num">01</span>
+      <div class="p-content"><h4>Wealth is a Journey, Not a Destination</h4><p>Your net worth is a reflection of your journey through the Wealth Spectrum. Focus on progress, not perfection, and celebrate each stage.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-2">
+      <span class="p-num">02</span>
+      <div class="p-content"><h4>Play to Your Strengths</h4><p>Your Wealth DNA is your natural superpower. Stop trying to fit someone else's model. Build wealth the way that's natural to you.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-3">
+      <span class="p-num">03</span>
+      <div class="p-content"><h4>Your Network is Your Net Worth</h4><p>The people around you determine your ceiling. Surround yourself with those who are where you want to be, and your path will accelerate.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-1">
+      <span class="p-num">04</span>
+      <div class="p-content"><h4>Income is Not Wealth</h4><p>High income without systems and assets is just high spending. Real wealth is what you keep and what works for you while you sleep.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-2">
+      <span class="p-num">05</span>
+      <div class="p-content"><h4>Purpose Fuels Prosperity</h4><p>Wealth without meaning is hollow. The most successful people build wealth in service of a larger mission, which attracts more abundance.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-3">
+      <span class="p-num">06</span>
+      <div class="p-content"><h4>Systems Scale, You Don't</h4><p>To move from Success to Security and beyond, you must build systems that generate wealth independently of your personal effort.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-1">
+      <span class="p-num">07</span>
+      <div class="p-content"><h4>Abundance is a Mindset</h4><p>Scarcity thinking constrains your wealth. Shift to abundance — there is enough for everyone. Your success doesn't diminish others.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-2">
+      <span class="p-num">08</span>
+      <div class="p-content"><h4>Significance Follows Success</h4><p>You can't give what you don't have. Build your foundation first, then use your wealth to create impact. The order matters.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-3">
+      <span class="p-num">09</span>
+      <div class="p-content"><h4>Wealth Flows in Cycles</h4><p>Like nature, wealth moves in seasons. Understand the cycles of accumulation, preservation, and distribution to navigate them wisely.</p></div>
+    </div>
+    <div class="principle-card reveal reveal-delay-1">
+      <span class="p-num">10</span>
+      <div class="p-content"><h4>Your Legacy is Your Masterpiece</h4><p>The ultimate measure of wealth is what you leave behind — not just money, but the lives you've touched and the systems you've built.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Quotes -->
+<section>
+  <div class="reveal">
+    <div class="section-label">&#10077; Wisdom</div>
+    <h2 class="section-title">Words to Live By</h2>
+    <p class="section-subtitle">Timeless insights from The Millionaire Master Plan.</p>
+  </div>
+
+  <div class="quotes-grid">
+    <div class="quote-card reveal reveal-delay-1"><blockquote>The only way to move from one stage of the Wealth Spectrum to the next is to change who you are being, not just what you are doing.</blockquote><div class="attribution">— Roger James Hamilton</div></div>
+    <div class="quote-card reveal reveal-delay-2"><blockquote>Your Wealth DNA is your natural genius. When you work against it, you struggle. When you work with it, you soar.</blockquote><div class="attribution">— Roger James Hamilton</div></div>
+    <div class="quote-card reveal reveal-delay-3"><blockquote>Wealth is not about having more. It's about being more, loving more, and contributing more to the world.</blockquote><div class="attribution">— Roger James Hamilton</div></div>
+    <div class="quote-card reveal reveal-delay-1"><blockquote>Significance is the natural destination of success. The question isn't whether you will matter, but how soon you will start.</blockquote><div class="attribution">— Roger James Hamilton</div></div>
+    <div class="quote-card reveal reveal-delay-2"><blockquote>Stop chasing money. Start chasing your purpose. Money will chase you.</blockquote><div class="attribution">— Roger James Hamilton</div></div>
+    <div class="quote-card reveal reveal-delay-3"><blockquote>The Wealth Spectrum isn't a ladder to climb. It's a journey of becoming. Each stage transforms who you are.</blockquote><div class="attribution">— Roger James Hamilton</div></div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-divider"></div>
+  <div class="footer-brand">The Millionaire Master Plan</div>
+  <p class="footer-text">Based on the work of Roger James Hamilton. Discover your path, unlock your potential, and build a life of abundance.</p>
+  <p class="footer-copy">&copy; 2026 — Inspired by a vision of wealth with purpose.</p>
+</footer>
+
+</div>
+
+<script>
+// ========== Theme ==========
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+}
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+document.querySelector('.theme-toggle')?.addEventListener('click', () => {
+  const t = document.documentElement.getAttribute('data-theme');
+  localStorage.setItem('theme', t);
+});
+
+// ========== Animated Background ==========
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, symbols = [], mouseX = -9999, mouseY = -9999;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const wealthSymbols = ['\u25C6', '\u2605', '\u2666', '\u00A5', '\u20AC', '\u2606', '\u25C8', '\u2726', '\u263F', '\u262F'];
+  const count = 30;
+
+  for (let i = 0; i < count; i++) {
+    symbols.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      size: 12 + Math.random() * 28,
+      symbol: wealthSymbols[Math.floor(Math.random() * wealthSymbols.length)],
+      speedX: (Math.random() - 0.5) * 0.4,
+      speedY: (Math.random() - 0.5) * 0.4,
+      opacity: 0.04 + Math.random() * 0.08,
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.008,
+    });
+  }
+
+  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const baseColor = isLight ? '0,0,0' : '212,175,55';
+
+    for (const s of symbols) {
+      s.x += s.speedX;
+      s.y += s.speedY;
+      s.rotation += s.rotSpeed;
+      if (s.x > w + 50) s.x = -50;
+      if (s.x < -50) s.x = w + 50;
+      if (s.y > h + 50) s.y = -50;
+      if (s.y < -50) s.y = h + 50;
+
+      const dx = s.x - mouseX, dy = s.y - mouseY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      let opacity = s.opacity;
+      if (dist < 200) opacity += (1 - dist / 200) * 0.08;
+
+      ctx.save();
+      ctx.translate(s.x, s.y);
+      ctx.rotate(s.rotation);
+      ctx.font = `${s.size}px "Inter", sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = `rgba(${baseColor},${Math.min(opacity, 0.15)})`;
+      ctx.fillText(s.symbol, 0, 0);
+      ctx.restore();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ========== Scroll Reveal ==========
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ========== Spectrum Thermometer ==========
+(function() {
+  const stages = document.querySelectorAll('.spectrum-stage');
+  const fill = document.getElementById('thermometerFill');
+  if (!fill || !stages.length) return;
+
+  function updateThermometer() {
+    let currentIndex = 0;
+    stages.forEach((s, i) => {
+      if (s.classList.contains('active')) currentIndex = i + 1;
+    });
+    const pct = (currentIndex / stages.length) * 100;
+    fill.style.width = pct + '%';
+  }
+
+  window.updateThermometer = updateThermometer;
+  // Set initial
+  setTimeout(updateThermometer, 500);
+})();
+
+// ========== Spectrum Stage Toggle ==========
+function toggleStage(el) {
+  el.classList.toggle('expanded');
+  el.classList.add('active');
+  const allStages = document.querySelectorAll('.spectrum-stage');
+  allStages.forEach(s => { if (s !== el) s.classList.remove('active'); });
+  if (typeof updateThermometer === 'function') updateThermometer();
+}
+
+// ========== DNA Card Selection ==========
+function selectDna(el) {
+  document.querySelectorAll('.dna-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ========== Milestone Tracker ==========
+function toggleMilestone(el) {
+  el.classList.toggle('completed');
+}
+
+// ========== Quiz ==========
+const quizQuestions = [
+  {
+    q: 'When starting a new project, what excites you most?',
+    options: [
+      { text: 'The bold vision and creative possibilities', type: 'dynamo' },
+      { text: 'The chance to inspire and rally people', type: 'blaze' },
+      { text: 'Building meaningful relationships through it', type: 'tempo' },
+      { text: 'The strategy and systems to make it work', type: 'steel' },
+    ]
+  },
+  {
+    q: 'How do you prefer to solve problems?',
+    options: [
+      { text: 'Invent something new and original', type: 'dynamo' },
+      { text: 'Collaborate and talk it through with others', type: 'blaze' },
+      { text: 'Rely on trusted relationships and past experience', type: 'tempo' },
+      { text: 'Analyze data and optimize the process', type: 'steel' },
+    ]
+  },
+  {
+    q: 'What describes your ideal work environment?',
+    options: [
+      { text: 'Fast-paced, dynamic, and full of possibilities', type: 'dynamo' },
+      { text: 'Energetic, social, and collaborative', type: 'blaze' },
+      { text: 'Harmonious, supportive, and stable', type: 'tempo' },
+      { text: 'Structured, efficient, and organized', type: 'steel' },
+    ]
+  },
+  {
+    q: 'What is your greatest strength?',
+    options: [
+      { text: 'Turning ideas into reality', type: 'dynamo' },
+      { text: 'Connecting and inspiring people', type: 'blaze' },
+      { text: 'Building deep trust and loyalty', type: 'tempo' },
+      { text: 'Creating efficient systems and strategies', type: 'steel' },
+    ]
+  },
+];
+
+let quizIndex = 0;
+let quizAnswers = {};
+
+const quizContent = document.getElementById('quizContent');
+const quizNav = document.getElementById('quizNav');
+const quizProgress = document.getElementById('quizProgress');
+
+function renderQuiz() {
+  if (!quizContent || !quizNav || !quizProgress) return;
+
+  // Progress dots
+  quizProgress.innerHTML = quizQuestions.map((_, i) =>
+    `<span class="dot ${i < quizIndex ? 'done' : ''} ${i === quizIndex ? 'active' : ''}"></span>`
+  ).join('');
+
+  const q = quizQuestions[quizIndex];
+  quizContent.innerHTML = `
+    <div class="quiz-question">${q.q}</div>
+    <div class="quiz-options">
+      ${q.options.map((opt, i) => {
+        const selected = quizAnswers[quizIndex] === i ? 'selected' : '';
+        return `<div class="quiz-option ${selected}" data-index="${i}" onclick="selectQuizOption(this, ${i})"><span class="radio"></span>${opt.text}</div>`;
+      }).join('')}
+    </div>
+  `;
+
+  const isLast = quizIndex === quizQuestions.length - 1;
+  const isFirst = quizIndex === 0;
+  const hasAnswer = quizAnswers[quizIndex] !== undefined;
+
+  let navHtml = '';
+  if (isFirst) {
+    navHtml += '<div></div>';
+  } else {
+    navHtml += `<button class="quiz-btn prev" onclick="prevQuiz()">&#8592; Back</button>`;
+  }
+
+  if (isLast) {
+    navHtml += `<button class="quiz-btn submit" onclick="submitQuiz()" ${!hasAnswer ? 'disabled' : ''}>See My Result &#8594;</button>`;
+  } else {
+    navHtml += `<button class="quiz-btn next" onclick="nextQuiz()" ${!hasAnswer ? 'disabled' : ''}>Next &#8594;</button>`;
+  }
+  quizNav.innerHTML = navHtml;
+
+  // Disable styling for disabled buttons
+  quizNav.querySelectorAll('button[disabled]').forEach(b => {
+    b.style.opacity = '0.4';
+    b.style.cursor = 'not-allowed';
+  });
+}
+
+function selectQuizOption(el, idx) {
+  document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  quizAnswers[quizIndex] = idx;
+  renderQuiz();
+}
+
+function nextQuiz() {
+  if (quizAnswers[quizIndex] === undefined) return;
+  if (quizIndex < quizQuestions.length - 1) {
+    quizIndex++;
+    renderQuiz();
+  }
+}
+
+function prevQuiz() {
+  if (quizIndex > 0) {
+    quizIndex--;
+    renderQuiz();
+  }
+}
+
+function submitQuiz() {
+  const counts = { dynamo: 0, blaze: 0, tempo: 0, steel: 0 };
+  for (let i = 0; i < quizQuestions.length; i++) {
+    const ansIdx = quizAnswers[i];
+    if (ansIdx !== undefined) {
+      const type = quizQuestions[i].options[ansIdx].type;
+      counts[type]++;
+    }
+  }
+
+  let resultType = 'dynamo';
+  let maxCount = 0;
+  for (const [type, count] of Object.entries(counts)) {
+    if (count > maxCount) { maxCount = count; resultType = type; }
+  }
+
+  const resultData = {
+    dynamo: { name: 'Dynamo', subtype: 'The Creator', emoji: '&#9889;', desc: 'You are a natural visionary and innovator. Your wealth path lies in creating new value — products, services, and ventures that didn\'t exist before. Embrace your bold ideas and bring them to life.', traits: ['Visionary', 'Innovator', 'Risk-Taker', 'Leader'] },
+    blaze: { name: 'Blaze', subtype: 'The Star', emoji: '&#127775;', desc: 'You are a charismatic influencer and connector. Your wealth path lies in inspiring others, building your personal brand, and leveraging your network. Your presence is your power.', traits: ['Charismatic', 'Influencer', 'Connector', 'Communicator'] },
+    tempo: { name: 'Tempo', subtype: 'The Supporter', emoji: '&#128154;', desc: 'You are a nurturing relationship-builder. Your wealth path lies in trust, service, and long-term partnerships. People are drawn to your reliability and genuine care.', traits: ['Nurturer', 'Loyal', 'Empathetic', 'Steadfast'] },
+    steel: { name: 'Steel', subtype: 'The Dealer', emoji: '&#9878;', desc: 'You are a strategic analyst and system-builder. Your wealth path lies in mastering the mechanics of money — optimization, efficiency, and scalable systems.', traits: ['Analytical', 'Strategic', 'Disciplined', 'Precise'] },
+  };
+
+  const r = resultData[resultType];
+  quizContent.innerHTML = `
+    <div class="quiz-result">
+      <div style="font-size:3rem;margin-bottom:0.5rem">${r.emoji}</div>
+      <div class="result-type">${r.name}</div>
+      <div style="font-size:1rem;font-weight:600;color:var(--gold);margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase">${r.subtype}</div>
+      <div class="result-desc">${r.desc}</div>
+      <div class="result-traits">${r.traits.map(t => `<span>${t}</span>`).join('')}</div>
+      <button class="quiz-btn submit" onclick="resetQuiz()" style="margin-top:0.5rem">Take Again</button>
+    </div>
+  `;
+  quizNav.innerHTML = '';
+  quizProgress.innerHTML = '';
+}
+
+function resetQuiz() {
+  quizIndex = 0;
+  quizAnswers = {};
+  renderQuiz();
+}
+
+// Init quiz
+renderQuiz();
+
+// ========== Pathway Generator ==========
+const pathwayData = {
+  dynamo: {
+    '-1': { focus: 'Focus: Turn one bold idea into a micro-venture. Start small, sell fast, and build momentum. Your creativity is your escape route from survival.', next: 'Aim for Stage 0: Stability by generating consistent small wins.' },
+    '0': { focus: 'Focus: Develop a scalable product or service. Move from trading time for money to selling a repeatable solution.', next: 'Aim for Stage 1: Success by building a proven offer.' },
+    '1': { focus: 'Focus: Systemize your innovation. Document your process, build a team, and create intellectual property that multiplies your value.', next: 'Aim for Stage 2: Security by creating assets that work without you.' },
+    '2': { focus: 'Focus: Launch a portfolio of ventures. Use your security to fund new ideas and acquire complementary businesses.', next: 'Aim for Stage 3: Significance by investing in ventures with purpose.' },
+    '3': { focus: 'Focus: Mentor other creators and invest in innovation ecosystems. Your greatest legacy is the next generation of builders.', next: 'Aim for Stage 4: Succession by creating self-sustaining innovation engines.' },
+    '4': { focus: 'Focus: Step back from creation into curation. Let your systems run while you focus on high-level vision and philanthropy.', next: 'Aim for Stage 5: Serenity through complete system delegation.' },
+    '5': { focus: 'Focus: Create purely for joy, not necessity. Your wealth flows from inspired ideas that you bring to life for the beauty of it.', next: 'Aim for Stage 6: Simplicity by stripping away what no longer serves.' },
+    '6': { focus: 'Focus: Live in pure creative expression. Your work is your art, and your wealth is the natural byproduct of alignment.', next: 'Aim for Stage 7: Abundance where wealth circulates freely.' },
+    '7': { focus: 'Focus: You are a master creator. Continue innovating and channel wealth back into the world to uplift others.', next: 'You embody Abundance. Your journey inspires all.' },
+  },
+  blaze: {
+    '-1': { focus: 'Focus: Build your personal brand. Share your story and expertise freely. Your network and voice are your way out of scarcity.', next: 'Aim for Stage 0: Stability by growing your influence into income.' },
+    '0': { focus: 'Focus: Monetize your influence. Create content, speak, coach, or consult. Convert your growing audience into paying clients.', next: 'Aim for Stage 1: Success by establishing yourself as a go-to authority.' },
+    '1': { focus: 'Focus: Build a platform and community. Move from being the talent to being the producer who amplifies others.', next: 'Aim for Stage 2: Security by creating media and community assets.' },
+    '2': { focus: 'Focus: Launch a talent empire. Represent other stars, build a media company, or create a platform that showcases voices.', next: 'Aim for Stage 3: Significance using your influence for social impact.' },
+    '3': { focus: 'Focus: Champion causes and amplify marginalized voices. Your platform becomes a force for meaningful change.', next: 'Aim for Stage 4: Succession by building institutions that outlast you.' },
+    '4': { focus: 'Focus: Step into the background as an elder statesperson. Let your platform run through others while you guide from wisdom.', next: 'Aim for Stage 5: Serenity through detachment from the spotlight.' },
+    '5': { focus: 'Focus: Connect deeply with a small circle. Your peace comes from quality over quantity in relationships and influence.', next: 'Aim for Stage 6: Simplicity by letting go of performative aspects.' },
+    '6': { focus: 'Focus: Be authentically yourself without audience expectations. Your influence flows naturally without effort.', next: 'Aim for Stage 7: Abundance where your presence alone creates value.' },
+    '7': { focus: 'Focus: Radiate pure inspiration. Your life is the message, and your abundance inspires countless others to find their voice.', next: 'You embody Abundance. Your light guides the way.' },
+  },
+  tempo: {
+    '-1': { focus: 'Focus: Identify one person you can serve deeply. Offer your support and build trust. Your relationships are your foundation out of survival.', next: 'Aim for Stage 0: Stability by turning service into steady income.' },
+    '0': { focus: 'Focus: Build a referral-based business. Delight your clients so completely that they become your sales team. Your reputation is your asset.', next: 'Aim for Stage 1: Success through exceptional service delivery.' },
+    '1': { focus: 'Focus: Create a client experience system. Document your service process and train others to deliver it. Your care scales through systems.', next: 'Aim for Stage 2: Security by building a service organization.' },
+    '2': { focus: 'Focus: Expand through partnerships and JVs. Your strength is trust — leverage it to create win-win ventures with aligned partners.', next: 'Aim for Stage 3: Significance by serving communities at scale.' },
+    '3': { focus: 'Focus: Build a foundation or community program. Your wealth enables you to care for causes and people you believe in.', next: 'Aim for Stage 4: Succession by creating care-focused institutions.' },
+    '4': { focus: 'Focus: Step into an advisory role. Guide the next generation of supporters while your organization runs on relationship-centered systems.', next: 'Aim for Stage 5: Serenity through the peace of a thriving community.' },
+    '5': { focus: 'Focus: Nurture your inner circle. Your serenity comes from deep, authentic connections with those who matter most.', next: 'Aim for Stage 6: Simplicity by focusing only on relationships that nourish.' },
+    '6': { focus: 'Focus: Love without agenda. Your support flows freely because you can, not because you need to. Pure generosity.', next: 'Aim for Stage 7: Abundance where your care creates infinite ripples.' },
+    '7': { focus: 'Focus: Be a beacon of unconditional support. Your abundance enables you to uplift everyone you touch with no expectation of return.', next: 'You embody Abundance. Your love transforms the world.' },
+  },
+  steel: {
+    '-1': { focus: 'Focus: Track every penny and create a strict budget. Your analytical mind can find efficiencies others miss. Use data to escape survival.', next: 'Aim for Stage 0: Stability by creating a reliable financial system.' },
+    '0': { focus: 'Focus: Build automated savings and investment systems. Optimize your income-to-wealth conversion with precision.', next: 'Aim for Stage 1: Success by hitting your first savings milestones.' },
+    '1': { focus: 'Focus: Create arbitrage and optimization engines. Find gaps in markets, streamline operations, and build efficiency-driven businesses.', next: 'Aim for Stage 2: Security through diversified, optimized asset portfolios.' },
+    '2': { focus: 'Focus: Build a portfolio of systematic investments. Real estate, index funds, automated businesses — let systems compound your wealth.', next: 'Aim for Stage 3: Significance by funding strategic philanthropic initiatives.' },
+    '3': { focus: 'Focus: Apply your analytical skills to impact investing. Optimize charitable giving for maximum social ROI.', next: 'Aim for Stage 4: Succession by creating self-managing investment trusts.' },
+    '4': { focus: 'Focus: Manage and optimize your legacy systems. Your role shifts from building to fine-tuning the wealth engines you created.', next: 'Aim for Stage 5: Serenity through complete system independence.' },
+    '5': { focus: 'Focus: Enjoy the view. Your systems run perfectly. Engage in strategic thinking and high-level allocation decisions.', next: 'Aim for Stage 6: Simplicity by eliminating unnecessary complexity.' },
+    '6': { focus: 'Focus: Pursue intellectual challenges for their own sake. Your wealth allows you to solve problems simply because they interest you.', next: 'Aim for Stage 7: Abundance where wisdom flows as freely as wealth.' },
+    '7': { focus: 'Focus: Be the master strategist and sage. Your understanding of systems and wealth mechanics serves the highest good.', next: 'You embody Abundance. Your precision is pure art.' },
+  },
+};
+
+function generatePathway() {
+  const dna = document.getElementById('genDna').value;
+  const stage = document.getElementById('genStage').value;
+  const output = document.getElementById('genOutput');
+
+  const data = pathwayData[dna]?.[stage];
+  if (!data) {
+    output.innerHTML = '<strong>Pathway generating...</strong><br>Combining your DNA and current stage to build your custom plan.';
+  } else {
+    const dnaNames = { dynamo: 'Dynamo (Creator)', blaze: 'Blaze (Star)', tempo: 'Tempo (Supporter)', steel: 'Steel (Dealer)' };
+    output.innerHTML = `<strong>&#9889; Your Custom Pathway</strong><br><br>
+    <strong>DNA Type:</strong> ${dnaNames[dna]}<br>
+    <strong>Current Stage:</strong> ${stage}: ${document.querySelector('#genStage option[value="'+stage+'"]')?.textContent || ''}<br><br>
+    <strong>&#9654; ${data.focus}</strong><br><br>
+    <strong>&#9650; Next Step:</strong> ${data.next}`;
+    output.classList.add('show');
+  }
+}
+
+// ========== Thermometer on spectrum scroll ==========
+const spectrumObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && typeof updateThermometer === 'function') updateThermometer();
+  });
+}, { threshold: 0.3 });
+const spectrumEl = document.getElementById('spectrumLadder');
+if (spectrumEl) spectrumObserver.observe(spectrumEl);
+
+</script>
+</body>
+</html>

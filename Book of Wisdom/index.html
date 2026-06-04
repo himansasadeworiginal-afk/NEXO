@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book of Wisdom — Revival of Wisdom</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --bg:#1a1410;
+    --bg-alt:#231c16;
+    --surface:#2d241c;
+    --surface-hover:#3a2f26;
+    --text:#e8dcc8;
+    --text-dim:#9a8a78;
+    --text-muted:#6a5d4e;
+    --gold:#d4a040;
+    --gold-light:#e8c868;
+    --gold-dim:#7a5a1a;
+    --amber:#c87d2b;
+    --amber-light:#e09a3e;
+    --amber-dim:#7a4a0a;
+    --cream:#f5e6c8;
+    --parchment:#e8d5b0;
+    --border:#3a3026;
+    --shadow:0 8px 32px rgba(0,0,0,0.4);
+    --radius:16px;
+    --radius-sm:10px;
+    --transition:0.5s cubic-bezier(.22,1,.36,1);
+  }
+
+  .light{
+    --bg:#f5ede0;
+    --bg-alt:#ede3d0;
+    --surface:#fff8ee;
+    --surface-hover:#f5ede0;
+    --text:#2d241c;
+    --text-dim:#6a5d4e;
+    --text-muted:#9a8a78;
+    --gold:#b8860b;
+    --gold-light:#d4a040;
+    --gold-dim:#8a6508;
+    --amber:#a0522d;
+    --amber-light:#c87d2b;
+    --amber-dim:#6a3010;
+    --cream:#fff8ee;
+    --parchment:#f5ede0;
+    --border:#d4c8b8;
+    --shadow:0 8px 32px rgba(0,0,0,0.08);
+  }
+
+  html{scroll-behavior:smooth}
+
+  body{
+    font-family:'Inter',-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.7;
+    transition:background var(--transition),color var(--transition);
+    overflow-x:hidden;
+  }
+
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px}
+
+  .theme-toggle{
+    position:fixed;top:20px;right:20px;z-index:1000;
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--gold);width:48px;height:48px;border-radius:50%;
+    cursor:pointer;font-size:1.3rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);transition:all var(--transition);
+    backdrop-filter:blur(8px);
+  }
+  .theme-toggle:hover{transform:scale(1.1);border-color:var(--gold);box-shadow:0 0 24px rgba(212,160,64,0.15);}
+
+  #progress{
+    position:fixed;top:0;left:0;height:2px;
+    background:linear-gradient(90deg,var(--gold),var(--amber),var(--gold));
+    background-size:200% auto;z-index:999;width:0%;
+    transition:width 0.1s;
+    animation:gradientShift 3s ease infinite;
+  }
+
+  #bgCanvas{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:0;pointer-events:none;opacity:0.15;
+  }
+
+  #orbs{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:0;pointer-events:none;overflow:hidden;
+  }
+  .orb{
+    position:absolute;border-radius:50%;
+    filter:blur(100px);
+    animation:orbFloat var(--duration) ease-in-out infinite;
+    animation-delay:var(--delay);
+    opacity:0;
+  }
+  @keyframes orbFloat{
+    0%{transform:translate(0,0) scale(0.8);opacity:0}
+    20%{opacity:var(--max-opacity)}
+    80%{opacity:var(--max-opacity)}
+    100%{transform:translate(var(--tx),var(--ty)) scale(1.3);opacity:0}
+  }
+
+  #noise{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:0;pointer-events:none;
+    opacity:0.02;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:256px 256px;
+    animation:noiseShift 0.5s steps(4) infinite;
+  }
+  @keyframes noiseShift{
+    0%{background-position:0 0}
+    25%{background-position:4px 8px}
+    50%{background-position:8px 2px}
+    75%{background-position:2px 6px}
+  }
+
+  body::before{
+    content:'';position:fixed;top:-50%;left:-50%;
+    width:200%;height:200%;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(212,160,64,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(200,125,43,0.03) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 80%, rgba(245,230,200,0.02) 0%, transparent 40%);
+    pointer-events:none;z-index:0;
+  }
+
+  .container{max-width:1100px;margin:0 auto;padding:2rem;position:relative;z-index:1;}
+
+  @keyframes gradientShift{
+    0%,100%{background-position:0% center}
+    50%{background-position:200% center}
+  }
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(30px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  @keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+  }
+  @keyframes breathe{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.05)}
+  }
+  @keyframes shimmer{
+    0%{transform:translateX(-100%)}
+    100%{transform:translateX(200%)}
+  }
+
+  .reveal{
+    opacity:0;transform:translateY(30px);
+    transition:opacity 0.7s ease,transform 0.7s ease;
+  }
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .reveal-delay-1{transition-delay:0.1s}
+  .reveal-delay-2{transition-delay:0.2s}
+  .reveal-delay-3{transition-delay:0.3s}
+
+  /* 
+     HERO
+      */
+  .hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    text-align:center;
+    padding:2rem;
+    position:relative;z-index:1;
+  }
+  .hero-accent{
+    width:60px;height:2px;
+    background:linear-gradient(90deg,var(--gold),var(--amber),var(--gold));
+    background-size:200% auto;
+    animation:gradientShift 3s ease infinite;
+    margin-bottom:2rem;
+    opacity:0;animation:fadeUp 0.8s 0.1s forwards,gradientShift 3s ease 1s infinite;
+  }
+  .hero .badge{
+    display:inline-block;
+    font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;
+    color:var(--gold);
+    border:1px solid var(--gold-dim);
+    padding:4px 16px;margin-bottom:1.5rem;
+    opacity:0;animation:fadeUp 0.8s 0.2s forwards;
+    transition:background 0.3s,color 0.3s;
+  }
+  .hero .badge:hover{background:var(--gold-dim);color:var(--cream);}
+  .hero h1{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2.8rem,10vw,6rem);
+    font-weight:800;letter-spacing:-1px;line-height:1.15;
+    color:var(--cream);
+    opacity:0;animation:fadeUp 0.8s 0.3s forwards;
+    margin-bottom:0.5rem;
+  }
+  .light .hero h1{color:var(--text);}
+  .hero h1 .hl{color:var(--gold);font-style:italic;}
+  .hero .subtitle{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.1rem,2.5vw,1.4rem);
+    color:var(--text-dim);max-width:600px;
+    font-weight:400;font-style:italic;letter-spacing:0.5px;
+    opacity:0;animation:fadeUp 0.8s 0.4s forwards;
+  }
+  .hero .author{
+    font-size:1rem;
+    color:var(--gold);
+    margin-top:0.8rem;
+    opacity:0;animation:fadeUp 0.8s 0.5s forwards;
+  }
+  .hero .desc{
+    color:var(--text-muted);font-size:0.9rem;
+    max-width:560px;margin-top:1.5rem;line-height:1.8;
+    opacity:0;animation:fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-stats{
+    display:flex;gap:3rem;flex-wrap:wrap;justify-content:center;
+    margin-top:2.5rem;
+    opacity:0;animation:fadeUp 0.8s 0.7s forwards;
+  }
+  .hero-stats .hs-item{text-align:center;}
+  .hero-stats .hs-value{
+    display:block;font-size:1.8rem;font-weight:700;
+    font-family:'Playfair Display',serif;
+    background:linear-gradient(135deg,var(--gold),var(--amber-light));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    line-height:1;
+  }
+  .hero-stats .hs-label{
+    font-size:0.7rem;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;
+    margin-top:0.3rem;
+  }
+  .scroll-indicator{
+    position:absolute;bottom:2rem;
+    opacity:0;animation:fadeUp 0.8s 1s forwards;
+    color:var(--gold-dim);
+  }
+  .scroll-indicator svg{
+    animation:bounce 2s 1.5s infinite;
+  }
+  @keyframes bounce{
+    0%,100%{transform:translateY(0);opacity:1}
+    50%{transform:translateY(8px);opacity:0.5}
+  }
+
+  /* 
+     SECTION HEADER
+      */
+  .section-header{
+    text-align:center;margin-bottom:3rem;
+    position:relative;z-index:1;
+  }
+  .section-header .label{
+    display:inline-block;
+    font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:0.8rem;
+  }
+  .section-header h2{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.8rem,4vw,2.8rem);
+    font-weight:700;
+    color:var(--cream);
+    letter-spacing:-0.5px;
+  }
+  .light .section-header h2{color:var(--text);}
+  .section-header h2 .hl{color:var(--gold);}
+  .section-header .line{
+    width:40px;height:1px;margin:0.8rem auto 0;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    background-size:200% auto;
+    animation:gradientShift 3s ease infinite;
+  }
+  .section-header p{
+    color:var(--text-dim);font-size:0.95rem;
+    max-width:600px;margin:0.8rem auto 0;
+  }
+
+  /* 
+     WISDOM GRID
+      */
+  .wisdom-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:1.5rem;
+    margin:2rem 0;
+  }
+  .wisdom-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:2rem;
+    cursor:pointer;
+    transition:all var(--transition);
+    position:relative;overflow:hidden;
+  }
+  .wisdom-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--gold),var(--amber));
+    transform:scaleX(0);transform-origin:left;
+    transition:transform 0.5s var(--transition);
+  }
+  .wisdom-card:hover::before{transform:scaleX(1);}
+  .wisdom-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--gold-dim);
+    box-shadow:0 12px 40px rgba(0,0,0,0.3);
+  }
+  .wisdom-card .w-icon{
+    font-size:2rem;margin-bottom:1rem;display:block;
+  }
+  .wisdom-card .w-num{
+    font-family:'Playfair Display',serif;
+    font-size:3rem;font-weight:900;
+    position:absolute;top:0.5rem;right:1rem;
+    color:var(--border);line-height:1;
+    transition:color var(--transition);
+  }
+  .wisdom-card:hover .w-num{color:var(--gold-dim);}
+  .wisdom-card h3{
+    font-family:'Playfair Display',serif;
+    font-size:1.15rem;font-weight:700;
+    margin-bottom:0.5rem;
+    position:relative;z-index:1;
+  }
+  .wisdom-card .teaser{
+    font-size:0.88rem;color:var(--text-dim);
+    line-height:1.6;
+    position:relative;z-index:1;
+  }
+  .wisdom-card .w-body{
+    max-height:0;overflow:hidden;
+    transition:max-height 0.6s ease,margin 0.6s ease;
+    position:relative;z-index:1;
+  }
+  .wisdom-card.open .w-body{max-height:500px;margin-top:1rem;}
+  .wisdom-card .w-body p{
+    font-size:0.88rem;color:var(--text-dim);
+    line-height:1.7;margin-bottom:0.8rem;
+  }
+  .wisdom-card .w-body p:last-child{margin-bottom:0;}
+  .w-toggle{
+    display:inline-block;
+    color:var(--gold);font-size:0.75rem;
+    margin-top:0.8rem;font-weight:500;
+    transition:transform 0.3s;
+    position:relative;z-index:1;
+  }
+  .wisdom-card.open .w-toggle{color:var(--amber-light);}
+  .wisdom-card .w-toggle::after{
+    content:' \2192';
+    display:inline-block;
+    transition:transform 0.3s;
+  }
+  .wisdom-card.open .w-toggle::after{transform:rotate(90deg);}
+
+  /* 
+     WISDOM FOR TODAY
+      */
+  .wisdom-today{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:3rem;
+    text-align:center;
+    margin:2rem 0;
+    position:relative;
+    overflow:hidden;
+  }
+  .wisdom-today::before{
+    content:'\275D';
+    font-family:'Playfair Display',serif;
+    font-size:8rem;
+    position:absolute;
+    top:-1rem;left:1rem;
+    color:var(--border);
+    line-height:1;
+    opacity:0.5;
+  }
+  .wisdom-today .quote-text{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.2rem,2.5vw,1.6rem);
+    font-style:italic;
+    line-height:1.6;
+    color:var(--cream);
+    max-width:700px;margin:0 auto 1rem;
+    min-height:4.8rem;
+    position:relative;z-index:1;
+    transition:opacity 0.3s;
+  }
+  .light .wisdom-today .quote-text{color:var(--text);}
+  .wisdom-today .quote-source{
+    font-size:0.85rem;color:var(--gold);
+    margin-bottom:1.5rem;
+    position:relative;z-index:1;
+  }
+  .wisdom-btn{
+    display:inline-flex;align-items:center;gap:0.5rem;
+    padding:0.7rem 2rem;
+    background:transparent;
+    border:1px solid var(--gold);
+    color:var(--gold);
+    font-family:'Inter',sans-serif;
+    font-size:0.85rem;font-weight:500;
+    cursor:pointer;
+    transition:all var(--transition);
+    border-radius:0;
+    position:relative;z-index:1;
+  }
+  .wisdom-btn:hover{
+    background:var(--gold);
+    color:var(--bg);
+    box-shadow:0 0 30px rgba(212,160,64,0.15);
+  }
+
+  /* 
+     PROGRESS TRACKER
+      */
+  .progress-section{
+    margin:3rem 0;
+  }
+  .progress-tracker{
+    display:flex;gap:0.5rem;flex-wrap:wrap;
+    justify-content:center;margin:2rem 0;
+  }
+  .progress-step{
+    flex:1;min-width:100px;max-width:160px;
+    text-align:center;
+    padding:1rem 0.8rem;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    cursor:pointer;
+    transition:all var(--transition);
+    position:relative;
+  }
+  .progress-step:hover{border-color:var(--gold-dim);transform:translateY(-2px);}
+  .progress-step.done{
+    border-color:var(--gold);
+    background:linear-gradient(135deg,rgba(212,160,64,0.08),rgba(200,125,43,0.04));
+  }
+  .progress-step .ps-icon{
+    font-size:1.5rem;display:block;margin-bottom:0.3rem;
+  }
+  .progress-step .ps-label{
+    font-size:0.7rem;color:var(--text-muted);
+    text-transform:uppercase;letter-spacing:1px;
+  }
+  .progress-step.done .ps-label{color:var(--gold);}
+  .progress-bar-wrap{
+    width:100%;height:4px;
+    background:var(--border);
+    border-radius:2px;margin-top:1.5rem;
+    overflow:hidden;
+  }
+  .progress-bar-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--gold),var(--amber-light));
+    border-radius:2px;
+    transition:width 0.6s ease;
+  }
+  .progress-text{
+    text-align:center;margin-top:0.8rem;
+    font-size:0.85rem;color:var(--text-dim);
+  }
+  .progress-text strong{color:var(--gold);}
+
+  /* 
+     WISDOM QUIZ
+      */
+  .quiz-section{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:2.5rem;
+    margin:2rem 0;
+  }
+  .quiz-question{
+    font-family:'Playfair Display',serif;
+    font-size:1.3rem;font-weight:600;
+    margin-bottom:1.5rem;
+    text-align:center;
+  }
+  .quiz-options{display:flex;flex-direction:column;gap:0.8rem;}
+  .quiz-option{
+    padding:1rem 1.5rem;
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    cursor:pointer;
+    transition:all var(--transition);
+    text-align:left;
+    font-family:'Inter',sans-serif;
+    font-size:0.9rem;
+    color:var(--text-dim);
+  }
+  .quiz-option:hover{
+    border-color:var(--gold-dim);
+    background:var(--surface-hover);
+    color:var(--text);
+  }
+  .quiz-option.selected{
+    border-color:var(--gold);
+    background:linear-gradient(135deg,rgba(212,160,64,0.1),rgba(200,125,43,0.05));
+    color:var(--gold);
+  }
+  .quiz-option.correct{
+    border-color:#4caf50;
+    background:linear-gradient(135deg,rgba(76,175,80,0.1),rgba(76,175,80,0.05));
+    color:#4caf50;
+  }
+  .quiz-option.wrong{
+    border-color:#f44336;
+    background:linear-gradient(135deg,rgba(244,67,54,0.1),rgba(244,67,54,0.05));
+    color:#f44336;
+  }
+  .quiz-option:disabled{cursor:default;opacity:0.7;}
+  .quiz-feedback{
+    text-align:center;margin-top:1.2rem;
+    padding:1rem;
+    border-radius:var(--radius-sm);
+    font-size:0.9rem;
+    display:none;
+  }
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct{background:rgba(76,175,80,0.08);color:#4caf50;border:1px solid rgba(76,175,80,0.2);}
+  .quiz-feedback.wrong{background:rgba(244,67,54,0.08);color:#f44336;border:1px solid rgba(244,67,54,0.2);}
+  .quiz-progress{
+    display:flex;justify-content:center;gap:0.5rem;
+    margin-bottom:1.5rem;
+  }
+  .quiz-dot{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--border);
+    transition:all 0.3s;
+  }
+  .quiz-dot.active{background:var(--gold);}
+  .quiz-dot.correct{background:#4caf50;}
+  .quiz-dot.wrong{background:#f44336;}
+  .quiz-score{
+    text-align:center;margin-top:1rem;
+    font-size:1.1rem;color:var(--text-dim);
+  }
+  .quiz-score strong{color:var(--gold);}
+  .quiz-next-btn{
+    display:block;margin:1rem auto 0;
+    padding:0.7rem 2rem;
+    background:var(--gold);
+    border:none;
+    color:var(--bg);
+    font-family:'Inter',sans-serif;
+    font-size:0.9rem;font-weight:600;
+    cursor:pointer;
+    transition:all var(--transition);
+    border-radius:0;
+  }
+  .quiz-next-btn:hover{opacity:0.9;transform:translateY(-1px);}
+  .quiz-next-btn:disabled{opacity:0.3;cursor:default;transform:none;}
+
+  /* 
+     QUOTES
+      */
+  .quotes-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:1.5rem;
+    margin:2rem 0;
+  }
+  .quote-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:2rem;
+    position:relative;
+    transition:all var(--transition);
+  }
+  .quote-card:hover{
+    border-color:var(--gold-dim);
+    transform:translateY(-3px);
+    box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  }
+  .quote-card .qm{
+    font-family:'Playfair Display',serif;
+    font-size:3rem;line-height:1;
+    color:var(--gold-dim);
+    margin-bottom:-0.5rem;
+  }
+  .quote-card blockquote{
+    font-family:'Playfair Display',serif;
+    font-size:1rem;font-style:italic;
+    line-height:1.7;
+    color:var(--text-dim);
+    margin:0.5rem 0 1rem;
+  }
+  .quote-card cite{
+    font-style:normal;
+    font-size:0.85rem;
+    color:var(--gold);
+  }
+
+  /* 
+     DIVIDER
+      */
+  .section-divider{
+    text-align:center;padding:3rem 0;
+    position:relative;z-index:1;
+  }
+  .section-divider .divider-line{
+    width:1px;height:50px;
+    margin:0 auto;
+    background:linear-gradient(to bottom,transparent,var(--gold),transparent);
+  }
+  .section-divider .divider-symbol{
+    font-size:1.5rem;color:var(--gold-dim);
+    margin-top:0.5rem;
+    font-family:'Playfair Display',serif;
+  }
+
+  /* 
+     FOOTER
+      */
+  footer{
+    border-top:1px solid var(--border);
+    margin-top:3rem;padding:3rem 2rem;
+    position:relative;z-index:1;
+  }
+  footer .footer-inner{
+    max-width:1100px;margin:0 auto;
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:1rem;
+  }
+  footer .footer-logo{
+    font-family:'Playfair Display',serif;
+    font-size:1.1rem;font-weight:700;
+    color:var(--gold);
+  }
+  footer .footer-info{
+    color:var(--text-muted);font-size:0.75rem;letter-spacing:0.5px;
+  }
+  footer .footer-info span{margin:0 0.5rem;color:var(--border);}
+
+  /* 
+     RESPONSIVE
+      */
+  @media(max-width:768px){
+    .container{padding:1.5rem 1rem;}
+    .hero{padding:2rem 1.2rem;min-height:85vh;}
+    .hero h1{font-size:clamp(2rem,12vw,3.5rem);}
+    .hero-stats{gap:1.5rem;}
+    .wisdom-grid{grid-template-columns:1fr;}
+    .wisdom-today{padding:2rem 1.5rem;}
+    .wisdom-today::before{font-size:4rem;top:-0.5rem;left:0.5rem;}
+    .quotes-grid{grid-template-columns:1fr;}
+    .progress-step{min-width:80px;max-width:120px;}
+    .quiz-section{padding:1.5rem;}
+    footer .footer-inner{flex-direction:column;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<canvas id="bgCanvas"></canvas>
+<div id="orbs"></div>
+<div id="noise"></div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">&#9790;</button>
+
+<!--  HERO  -->
+<section class="hero">
+  <div class="hero-accent"></div>
+  <div class="badge">Revival of Wisdom</div>
+  <h1>Book of <span class="hl">Wisdom</span></h1>
+  <p class="subtitle">Ancient truths for modern living &mdash; timeless principles that illuminate the path to a meaningful life</p>
+  <p class="author">by Harry B. Joseph</p>
+  <p class="desc">A profound journey into the heart of ancient wisdom, rediscovered and reimagined for the challenges and opportunities of contemporary life.</p>
+  <div class="hero-stats">
+    <div class="hs-item"><span class="hs-value">13</span><div class="hs-label">Chapters</div></div>
+    <div class="hs-item"><span class="hs-value">72</span><div class="hs-label">Teachings</div></div>
+    <div class="hs-item"><span class="hs-value">8</span><div class="hs-label">Core Principles</div></div>
+    <div class="hs-item"><span class="hs-value">∞</span><div class="hs-label">Timeless Truths</div></div>
+  </div>
+  <div class="scroll-indicator">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+</section>
+
+<!--  CORE WISDOM PRINCIPLES  -->
+<div class="container">
+  <div class="section-header reveal">
+    <div class="label">Core Principles</div>
+    <h2>The <span class="hl">Eight Pillars</span> of Wisdom</h2>
+    <p>Foundational truths that have guided humanity across cultures and centuries &mdash; rediscovered for our time.</p>
+    <div class="line"></div>
+  </div>
+
+  <div class="wisdom-grid">
+    <div class="wisdom-card reveal" onclick="toggleWisdom(this)">
+      <span class="w-icon">&#x1F4A1;</span>
+      <span class="w-num">01</span>
+      <h3>The Light of Self-Knowledge</h3>
+      <p class="teaser">Know thyself &mdash; the foundation of all wisdom begins with honest self-examination.</p>
+      <div class="w-body">
+        <p>Ancient Greek philosophers proclaimed "Gnothi seauton" (Know thyself) as the highest form of wisdom. Before you can understand the world, you must first understand the one who perceives it.</p>
+        <p>Self-knowledge is not mere introspection but courageous confrontation with your own nature &mdash; your strengths, shadows, desires, and fears. The unexamined life is not worth living, for it is lived on the terms of others.</p>
+      </div>
+      <span class="w-toggle">Expand</span>
+    </div>
+
+    <div class="wisdom-card reveal reveal-delay-1" onclick="toggleWisdom(this)">
+      <span class="w-icon">&#x2696;&#xFE0F;</span>
+      <span class="w-num">02</span>
+      <h3>The Balance of Opposites</h3>
+      <p class="teaser">Harmony emerges not from eliminating conflict but from holding tension creatively.</p>
+      <div class="w-body">
+        <p>The Taoist symbol of yin and yang teaches that all reality consists of complementary opposites. Light needs darkness, joy needs sorrow, action needs rest. Wisdom is not choosing one side but dancing between them.</p>
+        <p>When you stop resisting the natural rhythm of life &mdash; its ebbs and flows, its gains and losses &mdash; you discover a deeper peace that transcends circumstances.</p>
+      </div>
+      <span class="w-toggle">Expand</span>
+    </div>
+
+    <div class="wisdom-card reveal reveal-delay-2" onclick="toggleWisdom(this)">
+      <span class="w-icon">&#x1F331;</span>
+      <span class="w-num">03</span>
+      <h3>The Power of Presence</h3>
+      <p class="teaser">The past is memory, the future is imagination &mdash; only now is real.</p>
+      <div class="w-body">
+        <p>Ancient wisdom traditions from Buddhism to Stoicism converge on one truth: suffering arises from being absent from the present moment. Regret pulls us backward, anxiety pulls us forward, and both steal the only life we have.</p>
+        <p>To be fully present is to be fully alive. The master key to wisdom is learning to anchor your awareness in the here and now, where life actually happens.</p>
+      </div>
+      <span class="w-toggle">Expand</span>
+    </div>
+
+    <div class="wisdom-card reveal" onclick="toggleWisdom(this)">
+      <span class="w-icon">&#x1F4AC;</span>
+      <span class="w-num">04</span>
+      <h3>The Discipline of Silence</h3>
+      <p class="teaser">In silence, the noise of the world settles and truth rises to the surface.</p>
+      <div class="w-body">
+        <p>Solomon wrote that there is "a time to keep silence and a time to speak." Ancient sages across every tradition valued silence not as emptiness but as fertile ground for insight. Words are but the froth on the deep waters of wisdom.</p>
+        <p>Regular practice of silence &mdash; whether through meditation, contemplation, or simply sitting in nature &mdash; restores clarity and connects you to sources of knowing beyond the rational mind.</p>
+      </div>
+      <span class="w-toggle">Expand</span>
+    </div>
+
+    <div class="wisdom-card reveal reveal-delay-1" onclick="toggleWisdom(this)">
+      <span class="w-icon">&#x1F4AA;</span>
+      <span class="w-num">05</span>
+      <h3>The Virtue of Discipline</h3>
+      <p class="teaser">Freedom is not doing whatever you want &mdash; it is choosing what is best.</p>
+      <div class="w-body">
+        <p>Every wisdom tradition teaches that discipline is the bridge between aspiration and achievement. The Stoics called it aret&eacute; (excellence of character), the Buddhists called it sila (moral discipline), and the Proverbs call it the path to life.</p>
+        <p>Small, consistent actions compound into extraordinary results. The disciplined person is not rigid but free &mdash; free from the tyranny of impulse, free to pursue what truly matters.</p>
+      </div>
+      <span class="w-toggle">Expand</span>
+    </div>
+
+    <div class="wisdom-card reveal reveal-delay-2" onclick="toggleWisdom(this)">
+      <span class="w-icon">&#x1F30A;</span>
+      <span class="w-num">06</span>
+      <h3>The Flow of Impermanence</h3>
+      <p class="teaser">Everything changes &mdash; your peace comes from embracing, not resisting, this truth.</p>
+      <div class="w-body">
+        <p>Heraclitus observed that you cannot step into the same river twice. The Buddha named impermanence (anicca) as one of the three marks of existence. To fight against change is to fight against reality itself.</p>
+        <p>Wisdom does not cling to what must pass or fear what is to come. It rides the current of change with grace, knowing that each ending is a beginning and each loss creates space for something new.</p>
+      </div>
+      <span class="w-toggle">Expand</span>
+    </div>
+
+    <div class="wisdom-card reveal" onclick="toggleWisdom(this)">
+      <span class="w-icon">&#x1F91D;</span>
+      <span class="w-num">07</span>
+      <h3>The Unity of All Things</h3>
+      <p class="teaser">Separation is an illusion &mdash; beneath the surface, all life is one interconnected whole.</p>
+      <div class="w-body">
+        <p>From the Hindu concept of Advaita (non-duality) to the scientific revelation of quantum entanglement, wisdom reveals that our sense of separation is a useful but limited perspective. We are not isolated selves but expressions of a single, vast reality.</p>
+        <p>When you live from this understanding, compassion becomes natural. You cannot harm another without harming yourself. The boundary between self and other dissolves into the recognition of our fundamental unity.</p>
+      </div>
+      <span class="w-toggle">Expand</span>
+    </div>
+
+    <div class="wisdom-card reveal reveal-delay-1" onclick="toggleWisdom(this)">
+      <span class="w-icon">&#x2B50;</span>
+      <span class="w-num">08</span>
+      <h3>The Call to Service</h3>
+      <p class="teaser">The highest purpose is not to accumulate but to contribute.</p>
+      <div class="w-body">
+        <p>Every wisdom tradition culminates in the call to serve something greater than oneself. The Golden Rule appears in virtually every culture: treat others as you would be treated. Wisdom that does not express itself in compassionate action is merely knowledge.</p>
+        <p>True fulfillment comes not from what you get but from what you give. In serving others, you discover your deepest purpose. The sage is not above the world but deeply in it, for the good of all.</p>
+      </div>
+      <span class="w-toggle">Expand</span>
+    </div>
+  </div>
+</div>
+
+<!--  DIVIDER  -->
+<div class="section-divider">
+  <div class="divider-line"></div>
+  <div class="divider-symbol">&#10087;</div>
+</div>
+
+<!--  WISDOM FOR TODAY  -->
+<div class="container">
+  <div class="section-header reveal">
+    <div class="label">Daily Wisdom</div>
+    <h2>Wisdom for <span class="hl">Today</span></h2>
+    <p>A random teaching from the Book of Wisdom to carry with you through your day.</p>
+    <div class="line"></div>
+  </div>
+
+  <div class="wisdom-today reveal" id="wisdomToday">
+    <div class="quote-text" id="dailyQuote">The journey of wisdom begins not with answers but with the courage to ask the right questions.</div>
+    <div class="quote-source" id="dailySource">&mdash; Book of Wisdom</div>
+    <button class="wisdom-btn" onclick="newWisdom()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+      New Wisdom
+    </button>
+  </div>
+</div>
+
+<!--  DIVIDER  -->
+<div class="section-divider">
+  <div class="divider-line"></div>
+  <div class="divider-symbol">&#10087;</div>
+</div>
+
+<!--  PROGRESS TRACKER  -->
+<div class="container">
+  <div class="section-header reveal">
+    <div class="label">Your Journey</div>
+    <h2>Progress Through <span class="hl">Wisdom</span></h2>
+    <p>Track your engagement with the eight pillars. Click each one as you explore it.</p>
+    <div class="line"></div>
+  </div>
+
+  <div class="progress-section reveal">
+    <div class="progress-tracker" id="progressTracker">
+      <div class="progress-step" data-index="0" onclick="toggleProgress(0)">
+        <span class="ps-icon">&#x1F4A1;</span>
+        <span class="ps-label">Self-Knowledge</span>
+      </div>
+      <div class="progress-step" data-index="1" onclick="toggleProgress(1)">
+        <span class="ps-icon">&#x2696;&#xFE0F;</span>
+        <span class="ps-label">Balance</span>
+      </div>
+      <div class="progress-step" data-index="2" onclick="toggleProgress(2)">
+        <span class="ps-icon">&#x1F331;</span>
+        <span class="ps-label">Presence</span>
+      </div>
+      <div class="progress-step" data-index="3" onclick="toggleProgress(3)">
+        <span class="ps-icon">&#x1F4AC;</span>
+        <span class="ps-label">Silence</span>
+      </div>
+      <div class="progress-step" data-index="4" onclick="toggleProgress(4)">
+        <span class="ps-icon">&#x1F4AA;</span>
+        <span class="ps-label">Discipline</span>
+      </div>
+      <div class="progress-step" data-index="5" onclick="toggleProgress(5)">
+        <span class="ps-icon">&#x1F30A;</span>
+        <span class="ps-label">Impermanence</span>
+      </div>
+      <div class="progress-step" data-index="6" onclick="toggleProgress(6)">
+        <span class="ps-icon">&#x1F91D;</span>
+        <span class="ps-label">Unity</span>
+      </div>
+      <div class="progress-step" data-index="7" onclick="toggleProgress(7)">
+        <span class="ps-icon">&#x2B50;</span>
+        <span class="ps-label">Service</span>
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="progress-text"><strong id="progressCount">0</strong> of 8 pillars explored</div>
+  </div>
+</div>
+
+<!--  DIVIDER  -->
+<div class="section-divider">
+  <div class="divider-line"></div>
+  <div class="divider-symbol">&#10087;</div>
+</div>
+
+<!--  WISDOM QUIZ  -->
+<div class="container">
+  <div class="section-header reveal">
+    <div class="label">Reflection</div>
+    <h2>The Wisdom <span class="hl">Quiz</span></h2>
+    <p>Test your understanding of the principles and discover where you are on your wisdom journey.</p>
+    <div class="line"></div>
+  </div>
+
+  <div class="quiz-section reveal" id="quizSection">
+    <div class="quiz-progress" id="quizProgress"></div>
+    <div class="quiz-question" id="quizQuestion">Loading...</div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div class="quiz-score" id="quizScore"></div>
+    <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuestion()">Next Question</button>
+  </div>
+</div>
+
+<!--  DIVIDER  -->
+<div class="section-divider">
+  <div class="divider-line"></div>
+  <div class="divider-symbol">&#10087;</div>
+</div>
+
+<!--  KEY QUOTES  -->
+<div class="container">
+  <div class="section-header reveal">
+    <div class="label">Timeless Voices</div>
+    <h2>Quotes on <span class="hl">Wisdom</span></h2>
+    <p>Enduring insights from the great wisdom traditions of the world.</p>
+    <div class="line"></div>
+  </div>
+
+  <div class="quotes-grid">
+    <div class="quote-card reveal">
+      <div class="qm">"</div>
+      <blockquote>The only true wisdom is in knowing you know nothing.</blockquote>
+      <cite>&mdash; Socrates</cite>
+    </div>
+    <div class="quote-card reveal reveal-delay-1">
+      <div class="qm">"</div>
+      <blockquote>The unexamined life is not worth living.</blockquote>
+      <cite>&mdash; Plato</cite>
+    </div>
+    <div class="quote-card reveal reveal-delay-2">
+      <div class="qm">"</div>
+      <blockquote>It is not what happens to you, but how you react to it that matters.</blockquote>
+      <cite>&mdash; Epictetus</cite>
+    </div>
+    <div class="quote-card reveal">
+      <div class="qm">"</div>
+      <blockquote>The wound is the place where the Light enters you.</blockquote>
+      <cite>&mdash; Rumi</cite>
+    </div>
+    <div class="quote-card reveal reveal-delay-1">
+      <div class="qm">"</div>
+      <blockquote>Knowing others is intelligence; knowing yourself is true wisdom. Mastering others is strength; mastering yourself is true power.</blockquote>
+      <cite>&mdash; Lao Tzu</cite>
+    </div>
+    <div class="quote-card reveal reveal-delay-2">
+      <div class="qm">"</div>
+      <blockquote>The journey of a thousand miles begins with a single step.</blockquote>
+      <cite>&mdash; Lao Tzu</cite>
+    </div>
+    <div class="quote-card reveal">
+      <div class="qm">"</div>
+      <blockquote>In the middle of difficulty lies opportunity.</blockquote>
+      <cite>&mdash; Albert Einstein</cite>
+    </div>
+    <div class="quote-card reveal reveal-delay-1">
+      <div class="qm">"</div>
+      <blockquote>Be the change that you wish to see in the world.</blockquote>
+      <cite>&mdash; Mahatma Gandhi</cite>
+    </div>
+  </div>
+</div>
+
+<!--  FOOTER  -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Book of Wisdom</div>
+    <div class="footer-info">
+      Revival of Wisdom <span>|</span> Harry B. Joseph <span>|</span> Interactive Summary
+    </div>
+  </div>
+</footer>
+
+<script>
+  //  THEME 
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    themeToggle.innerHTML = document.body.classList.contains('light') ? '&#9790;' : '&#9790;';
+  });
+
+  //  CANVAS PARTICLES 
+  (function(){
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = {x: -1000, y: -1000};
+
+    function resize(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const colors = ['#d4a040', '#e8c868', '#c87d2b', '#f5e6c8'];
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset(){
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.2;
+        this.vy = (Math.random() - 0.5) * 0.2;
+        this.r = Math.random() * 2 + 0.5;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.alpha = Math.random() * 0.2 + 0.05;
+      }
+      update(){
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+      draw(){
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.alpha;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+    function animate(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if (d < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = particles[i].color;
+            ctx.globalAlpha = 0.04 * (1 - d/120);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        }
+      }
+
+      particles.forEach(p => {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 150) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = p.color;
+          ctx.globalAlpha = 0.06 * (1 - d/150);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      });
+
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    document.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+  })();
+
+  //  FLOATING ORBS 
+  (function(){
+    const c = document.getElementById('orbs');
+    const orbColors = [
+      'rgba(212,160,64,0.10)',
+      'rgba(200,125,43,0.08)',
+      'rgba(245,230,200,0.06)',
+      'rgba(232,200,104,0.08)'
+    ];
+    for (let i = 0; i < 6; i++) {
+      const o = document.createElement('div');
+      o.className = 'orb';
+      const size = 180 + Math.random() * 300;
+      o.style.cssText = `
+        width:${size}px;height:${size}px;
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+        background:${orbColors[i % orbColors.length]};
+        --duration:${25 + Math.random() * 35}s;
+        --delay:${Math.random() * 10}s;
+        --max-opacity:0.3;
+        --tx:${(Math.random()-0.5)*500}px;
+        --ty:${(Math.random()-0.5)*500}px;
+      `;
+      c.appendChild(o);
+    }
+  })();
+
+  //  SCROLL PROGRESS 
+  window.addEventListener('scroll', () => {
+    const s = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    document.getElementById('progress').style.width = s + '%';
+  });
+
+  //  SCROLL REVEAL 
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  //  WISDOM CARDS 
+  function toggleWisdom(el) {
+    el.classList.toggle('open');
+    const toggle = el.querySelector('.w-toggle');
+    if (el.classList.contains('open')) {
+      toggle.textContent = 'Collapse';
+    } else {
+      toggle.textContent = 'Expand';
+    }
+  }
+
+  //  WISDOM FOR TODAY 
+  const wisdomQuotes = [
+    'The journey of wisdom begins not with answers but with the courage to ask the right questions.',
+    'Silence is not empty. It is full of answers.',
+    'The wisest person is not the one who has all the answers, but the one who lives the questions.',
+    'What you seek is seeking you. The path and the destination are one.',
+    'Let go of the need to know, and you will begin to understand.',
+    'True wisdom is knowing that you are part of something greater than yourself.',
+    'The only way to make sense out of change is to plunge into it, move with it, and join the dance.',
+    'In the midst of movement and chaos, keep stillness inside of you.',
+    'Your vision will become clear only when you can look into your own heart.',
+    'The privilege of a lifetime is to become who you truly are.',
+    'Knowing others is intelligence; knowing yourself is true wisdom.',
+    'Simplicity is the ultimate sophistication. Strip away the unnecessary and find the essential.',
+    'Patience is not the ability to wait, but the ability to keep a good attitude while waiting.',
+    'The mind is everything. What you think you become.',
+    'Happiness is not something ready made. It comes from your own actions.',
+    'Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.',
+    'The only real failure is the failure to try. The only real mistake is the one from which we learn nothing.',
+    'Wisdom is not a product of schooling but of the lifelong attempt to acquire it.',
+    'He who learns but does not think is lost. He who thinks but does not learn is in great danger.',
+    'When you change the way you look at things, the things you look at change.'
+  ];
+
+  function newWisdom() {
+    const el = document.getElementById('dailyQuote');
+    const src = document.getElementById('dailySource');
+    el.style.opacity = '0';
+    setTimeout(() => {
+      const q = wisdomQuotes[Math.floor(Math.random() * wisdomQuotes.length)];
+      el.textContent = q;
+      src.innerHTML = '&mdash; Book of Wisdom';
+      el.style.opacity = '1';
+    }, 200);
+  }
+
+  //  PROGRESS TRACKER 
+  let progressState = JSON.parse(localStorage.getItem('wisdomProgress') || '[false,false,false,false,false,false,false,false]');
+
+  function updateProgress() {
+    const steps = document.querySelectorAll('.progress-step');
+    let count = 0;
+    steps.forEach((step, i) => {
+      if (progressState[i]) {
+        step.classList.add('done');
+        count++;
+      } else {
+        step.classList.remove('done');
+      }
+    });
+    const pct = (count / progressState.length) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = count;
+    localStorage.setItem('wisdomProgress', JSON.stringify(progressState));
+  }
+
+  function toggleProgress(index) {
+    progressState[index] = !progressState[index];
+    updateProgress();
+  }
+
+  updateProgress();
+
+  //  WISDOM QUIZ 
+  const quizData = [
+    {
+      question: 'What does "Know thyself" teach us?',
+      options: [
+        'To memorize ancient texts',
+        'To examine our own nature honestly',
+        'To criticize others',
+        'To accumulate knowledge'
+      ],
+      correct: 1,
+      explanation: 'Self-knowledge requires honest confrontation with your own nature, not just intellectual accumulation.'
+    },
+    {
+      question: 'What is the central insight of the principle of Balance?',
+      options: [
+        'Avoid all conflict',
+        'Choose one side and commit',
+        'Hold tension creatively between opposites',
+        'Eliminate all opposing forces'
+      ],
+      correct: 2,
+      explanation: 'Harmony emerges not from eliminating conflict but from dancing between complementary opposites.'
+    },
+    {
+      question: 'According to wisdom traditions, where does suffering arise from?',
+      options: [
+        'External circumstances',
+        'Other people\'s actions',
+        'Absence from the present moment',
+        'Lack of wealth'
+      ],
+      correct: 2,
+      explanation: 'From Buddhism to Stoicism, wisdom traditions agree that suffering arises from being absent from the present moment.'
+    },
+    {
+      question: 'What role does silence play in wisdom?',
+      options: [
+        'It is empty nothingness',
+        'It is fertile ground for insight',
+        'It means avoiding people',
+        'It is a sign of ignorance'
+      ],
+      correct: 1,
+      explanation: 'Silence is not empty but fertile ground where insight rises from beneath the noise of daily life.'
+    },
+    {
+      question: 'True freedom comes from:',
+      options: [
+        'Doing whatever you want',
+        'Having unlimited resources',
+        'Choosing what is best through discipline',
+        'Avoiding all responsibility'
+      ],
+      correct: 2,
+      explanation: 'Discipline frees you from the tyranny of impulse, allowing you to pursue what truly matters.'
+    },
+    {
+      question: 'What is the wisdom response to impermanence?',
+      options: [
+        'Fight against change',
+        'Cling to what is familiar',
+        'Fear what is to come',
+        'Embrace the flow of change'
+      ],
+      correct: 3,
+      explanation: 'Wisdom rides the current of change with grace, knowing each ending is a new beginning.'
+    },
+    {
+      question: 'What does the principle of Unity reveal?',
+      options: [
+        'We are isolated individuals',
+        'Separation is the ultimate truth',
+        'All life is interconnected',
+        'Independence is the goal'
+      ],
+      correct: 2,
+      explanation: 'Wisdom reveals that our sense of separation is limited; beneath the surface, all is one interconnected whole.'
+    },
+    {
+      question: 'What is the highest purpose according to wisdom traditions?',
+      options: [
+        'Personal accumulation',
+        'To serve something greater than yourself',
+        'Fame and recognition',
+        'Mastering others'
+      ],
+      correct: 1,
+      explanation: 'True fulfillment comes not from what you get but from what you give in service of others.'
+    }
+  ];
+
+  let currentQuestion = 0;
+  let quizScore = 0;
+  let quizAnswered = false;
+
+  function renderQuiz() {
+    const q = quizData[currentQuestion];
+    const progressDots = document.getElementById('quizProgress');
+    const questionEl = document.getElementById('quizQuestion');
+    const optionsEl = document.getElementById('quizOptions');
+    const feedbackEl = document.getElementById('quizFeedback');
+    const scoreEl = document.getElementById('quizScore');
+    const nextBtn = document.getElementById('quizNextBtn');
+
+    progressDots.innerHTML = '';
+    quizData.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'quiz-dot' + (i === currentQuestion ? ' active' : '');
+      progressDots.appendChild(dot);
+    });
+
+    questionEl.textContent = q.question;
+    optionsEl.innerHTML = '';
+
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.textContent = opt;
+      btn.onclick = () => selectAnswer(i);
+      optionsEl.appendChild(btn);
+    });
+
+    feedbackEl.className = 'quiz-feedback';
+    feedbackEl.textContent = '';
+    scoreEl.textContent = '';
+    nextBtn.disabled = true;
+    quizAnswered = false;
+  }
+
+  function selectAnswer(index) {
+    if (quizAnswered) return;
+    quizAnswered = true;
+
+    const q = quizData[currentQuestion];
+    const options = document.querySelectorAll('.quiz-option');
+    const feedback = document.getElementById('quizFeedback');
+    const scoreEl = document.getElementById('quizScore');
+    const dots = document.querySelectorAll('.quiz-dot');
+    const nextBtn = document.getElementById('quizNextBtn');
+
+    options.forEach(btn => btn.disabled = true);
+
+    if (index === q.correct) {
+      options[index].classList.add('correct');
+      feedback.className = 'quiz-feedback show correct';
+      feedback.textContent = '\u2713 ' + q.explanation;
+      quizScore++;
+      dots[currentQuestion].classList.add('correct');
+    } else {
+      options[index].classList.add('wrong');
+      options[q.correct].classList.add('correct');
+      feedback.className = 'quiz-feedback show wrong';
+      feedback.textContent = '\u2717 ' + q.explanation;
+      dots[currentQuestion].classList.add('wrong');
+    }
+
+    scoreEl.innerHTML = 'Score: <strong>' + quizScore + '</strong> / ' + (currentQuestion + 1);
+    nextBtn.disabled = false;
+
+    if (currentQuestion === quizData.length - 1) {
+      nextBtn.textContent = 'See Results';
+    }
+  }
+
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion >= quizData.length) {
+      const quiz = document.getElementById('quizSection');
+      const total = quizData.length;
+      const pct = Math.round((quizScore / total) * 100);
+      let level = 'Seeker';
+      if (pct === 100) level = 'Sage';
+      else if (pct >= 75) level = 'Scholar';
+      else if (pct >= 50) level = 'Apprentice';
+
+      quiz.innerHTML = `
+        <div class="quiz-question">Your Wisdom Journey</div>
+        <div class="quiz-score" style="font-size:1.4rem;margin-bottom:1rem;">
+          You scored <strong style="font-size:2rem;font-family:'Playfair Display',serif;">${quizScore}/${total}</strong>
+          <br><span style="font-size:0.9rem;color:var(--text-dim);">(${pct}%)</span>
+        </div>
+        <div style="text-align:center;font-size:1.1rem;color:var(--gold);margin-bottom:1.5rem;font-family:'Playfair Display',serif;">
+          Level: ${level}
+        </div>
+        <div style="text-align:center;color:var(--text-dim);font-size:0.9rem;margin-bottom:1.5rem;">
+          ${pct === 100 ? 'Perfect! You embody the wisdom of the ages.' :
+            pct >= 75 ? 'Deep understanding. You walk the path of wisdom.' :
+            pct >= 50 ? 'Good foundation. Keep exploring the teachings.' :
+            'Every sage was once a beginner. The journey continues.'}
+        </div>
+        <button class="wisdom-btn" style="margin:0 auto;display:block;" onclick="resetQuiz()">
+          Retake the Quiz
+        </button>
+      `;
+      return;
+    }
+    renderQuiz();
+  }
+
+  function resetQuiz() {
+    currentQuestion = 0;
+    quizScore = 0;
+    const quiz = document.getElementById('quizSection');
+    quiz.innerHTML = `
+      <div class="quiz-progress" id="quizProgress"></div>
+      <div class="quiz-question" id="quizQuestion">Loading...</div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-score" id="quizScore"></div>
+      <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuestion()">Next Question</button>
+    `;
+    renderQuiz();
+  }
+
+  renderQuiz();
+</script>
+</body>
+</html>

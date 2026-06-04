@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Psychology of Money — Morgan Housel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sand: #F5E6CA;
+  --sand-dark: #E8D5B0;
+  --navy: #1B2A4A;
+  --navy-light: #2C4068;
+  --gold: #C9A84C;
+  --gold-light: #E0C66A;
+  --cream: #FFF8F0;
+  --cream-dark: #FAF0E0;
+  --text: #2C2C2C;
+  --text-light: #6B6B6B;
+  --card-bg: rgba(255, 248, 240, 0.85);
+  --card-border: rgba(201, 168, 76, 0.2);
+  --shadow: rgba(27, 42, 74, 0.08);
+  --glow: rgba(201, 168, 76, 0.15);
+  --section-divider: rgba(201, 168, 76, 0.15);
+  --nav-bg: rgba(245, 230, 202, 0.92);
+  --hero-overlay: rgba(27, 42, 74, 0.4);
+  --toggle-bg: var(--navy);
+  --toggle-dot: var(--gold);
+  --sparkle: rgba(201, 168, 76, 0.3);
+}
+
+[data-theme="dark"] {
+  --sand: #1B2A4A;
+  --sand-dark: #15203A;
+  --navy: #F5E6CA;
+  --navy-light: #E8D5B0;
+  --gold: #E0C66A;
+  --gold-light: #C9A84C;
+  --cream: #1A1A2E;
+  --cream-dark: #16213E;
+  --text: #EAEAEA;
+  --text-light: #AAAAAA;
+  --card-bg: rgba(27, 42, 74, 0.85);
+  --card-border: rgba(224, 198, 106, 0.15);
+  --shadow: rgba(0, 0, 0, 0.3);
+  --glow: rgba(224, 198, 106, 0.08);
+  --section-divider: rgba(224, 198, 106, 0.1);
+  --nav-bg: rgba(26, 26, 46, 0.92);
+  --hero-overlay: rgba(0, 0, 0, 0.5);
+  --toggle-bg: var(--gold);
+  --toggle-dot: var(--navy);
+  --sparkle: rgba(224, 198, 106, 0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--sand);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background 0.6s ease, color 0.6s ease;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, var(--glow) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(201, 168, 76, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, var(--glow) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.6s ease;
+}
+
+/* Floating particles */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: float-particle linear infinite;
+}
+
+@keyframes float-particle {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: var(--p-opacity, 0.4); }
+  90% { opacity: var(--p-opacity, 0.4); }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+/* Navbar */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--card-border);
+  transition: background 0.6s ease, border-color 0.6s ease;
+}
+
+.nav-logo {
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-logo span { color: var(--text); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: color 0.3s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--gold);
+  transition: width 0.3s;
+}
+
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+
+/* Theme Toggle */
+.theme-toggle {
+  width: 48px;
+  height: 26px;
+  background: var(--toggle-bg);
+  border-radius: 13px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.5s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--toggle-dot);
+  border-radius: 50%;
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), background 0.5s ease;
+}
+
+[data-theme="dark"] .theme-toggle::after {
+  transform: translateX(22px);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Sections */
+section {
+  padding: 6rem 0;
+  position: relative;
+}
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-light);
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, var(--glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content { max-width: 800px; position: relative; z-index: 2; }
+
+.hero-badge {
+  display: inline-block;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid var(--gold);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s ease forwards 0.3s;
+}
+
+.hero h1 {
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s ease forwards 0.5s;
+}
+
+.hero h1 .gold { color: var(--gold); }
+
+.hero p {
+  font-size: 1.15rem;
+  color: var(--text-light);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s ease forwards 0.7s;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s ease forwards 0.9s;
+}
+
+.hero-stat { text-align: center; }
+
+.hero-stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.hero-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards 1.2s;
+}
+
+.scroll-indicator {
+  width: 24px;
+  height: 40px;
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  position: relative;
+}
+
+.scroll-indicator::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 2px;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  50% { transform: translateX(-50%) translateY(10px); opacity: 0.3; }
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section divider */
+.section-divider {
+  width: 80px;
+  height: 3px;
+  background: var(--gold);
+  margin: 0;
+  border-radius: 2px;
+}
+
+/* Stats Bar */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+  padding: 3rem 0;
+  border-top: 1px solid var(--section-divider);
+  border-bottom: 1px solid var(--section-divider);
+  margin-bottom: 3rem;
+}
+
+.stat-item { text-align: center; }
+
+.stat-number {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+/* Takeaways Grid */
+.takeaways-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.takeaway-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.takeaway-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.takeaway-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, transparent 60%, rgba(201, 168, 76, 0.04));
+  pointer-events: none;
+}
+
+.takeaway-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: var(--gold);
+  box-shadow: 0 12px 40px var(--shadow), 0 0 60px var(--glow);
+}
+
+.takeaway-number {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+.takeaway-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.takeaway-card p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  line-height: 1.6;
+  display: none;
+}
+
+.takeaway-card.expanded p {
+  display: block;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--card-border);
+}
+
+.takeaway-expand-icon {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 1.2rem;
+  font-weight: 300;
+  transition: transform 0.4s;
+}
+
+.takeaway-card.expanded .takeaway-expand-icon {
+  transform: rotate(45deg);
+}
+
+/* Key Concepts */
+.concepts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.concept-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.concept-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.concept-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 8px 32px var(--shadow);
+  transform: translateY(-3px);
+}
+
+.concept-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.concept-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.concept-card p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+/* Wealth vs Rich */
+.comparison-section {
+  background: var(--cream);
+  border-radius: 24px;
+  padding: 3rem;
+  margin-top: 3rem;
+  transition: background 0.6s ease;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.comparison-column {
+  padding: 2rem;
+  border-radius: 16px;
+  transition: all 0.4s ease;
+}
+
+.comparison-column.wealth {
+  background: linear-gradient(135deg, rgba(27, 42, 74, 0.05), rgba(27, 42, 74, 0.02));
+  border: 1px solid rgba(27, 42, 74, 0.1);
+}
+
+.comparison-column.rich {
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.08), rgba(201, 168, 76, 0.03));
+  border: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+[data-theme="dark"] .comparison-column.wealth {
+  background: linear-gradient(135deg, rgba(245, 230, 202, 0.05), rgba(245, 230, 202, 0.02));
+}
+
+.comparison-column h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.comparison-column.wealth h3 { color: var(--navy); }
+.comparison-column.rich h3 { color: var(--gold); }
+
+[data-theme="dark"] .comparison-column.wealth h3 { color: var(--navy); }
+
+.comparison-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.comparison-column ul li {
+  padding: 0.6rem 0;
+  font-size: 0.9rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.comparison-column ul li:last-child { border: none; }
+
+.comparison-column ul li::before {
+  content: '◆';
+  font-size: 0.5rem;
+  margin-top: 0.4rem;
+  flex-shrink: 0;
+}
+
+.comparison-column.wealth ul li::before { color: var(--navy); }
+.comparison-column.rich ul li::before { color: var(--gold); }
+
+.comparison-quote {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  font-style: italic;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  border-top: 1px solid var(--card-border);
+}
+
+/* Compounding Visualizer */
+.compounding-section {
+  margin-top: 3rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: background 0.6s ease, border-color 0.6s ease;
+}
+
+.compounding-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.compounding-section h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.compounding-section > p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 2rem;
+}
+
+.compounding-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.control-group {
+  flex: 1;
+  min-width: 160px;
+}
+
+.control-group label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.control-group input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--sand-dark);
+  outline: none;
+  transition: background 0.6s ease;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  border: 2px solid var(--cream);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.control-group input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  border: 2px solid var(--cream);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.compounding-chart {
+  position: relative;
+  height: 250px;
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 0.5rem;
+}
+
+.bar {
+  flex: 1;
+  background: linear-gradient(to top, var(--navy-light), var(--gold));
+  border-radius: 3px 3px 0 0;
+  transition: height 0.5s ease;
+  min-width: 4px;
+  opacity: 0.85;
+  position: relative;
+}
+
+.bar:hover { opacity: 1; }
+
+.compounding-result {
+  text-align: center;
+  padding: 1rem;
+}
+
+.compounding-result .final-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.compounding-result .final-label {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+/* Bias Explorer */
+.bias-section {
+  margin-top: 3rem;
+}
+
+.bias-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.bias-tab {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--card-border);
+  border-radius: 100px;
+  background: transparent;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.bias-tab:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.bias-tab.active {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+.bias-content {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 2rem;
+  min-height: 200px;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(4px);
+}
+
+.bias-content h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.bias-content h3 .bias-icon { margin-right: 0.5rem; }
+
+.bias-content p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.bias-example {
+  background: var(--cream);
+  border-left: 3px solid var(--gold);
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem;
+  color: var(--text);
+  font-style: italic;
+  transition: background 0.6s ease;
+}
+
+/* Philosophy Builder */
+.philosophy-section {
+  margin-top: 3rem;
+}
+
+.philosophy-builder {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.philosophy-builder.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.philosophy-builder h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.philosophy-builder > p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+.philosophy-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.phi-option {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.phi-option:hover {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.05);
+}
+
+.phi-option.selected {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.1);
+  box-shadow: 0 0 20px var(--glow);
+}
+
+.phi-option .phi-category {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+}
+
+.phi-result {
+  background: var(--cream);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text);
+  border: 1px solid var(--card-border);
+  transition: background 0.6s ease;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Quotes */
+.quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.quote-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 2rem 2rem 2.5rem;
+  position: relative;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.quote-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.quote-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px var(--shadow);
+  border-color: var(--gold);
+}
+
+.quote-mark {
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.3;
+  font-family: Georgia, serif;
+  margin-bottom: 0.5rem;
+}
+
+.quote-card blockquote {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.quote-card .quote-source {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  font-weight: 500;
+  font-style: normal;
+}
+
+.quote-card .quote-source::before {
+  content: '— ';
+}
+
+/* Storytelling Section */
+.story-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  margin-top: 3rem;
+}
+
+.story-text { opacity: 0; transform: translateX(-30px); transition: all 0.8s ease; }
+.story-text.visible { opacity: 1; transform: translateX(0); }
+
+.story-visual {
+  position: relative;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: all 0.8s ease;
+}
+
+.story-visual.visible { opacity: 1; transform: translateX(0); }
+
+.story-circle {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(201, 168, 76, 0.15), rgba(27, 42, 74, 0.05));
+  border: 2px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 30px var(--glow); }
+  50% { box-shadow: 0 0 60px var(--glow), 0 0 90px rgba(201, 168, 76, 0.05); }
+}
+
+.story-circle-content {
+  text-align: center;
+  padding: 2rem;
+}
+
+.story-circle-content .big-number {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.story-circle-content p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-top: 0.5rem;
+}
+
+.story-circle .orbit {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  border: 1px dashed rgba(201, 168, 76, 0.15);
+  border-radius: 50%;
+  top: -10%;
+  left: -10%;
+  animation: spin 20s linear infinite;
+}
+
+.story-circle .orbit:nth-child(2) {
+  width: 140%;
+  height: 140%;
+  top: -20%;
+  left: -20%;
+  animation-direction: reverse;
+  animation-duration: 30s;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer */
+footer {
+  padding: 4rem 0 2rem;
+  border-top: 1px solid var(--section-divider);
+  text-align: center;
+}
+
+footer p {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  line-height: 1.8;
+}
+
+footer .footer-gold {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* Scroll reveal base */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .container { padding: 0 1.25rem; }
+  section { padding: 4rem 0; }
+  .hero h1 { font-size: 2.4rem; }
+  .hero-stats { gap: 1.5rem; }
+  .section-title { font-size: 1.8rem; }
+  .takeaways-grid { grid-template-columns: 1fr; }
+  .concepts-grid { grid-template-columns: 1fr; }
+  .comparison-grid { grid-template-columns: 1fr; }
+  .comparison-section { padding: 1.5rem; }
+  .quotes-grid { grid-template-columns: 1fr; }
+  .story-section { grid-template-columns: 1fr; gap: 2rem; }
+  .philosophy-options { grid-template-columns: 1fr 1fr; }
+  .compounding-section { padding: 1.5rem; }
+  .compounding-chart { height: 180px; }
+  .nav-links a:not(.nav-keep) { display: none; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .philosophy-options { grid-template-columns: 1fr; }
+  .hero-stat-number { font-size: 1.6rem; }
+  .compounding-result .final-value { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<nav>
+  <a href="#" class="nav-logo"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <span>The Psychology of Money</span></a>
+  <ul class="nav-links">
+    <li><a href="#takeaways">Takeaways</a></li>
+    <li><a href="#concepts">Concepts</a></li>
+    <li><a href="#biases">Biases</a></li>
+    <li><a href="#quotes">Quotes</a></li>
+    <li><a href="#" class="nav-keep" style="padding:0;">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    </a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Timeless Lessons on Wealth, Greed & Happiness</div>
+    <h1>The Psychology<br>of <span class="gold">Money</span></h1>
+    <p>Morgan Housel's masterpiece reveals that financial success is not about how smart you are — it's about how you behave. A book about money written for the human heart, not the calculator.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-number">20</div>
+        <div class="hero-stat-label">Chapters</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">1</div>
+        <div class="hero-stat-label">Big Idea</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">∞</div>
+        <div class="hero-stat-label">Compounding</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">&#9829;</div>
+        <div class="hero-stat-label">Human Nature</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-indicator"></div>
+  </div>
+</section>
+
+<div class="container">
+
+<section id="takeaways">
+  <div class="section-label reveal">Chapter by Chapter</div>
+  <h2 class="section-title reveal">The 20 Most Important Takeaways</h2>
+  <p class="section-subtitle reveal">Each chapter distills a timeless truth about our relationship with money — not from a spreadsheet, but from lived experience and human psychology.</p>
+  <div class="stats-bar reveal">
+    <div class="stat-item">
+      <div class="stat-number">20</div>
+      <div class="stat-label">Timeless Lessons</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">200+</div>
+      <div class="stat-label">Pages of Wisdom</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">4.7</div>
+      <div class="stat-label">Goodreads Rating</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">35+</div>
+      <div class="stat-label">Languages</div>
+    </div>
+  </div>
+  <div class="takeaways-grid" id="takeawaysGrid"></div>
+</section>
+
+<section id="concepts">
+  <div class="section-label reveal">Core Ideas</div>
+  <h2 class="section-title reveal">Key Concepts That Shape Everything</h2>
+  <p class="section-subtitle reveal">Housel's most powerful ideas — the mental models that rewire how you think about money, risk, and happiness.</p>
+  <div class="concepts-grid">
+    <div class="concept-card" data-delay="0">
+      <span class="concept-icon">&#9201;</span>
+      <h3>The Power of Compounding</h3>
+      <p>The most powerful force in finance is not intelligence or insight — it's time. Small, consistent actions, given enough decades, produce outcomes that defy intuition. Housel shows that Warren Buffett's true secret isn't investing brilliance, but that he started at age 10 and lived to 90.</p>
+    </div>
+    <div class="concept-card" data-delay="100">
+      <span class="concept-icon">&#9888;</span>
+      <h3>Luck &amp; Risk</h3>
+      <p>Everything in finance comes from a blend of skill and chance. We desperately want to believe success is earned and failure is deserved, but the line between luck and skill is blurrier than we admit. Be humble in success and forgiving in failure.</p>
+    </div>
+    <div class="concept-card" data-delay="200">
+      <span class="concept-icon">&#8734;</span>
+      <h3>The Concept of Enough</h3>
+      <p>There is no amount of money that will make you feel wealthy if you don't know what "enough" means. When you have more than you'll ever need, the goalposts move. The hardest financial skill is getting the goalposts to stop moving.</p>
+    </div>
+    <div class="concept-card" data-delay="300">
+      <span class="concept-icon">&#9733;</span>
+      <h3>Wealth vs. Income</h3>
+      <p>Wealth is what you don't see. Income is what you show. The wealthy often look like they have less than they do, and those who look wealthy often have less than they appear. True wealth is the gap between what you earn and what you don't spend.</p>
+    </div>
+  </div>
+
+  <div class="comparison-section reveal">
+    <div class="section-label" style="text-align:center;">Side by Side</div>
+    <h3 style="text-align:center;font-size:1.6rem;font-weight:700;margin-bottom:0.5rem;">Wealth <span style="color:var(--text-light);font-weight:300;">vs.</span> Rich</h3>
+    <p style="text-align:center;color:var(--text-light);font-size:0.9rem;">The distinction that changes everything</p>
+    <div class="comparison-grid">
+      <div class="comparison-column wealth">
+        <h3>&#9670; Wealth</h3>
+        <ul>
+          <li>What you keep, not what you spend</li>
+          <li>Built through patience and restraint</li>
+          <li>Invisible — lives below its means</li>
+          <li>Buys freedom and independence</li>
+          <li>Compounds slowly over time</li>
+          <li>About control over your time</li>
+        </ul>
+      </div>
+      <div class="comparison-column rich">
+        <h3>&#9670; Rich</h3>
+        <ul>
+          <li>What you display, not what you own</li>
+          <li>Built through spending and showing</li>
+          <li>Visible — lives at or above means</li>
+          <li>Buys status and approval</li>
+          <li>Dissipates quickly</li>
+          <li>About control over perception</li>
+        </ul>
+      </div>
+    </div>
+    <div class="comparison-quote">
+      "Wealth is the nice cars not purchased. The diamonds not bought. The clothes not worn. Wealth is the financial assets that accumulate silently, invisibly, while we go about our day."
+    </div>
+  </div>
+
+  <div class="compounding-section" id="compoundingSection">
+    <h3>&#9201; The Compounding Visualizer</h3>
+    <p>See how small, consistent investments explode over time — the single most important graph in the book.</p>
+    <div class="compounding-controls">
+      <div class="control-group">
+        <label>Annual Return <span id="returnValue">8%</span></label>
+        <input type="range" id="returnSlider" min="1" max="25" value="8" step="0.5">
+      </div>
+      <div class="control-group">
+        <label>Time Horizon <span id="yearsValue">30 years</span></label>
+        <input type="range" id="yearsSlider" min="5" max="60" value="30" step="1">
+      </div>
+      <div class="control-group">
+        <label>Monthly Savings <span id="savingsValue">$500</span></label>
+        <input type="range" id="savingsSlider" min="100" max="5000" value="500" step="50">
+      </div>
+    </div>
+    <div class="compounding-chart" id="compoundingChart"></div>
+    <div class="compounding-result">
+      <div class="final-value" id="finalValue">$745,000</div>
+      <div class="final-label">Total after investment period</div>
+    </div>
+  </div>
+</section>
+
+<section id="biases">
+  <div class="section-label reveal">Behavioral Psychology</div>
+  <h2 class="section-title reveal">Biases That Shape Your Money Decisions</h2>
+  <p class="section-subtitle reveal">Housel reveals that we are not rational calculators — we are emotional beings shaped by our unique histories with money.</p>
+  <div class="bias-section reveal">
+    <div class="bias-tabs" id="biasTabs"></div>
+    <div class="bias-content" id="biasContent">
+      <h3><span class="bias-icon">&#128200;</span>Select a bias above</h3>
+      <p>Click on any bias to explore how it affects your financial decisions — and how to recognize it in yourself.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label reveal">Housel's Craft</div>
+  <h2 class="section-title reveal">The Art of Financial Storytelling</h2>
+  <p class="section-subtitle reveal">What makes The Psychology of Money resonate so deeply is not the data — it's the stories. Housel writes about finance the way a novelist writes about the human condition.</p>
+  <div class="story-section reveal">
+    <div class="story-text">
+      <div class="section-divider" style="margin-bottom:1.5rem;"></div>
+      <p style="font-size:1.05rem;line-height:1.8;color:var(--text-light);margin-bottom:1rem;">
+        "A genius who loses money is just a genius who lost money. A person who can earn a good living and save a lot of money becomes wealthy. Finance is not a hard science — it's a soft one."
+      </p>
+      <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;">
+        Housel's gift is making complex ideas feel like conversations with a wise friend. He doesn't lecture — he invites. Each chapter is a short story, with characters, tension, and a lesson that stays with you. That's why this book has sold millions: it treats the reader as a human being, not a spreadsheet.
+      </p>
+    </div>
+    <div class="story-visual">
+      <div class="story-circle">
+        <div class="orbit"></div>
+        <div class="orbit"></div>
+        <div class="story-circle-content">
+          <div class="big-number">&#9733;</div>
+          <p style="font-size:0.95rem;font-weight:600;color:var(--gold);margin-top:0.5rem;">Storytelling<br>over<br>Statistics</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="quotes">
+  <div class="section-label reveal">Words That Stick</div>
+  <h2 class="section-title reveal">Key Quotes</h2>
+  <p class="section-subtitle reveal">The passages that readers return to again and again — distilled wisdom from every chapter.</p>
+  <div class="quotes-grid" id="quotesGrid"></div>
+</section>
+
+<section>
+  <div class="section-label reveal">Your Philosophy</div>
+  <h2 class="section-title reveal">Build Your Financial Philosophy</h2>
+  <p class="section-subtitle reveal">Mix and match Housel's core principles to create your personal money philosophy.</p>
+  <div class="philosophy-section">
+    <div class="philosophy-builder" id="philosophyBuilder">
+      <h3 style="margin-bottom:0.5rem;">&#9889; Your Philosophy</h3>
+      <p>Select one principle from each category below.</p>
+      <div class="philosophy-options" id="philosophyOptions"></div>
+      <div class="phi-result" id="phiResult">
+        Select your principles above to generate your philosophy.
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div style="width:40px;height:3px;background:var(--gold);margin:0 auto 1.5rem;border-radius:2px;"></div>
+    <p style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;">
+      "The hardest financial skill is getting the goalposts to stop moving."
+    </p>
+    <p>
+      <span class="footer-gold">The Psychology of Money</span> — Morgan Housel<br>
+      Interactive summary &middot; Warmly crafted &middot; 2024
+    </p>
+  </div>
+</footer>
+
+<script>
+const takeaways = [
+  { num: 1, title: "No One's Crazy", detail: "Your financial decisions are shaped by your unique experiences — what seems crazy to you may be perfectly rational to someone else born in a different time, place, or circumstance." },
+  { num: 2, title: "Luck & Risk", detail: "Everything worthwhile in finance carries both luck and risk. Be humble in success — you got lucky. Be forgiving in failure — they got unlucky." },
+  { num: 3, title: "Never Enough", detail: "The hardest financial skill is knowing when 'enough' is enough. When greed exceeds enough, you'll always find ways to lose what you have." },
+  { num: 4, title: "The Power of Compounding", detail: "Warren Buffett's fortune isn't from being the best investor — it's from starting at age 10 and living to 90. Time is the only factor you can't replace." },
+  { num: 5, title: "Getting Wealthy vs. Staying Wealthy", detail: "Getting rich requires risk and optimism. Staying rich requires fear and humility. They are entirely different skills." },
+  { num: 6, title: "Tails, You Win", detail: "You can be wrong half the time and still do incredibly well. A small number of outsized events drive the majority of returns." },
+  { num: 7, title: "Freedom", detail: "The highest dividend money pays is the ability to control your time. No amount of wealth is worth losing your freedom." },
+  { num: 8, title: "Man in the Car Paradox", detail: "When you see someone in a fancy car, you rarely think about the driver — you imagine yourself in the car. People want admiration, but display signals rarely deliver it." },
+  { num: 9, title: "Wealth is What You Don't See", detail: "Wealth is the nice cars not purchased, the diamonds not bought. True wealth is invisible — it accumulates in quiet, boring assets." },
+  { num: 10, title: "Save Money", detail: "The only factor you can fully control is your savings rate. Income is earned by others; spending is earned by you. Saving is the gap between ego and income." },
+  { num: 11, title: "Reasonable > Rational", detail: "You don't need to be a cold, calculating machine. Being reasonable — good enough, most of the time — beats being perfectly rational but unable to stick with a plan." },
+  { num: 12, title: "Surprise!", detail: "History is not a guidebook for the future. The things that surprise us most are the things that have never happened before — but they will." },
+  { num: 13, title: "Room for Error", detail: "The margin of safety is the only way to safely navigate an uncertain world. Plan for things to go wrong — not because they will, but because they might." },
+  { num: 14, title: "You'll Change", detail: "Long-term planning is hard because your goals and desires will change. Be open to evolution — the person you are today won't be the same in 20 years." },
+  { num: 15, title: "Nothing's Free", detail: "Every financial return comes with a price — volatility, uncertainty, doubt. The problem is the price isn't labeled. You only see it after you've paid." },
+  { num: 16, title: "You & Me", detail: "Your financial timeline is unique. What works for a pension fund or a billionaire may be terrible for you. Play your own game." },
+  { num: 17, title: "The Seduction of Pessimism", detail: "Pessimism sounds smarter and more sophisticated than optimism. But optimism is the only stance that works long-term — because the future belongs to those who keep showing up." },
+  { num: 18, title: "When You Believe Anything", detail: "We believe stories that confirm our views. The more you want something to be true, the more likely you are to believe it. Stay skeptical." },
+  { num: 19, title: "All Together Now", detail: "The most powerful financial strategy is simple: live below your means, save consistently, be patient, and give yourself room for error. Boring works." },
+  { num: 20, title: "Confusion of Goals", detail: "Money's greatest value is giving you control over your time. If money isn't buying you autonomy, you're using it wrong. The goal isn't to be rich — it's to be free." }
+];
+
+const quotes = [
+  { text: "The ability to do what you want, when you want, with who you want, for as long as you want, is the single most powerful tool money gives us.", source: "Chapter 7: Freedom" },
+  { text: "Wealth is the nice cars not purchased. The diamonds not bought. The clothes not worn. Wealth is financial assets that haven't yet been converted into the things you see.", source: "Chapter 9: Wealth is What You Don't See" },
+  { text: "The hardest financial skill is getting the goalposts to stop moving.", source: "Chapter 3: Never Enough" },
+  { text: "There is no reason to risk what you have and need for what you don't have and don't need.", source: "Chapter 5: Getting Wealthy vs. Staying Wealthy" },
+  { text: "A genius who loses money is just a genius who lost money. A person who can earn a good living and save a lot of money becomes wealthy.", source: "Chapter 1: No One's Crazy" },
+  { text: "More than I want to be rich, I want to be able to wake up every morning and say, 'I can do whatever I want today.'", source: "Foreword" },
+  { text: "Compounding doesn't rely on earning big returns. It relies on earning decent returns consistently for a long time. That's it.", source: "Chapter 4: The Power of Compounding" },
+  { text: "An iron rule of finance: money seeks anonymity. The more visible you make your money, the more likely you are to lose it.", source: "Chapter 9: Wealth is What You Don't See" }
+];
+
+const biases = [
+  { name: "Confirmation Bias", icon: "&#128269;", desc: "We seek information that confirms what we already believe about money and investing. If you think the market will crash, you'll find evidence everywhere — even when the data says otherwise.", example: "An investor only reads bearish news and thinks the economy is collapsing, while ignoring GDP growth and low unemployment." },
+  { name: "Recency Bias", icon: "&#9200;", desc: "We assume what happened recently will continue. After a bull market, we believe stocks only go up. After a crash, we think they'll never recover. This makes us buy high and sell low.", example: "After seeing 30% returns last year, you assume 30% is normal and invest recklessly, ignoring historical averages." },
+  { name: "Hindsight Bias", icon: "&#128064;", desc: "After something happens, we convince ourselves we knew it all along. This makes us overconfident in our ability to predict the future and blind to the role of luck.", example: "After a stock doubles, you say 'I knew it would go up' — but you didn't invest in it." },
+  { name: "Loss Aversion", icon: "&#128308;", desc: "Losing $100 hurts roughly twice as much as gaining $100 feels good. This asymmetry makes us overly conservative when we should take calculated risks, and overly reckless trying to break even.", example: "Holding a losing stock for years because selling and realizing the loss feels unbearable." },
+  { name: "Social Proof", icon: "&#128101;", desc: "We look to others to decide what's correct. When everyone around us is buying crypto, real estate, or a hot stock, we feel an almost physical urge to join — even if it defies logic.", example: "Buying Bitcoin at $60k because your friends got rich, ignoring that you're arriving late." },
+  { name: "Overconfidence", icon: "&#128170;", desc: "Men in particular tend to overestimate their financial ability. We think we're above average drivers, investors, and savers. Overconfidence leads to excessive trading, concentrated bets, and catastrophic losses.", example: "A day trader believes they've cracked the market code, taking massive leverage before a correction wipes them out." },
+  { name: "Narrative Fallacy", icon: "&#128214;", desc: "We prefer compelling stories over dry statistics. A vivid anecdote about someone getting rich from a stock feels more true than the data showing most people lose money trying the same thing.", example: "Hearing about your neighbor who made millions in Tesla stock, ignoring the thousands who lost money timing it wrong." },
+  { name: "Anchoring", icon: "&#9878;", desc: "We fixate on a specific reference point — the price we bought a stock at, the market's all-time high — and make decisions based on that anchor rather than current reality.", example: "Refusing to buy a stock at $100 because you remember it was $50 last year, even though the company is worth more now." }
+];
+
+const philosophyCategories = [
+  {
+    category: "Your Relationship with Money",
+    options: [
+      "Money is a tool for freedom and autonomy",
+      "Money is a measure of achievement and success",
+      "Money is security against life's uncertainties",
+      "Money is a responsibility to be managed wisely"
+    ]
+  },
+  {
+    category: "Your Approach to Risk",
+    options: [
+      "Take calculated risks with room for error",
+      "Avoid risk entirely — preservation first",
+      "Take bold bets with asymmetric upside",
+      "Diversify broadly and stay the course"
+    ]
+  },
+  {
+    category: "Your Definition of Enough",
+    options: [
+      "Enough is when I control my time",
+      "Enough is when my basic needs are covered for life",
+      "Enough keeps moving — I always want more",
+      "Enough is measured by impact, not accumulation"
+    ]
+  },
+  {
+    category: "Your Investing Stance",
+    options: [
+      "Patient compounding over decades",
+      "Active trading and market timing",
+      "Index funds and hands-off approach",
+      "Value investing with deep research"
+    ]
+  }
+];
+
+// Render takeaways
+const grid = document.getElementById('takeawaysGrid');
+takeaways.forEach(t => {
+  const card = document.createElement('div');
+  card.className = 'takeaway-card';
+  card.innerHTML = `
+    <div class="takeaway-number">Chapter ${t.num}</div>
+    <h3>${t.title}</h3>
+    <p>${t.detail}</p>
+    <div class="takeaway-expand-icon">+</div>
+  `;
+  card.addEventListener('click', () => card.classList.toggle('expanded'));
+  grid.appendChild(card);
+});
+
+// Render quotes
+const quotesGrid = document.getElementById('quotesGrid');
+quotes.forEach(q => {
+  const card = document.createElement('div');
+  card.className = 'quote-card';
+  card.innerHTML = `
+    <div class="quote-mark">"</div>
+    <blockquote>${q.text}</blockquote>
+    <div class="quote-source">${q.source}</div>
+  `;
+  quotesGrid.appendChild(card);
+});
+
+// Render biases
+const tabs = document.getElementById('biasTabs');
+const biasContent = document.getElementById('biasContent');
+biases.forEach((b, i) => {
+  const tab = document.createElement('button');
+  tab.className = 'bias-tab' + (i === 0 ? ' active' : '');
+  tab.textContent = b.name;
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.bias-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    biasContent.innerHTML = `
+      <h3><span class="bias-icon">${b.icon}</span>${b.name}</h3>
+      <p>${b.desc}</p>
+      <div class="bias-example">"${b.example}"</div>
+    `;
+  });
+  tabs.appendChild(tab);
+});
+// Activate first bias
+biases[0] && tabs.querySelector('.bias-tab')?.click();
+
+// Render philosophy builder
+const phiOptions = document.getElementById('philosophyOptions');
+const phiResult = document.getElementById('phiResult');
+const selections = [];
+
+philosophyCategories.forEach((cat, ci) => {
+  cat.options.forEach((opt, oi) => {
+    const el = document.createElement('button');
+    el.className = 'phi-option';
+    el.innerHTML = `<div class="phi-category">${cat.category}</div>${opt}`;
+    el.addEventListener('click', () => {
+      document.querySelectorAll(`.phi-option`).forEach(e => {
+        if (e.querySelector('.phi-category')?.textContent === cat.category) {
+          e.classList.remove('selected');
+        }
+      });
+      el.classList.add('selected');
+      selections[ci] = opt;
+      updatePhilosophy();
+    });
+    phiOptions.appendChild(el);
+  });
+});
+
+function updatePhilosophy() {
+  if (selections.length < philosophyCategories.length || selections.some(s => !s)) {
+    phiResult.textContent = 'Select your principles above to generate your philosophy.';
+    return;
+  }
+  phiResult.innerHTML = `
+    <strong style="color:var(--gold);font-size:1.05rem;">Your Financial Philosophy</strong><br><br>
+    ${selections[0]}. I believe ${selections[0].toLowerCase()}.<br>
+    When it comes to risk: ${selections[1].toLowerCase()}.<br>
+    For me, enough means: ${selections[2].toLowerCase()}.<br>
+    My investing approach: ${selections[3].toLowerCase()}.<br><br>
+    <em style="color:var(--text-light);font-size:0.85rem;">"A reasonable philosophy you can stick with beats a perfect one you abandon."</em>
+  `;
+}
+
+// Compounding visualizer
+const returnSlider = document.getElementById('returnSlider');
+const yearsSlider = document.getElementById('yearsSlider');
+const savingsSlider = document.getElementById('savingsSlider');
+const returnValue = document.getElementById('returnValue');
+const yearsValue = document.getElementById('yearsValue');
+const savingsValue = document.getElementById('savingsValue');
+const finalValue = document.getElementById('finalValue');
+const chart = document.getElementById('compoundingChart');
+
+function formatMoney(n) {
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+  return '$' + Math.round(n);
+}
+
+function updateCompound() {
+  const rate = parseFloat(returnSlider.value) / 100;
+  const years = parseInt(yearsSlider.value);
+  const monthly = parseInt(savingsSlider.value);
+  const monthlyRate = rate / 12;
+  const totalMonths = years * 12;
+
+  returnValue.textContent = (rate * 100).toFixed(1) + '%';
+  yearsValue.textContent = years + ' years';
+  savingsValue.textContent = '$' + monthly;
+
+  let balance = 0;
+  const points = [];
+  for (let m = 1; m <= totalMonths; m++) {
+    balance = (balance + monthly) * (1 + monthlyRate);
+    if (m % Math.max(1, Math.floor(totalMonths / 60)) === 0 || m === totalMonths) {
+      points.push({ month: m, value: balance });
+    }
+  }
+
+  const maxVal = Math.max(...points.map(p => p.value), 1);
+  chart.innerHTML = '';
+  points.forEach((p, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    const h = (p.value / maxVal) * 100;
+    bar.style.height = h + '%';
+    bar.title = `Year ${(p.month / 12).toFixed(1)}: ${formatMoney(p.value)}`;
+    chart.appendChild(bar);
+  });
+
+  finalValue.textContent = formatMoney(balance);
+}
+
+[returnSlider, yearsSlider, savingsSlider].forEach(s => {
+  s.addEventListener('input', updateCompound);
+});
+updateCompound();
+
+// Particles
+(function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 2 + Math.random() * 4;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (15 + Math.random() * 25) + 's';
+    p.style.animationDelay = Math.random() * 20 + 's';
+    p.style.setProperty('--p-opacity', (0.2 + Math.random() * 0.4).toFixed(2));
+    container.appendChild(p);
+  }
+})();
+
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+});
+
+// Scroll reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const delay = parseInt(el.dataset.delay) || 0;
+      setTimeout(() => el.classList.add('visible'), delay);
+      revealObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal, .takeaway-card, .concept-card, .quote-card, .compounding-section, .philosophy-builder, .story-text, .story-visual').forEach(el => {
+  revealObserver.observe(el);
+});
+
+// Also observe takeaway cards and concept cards after they're created
+setTimeout(() => {
+  document.querySelectorAll('.takeaway-card, .concept-card, .quote-card').forEach(el => {
+    if (!el.classList.contains('visible')) revealObserver.observe(el);
+  });
+}, 100);
+</script>
+</body>
+</html>

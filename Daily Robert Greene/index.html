@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Robert Greene — 366 Meditations on Power, Seduction, Mastery, Strategy &amp; Human Nature</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --bg:#0a0808;
+    --bg2:#120e0e;
+    --bg3:#1a1212;
+    --card:#1a1215;
+    --card-hover:#24181c;
+    --text:#e8dcd4;
+    --text-dim:#9a8a82;
+    --text-muted:#6a5a52;
+    --crimson:#c0392b;
+    --crimson-light:#e84c3d;
+    --crimson-dark:#7a1f1a;
+    --gold:#d4a047;
+    --gold-light:#e8c060;
+    --gold-dim:#7a5a1a;
+    --border:#2a1a1a;
+    --border-light:#3a2a22;
+    --glow-crimson:0 0 40px rgba(192,57,43,.15);
+    --glow-gold:0 0 40px rgba(212,160,71,.1);
+    --shadow:0 8px 32px rgba(0,0,0,.5);
+    --radius:16px;
+    --radius-sm:10px;
+    --transition:0.5s cubic-bezier(.22,1,.36,1);
+    --font-serif:'Cormorant Garamond',Georgia,serif;
+    --font-sans:'Inter',system-ui,sans-serif;
+  }
+
+  .light{
+    --bg:#f5f0eb;
+    --bg2:#ede5de;
+    --bg3:#e0d5cc;
+    --card:#fffaf5;
+    --card-hover:#f5ede5;
+    --text:#1a1210;
+    --text-dim:#6a5a52;
+    --text-muted:#9a8a82;
+    --crimson:#b8322a;
+    --crimson-light:#d4433a;
+    --crimson-dark:#8a2018;
+    --gold:#b8862d;
+    --gold-light:#d4a047;
+    --gold-dim:#7a5a1a;
+    --border:#dccfc6;
+    --border-light:#ede0d8;
+    --glow-crimson:0 0 40px rgba(184,50,42,.1);
+    --glow-gold:0 0 40px rgba(184,134,45,.08);
+    --shadow:0 8px 32px rgba(0,0,0,.08);
+  }
+
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-sans);
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.7;
+    overflow-x:hidden;
+    transition:background var(--transition),color var(--transition);
+  }
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--crimson);border-radius:3px}
+
+  #progress{
+    position:fixed;top:0;left:0;height:2px;
+    background:linear-gradient(90deg,var(--crimson),var(--gold),var(--crimson));
+    background-size:200% auto;animation:gradientShift 3s ease infinite;
+    z-index:9999;width:0%;transition:width .1s;
+  }
+  @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+  #bgCanvas{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:0;pointer-events:none;opacity:.3;
+  }
+
+  .theme-toggle{
+    position:fixed;top:20px;right:20px;z-index:1000;
+    background:var(--card);border:1px solid var(--border);
+    color:var(--gold);width:46px;height:46px;border-radius:50%;
+    cursor:pointer;font-size:1.2rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);transition:all var(--transition);
+    backdrop-filter:blur(10px);
+  }
+  .theme-toggle:hover{transform:scale(1.1) rotate(15deg);border-color:var(--gold);box-shadow:var(--glow-gold)}
+
+  /*  HERO  */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+    padding:2rem;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 30% 40%,rgba(192,57,43,.08) 0%,transparent 50%),
+      radial-gradient(ellipse at 70% 60%,rgba(212,160,71,.05) 0%,transparent 50%);
+    pointer-events:none;
+  }
+  .hero-line{
+    position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    opacity:.3;
+  }
+  .hero-badge{
+    display:inline-block;padding:8px 24px;border:1px solid var(--gold);
+    color:var(--gold);font-size:.7rem;font-weight:600;letter-spacing:3px;
+    text-transform:uppercase;margin-bottom:2rem;position:relative;z-index:1;
+    opacity:0;animation:fadeUp .8s .2s forwards;
+  }
+  .hero h1{
+    font-family:var(--font-serif);
+    font-size:clamp(3rem,10vw,7rem);font-weight:700;
+    letter-spacing:-1px;line-height:1.05;position:relative;z-index:1;
+    opacity:0;animation:fadeUp .8s .4s forwards;
+  }
+  .hero h1 .hl{color:var(--crimson);font-style:italic}
+  .hero h1 .sm{
+    font-family:var(--font-sans);
+    font-size:.18em;display:block;font-weight:300;letter-spacing:8px;
+    color:var(--text-dim);margin-top:.6rem;text-transform:uppercase;
+  }
+  .hero .subtitle{
+    font-family:var(--font-serif);
+    font-size:clamp(1.1rem,2.5vw,1.4rem);color:var(--text-dim);
+    max-width:600px;margin-top:1.5rem;position:relative;z-index:1;
+    opacity:0;animation:fadeUp .8s .6s forwards;font-style:italic;
+  }
+  .hero .author{
+    color:var(--gold);font-size:.9rem;margin-top:1rem;letter-spacing:2px;
+    text-transform:uppercase;position:relative;z-index:1;
+    opacity:0;animation:fadeUp .8s .8s forwards;
+  }
+  .scroll-hint{
+    position:absolute;bottom:2.5rem;z-index:1;
+    opacity:0;animation:fadeUp .8s 1.2s forwards;
+  }
+  .scroll-hint span{
+    display:block;width:24px;height:40px;border:2px solid var(--text-muted);
+    border-radius:12px;position:relative;
+  }
+  .scroll-hint span::after{
+    content:'';width:4px;height:10px;background:var(--gold);
+    border-radius:2px;position:absolute;top:6px;left:50%;
+    transform:translateX(-50%);animation:bounce 2s infinite;
+  }
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+  section{position:relative;z-index:1;padding:6rem 2rem}
+  .container{max-width:1100px;margin:0 auto}
+  .section-label{
+    display:inline-block;color:var(--crimson);font-size:.7rem;
+    letter-spacing:3px;text-transform:uppercase;margin-bottom:.5rem;
+    font-weight:600;
+  }
+  .section-title{
+    font-family:var(--font-serif);
+    font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:1rem;
+  }
+  .section-desc{
+    color:var(--text-dim);font-size:1.05rem;max-width:700px;
+    margin-bottom:3rem;font-style:italic;
+  }
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity .7s,transform .7s}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-d1{transition-delay:.1s}
+  .reveal-d2{transition-delay:.2s}
+  .reveal-d3{transition-delay:.3s}
+  .reveal-d4{transition-delay:.4s}
+  .reveal-d5{transition-delay:.5s}
+
+  /*  STATS  */
+  .stats-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin:0 auto;max-width:900px;
+  }
+  .stat-card{
+    text-align:center;padding:2.5rem 1.5rem;
+    border:1px solid var(--border);border-radius:var(--radius);
+    background:var(--card);transition:all var(--transition);
+    position:relative;overflow:hidden;
+  }
+  .stat-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--crimson),var(--gold));
+    transform:scaleX(0);transition:transform .5s;transform-origin:left;
+  }
+  .stat-card:hover::before{transform:scaleX(1)}
+  .stat-card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:var(--glow-gold)}
+  .stat-num{
+    font-family:var(--font-serif);
+    font-size:3.5rem;font-weight:700;color:var(--crimson);line-height:1;margin-bottom:.5rem;
+  }
+  .stat-label{color:var(--text-dim);font-size:.85rem;letter-spacing:1px;text-transform:uppercase;font-weight:500}
+
+  /*  TODAY'S MEDITATION  */
+  .meditation-box{
+    border:1px solid var(--border);
+    border-radius:var(--radius);padding:3rem;
+    background:var(--card);position:relative;overflow:hidden;
+    transition:all var(--transition);
+  }
+  .meditation-box:hover{border-color:var(--border-light)}
+  .meditation-box::after{
+    content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;
+    background:radial-gradient(circle,rgba(212,160,71,.04) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .meditation-category{
+    display:inline-block;padding:4px 16px;
+    background:rgba(192,57,43,.15);color:var(--crimson-light);
+    font-size:.7rem;font-weight:600;letter-spacing:1px;
+    text-transform:uppercase;border-radius:50px;margin-bottom:1rem;
+  }
+  .meditation-text{
+    font-family:var(--font-serif);
+    font-size:clamp(1.2rem,2.5vw,1.6rem);
+    line-height:1.6;margin-bottom:1.5rem;position:relative;z-index:1;
+    font-style:italic;
+  }
+  .meditation-source{
+    color:var(--gold);font-size:.85rem;position:relative;z-index:1;
+  }
+  .meditation-btn{
+    display:inline-flex;align-items:center;gap:.6rem;
+    padding:14px 36px;background:var(--crimson);color:#fff;
+    border:none;border-radius:var(--radius-sm);font-size:.9rem;
+    font-weight:600;cursor:pointer;transition:all var(--transition);
+    letter-spacing:.5px;margin-top:1.5rem;position:relative;z-index:1;
+  }
+  .meditation-btn:hover{background:var(--crimson-light);transform:translateY(-2px);box-shadow:var(--glow-crimson)}
+  .meditation-btn:active{transform:translateY(0)}
+  .meditation-history{
+    margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);
+  }
+  .meditation-history h4{
+    font-size:.8rem;text-transform:uppercase;letter-spacing:2px;
+    color:var(--text-muted);margin-bottom:.8rem;
+  }
+  .history-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+  .history-tag{
+    padding:3px 12px;background:var(--bg2);border:1px solid var(--border);
+    border-radius:50px;font-size:.7rem;color:var(--text-dim);cursor:pointer;
+    transition:all .3s;
+  }
+  .history-tag:hover{border-color:var(--gold);color:var(--gold)}
+
+  /*  CATEGORIES  */
+  .category-tabs{
+    display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2.5rem;
+  }
+  .category-tab{
+    padding:10px 24px;border:1px solid var(--border);
+    border-radius:50px;background:transparent;color:var(--text-dim);
+    font-size:.8rem;font-weight:500;cursor:pointer;
+    transition:all var(--transition);letter-spacing:.5px;
+    font-family:var(--font-sans);
+  }
+  .category-tab:hover{border-color:var(--gold);color:var(--gold)}
+  .category-tab.active{
+    background:var(--crimson);border-color:var(--crimson);
+    color:#fff;box-shadow:var(--glow-crimson);
+  }
+  .category-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;
+  }
+  .cat-card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);padding:2rem;cursor:pointer;
+    transition:all var(--transition);position:relative;overflow:hidden;
+  }
+  .cat-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--crimson),var(--gold));
+    transform:scaleX(0);transition:transform .5s;transform-origin:left;
+  }
+  .cat-card:hover::before,.cat-card.open::before{transform:scaleX(1)}
+  .cat-card:hover{transform:translateY(-3px);border-color:var(--border-light);box-shadow:var(--shadow)}
+  .cat-card.open{border-color:var(--gold);box-shadow:var(--glow-gold)}
+  .cat-card.hidden{display:none}
+  .cat-card-icon{font-size:2.2rem;margin-bottom:.8rem}
+  .cat-card h3{
+    font-family:var(--font-serif);
+    font-size:1.4rem;margin-bottom:.4rem;
+  }
+  .cat-card .cat-count{
+    color:var(--text-muted);font-size:.75rem;text-transform:uppercase;
+    letter-spacing:1px;margin-bottom:.8rem;
+  }
+  .cat-card .cat-preview{
+    color:var(--text-dim);font-size:.9rem;line-height:1.6;
+    max-height:3.2em;overflow:hidden;transition:all .5s;
+  }
+  .cat-card .cat-expanded{
+    max-height:0;overflow:hidden;transition:max-height .6s,margin .6s,opacity .6s;opacity:0;
+  }
+  .cat-card.open .cat-expanded{max-height:2000px;margin-top:1.2rem;opacity:1}
+  .cat-card .cat-toggle{
+    color:var(--gold);font-size:.8rem;margin-top:.8rem;display:inline-flex;
+    align-items:center;gap:.4rem;transition:transform .3s;
+  }
+  .cat-card.open .cat-toggle .toggle-icon{transform:rotate(180deg);display:inline-block}
+  .cat-expanded ul{list-style:none;padding:0}
+  .cat-expanded ul li{
+    padding:.6rem 0 .6rem 1.5rem;position:relative;
+    color:var(--text-dim);font-size:.9rem;line-height:1.5;
+    border-bottom:1px solid var(--border);
+  }
+  .cat-expanded ul li:last-child{border-bottom:none}
+  .cat-expanded ul li::before{
+    content: '◆';position:absolute;left:0;top:.6rem;
+    color:var(--crimson);font-size:.5rem;
+  }
+
+  /*  QUOTES  */
+  .quotes-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;
+  }
+  .quote-card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius);padding:2.5rem 2rem;
+    position:relative;transition:all var(--transition);
+  }
+  .quote-card:hover{
+    border-color:var(--gold);transform:translateY(-4px);
+    box-shadow:var(--glow-gold);
+  }
+  .quote-card::before{
+    content:'\201C';font-family:var(--font-serif);
+    font-size:5rem;color:var(--crimson);opacity:.2;
+    position:absolute;top:.5rem;left:1.2rem;line-height:1;
+  }
+  .quote-text{
+    font-family:var(--font-serif);
+    font-size:1.2rem;line-height:1.6;font-style:italic;
+    margin-bottom:1rem;position:relative;z-index:1;
+  }
+  .quote-source{
+    color:var(--gold);font-size:.8rem;font-weight:500;
+    letter-spacing:.5px;
+  }
+
+  /*  FOOTER  */
+  footer{
+    position:relative;z-index:1;text-align:center;
+    padding:4rem 2rem;border-top:1px solid var(--border);
+  }
+  footer .footer-brand{
+    font-family:var(--font-serif);
+    font-size:1.8rem;color:var(--crimson);margin-bottom:.3rem;
+  }
+  footer .footer-sub{
+    color:var(--text-muted);font-size:.8rem;letter-spacing:2px;
+    text-transform:uppercase;
+  }
+  footer .footer-line{
+    width:40px;height:1px;background:var(--gold);margin:1.5rem auto;
+  }
+  footer .footer-copy{
+    color:var(--text-muted);font-size:.75rem;
+  }
+
+  /*  RESPONSIVE  */
+  @media(max-width:768px){
+    section{padding:4rem 1.2rem}
+    .stats-grid{grid-template-columns:1fr;gap:1rem}
+    .meditation-box{padding:2rem 1.5rem}
+    .category-grid{grid-template-columns:1fr}
+    .quotes-grid{grid-template-columns:1fr}
+    .category-tabs{gap:.4rem}
+    .category-tab{padding:8px 16px;font-size:.75rem}
+    .hero h1 .sm{letter-spacing:4px;font-size:.16em}
+  }
+  @media(max-width:480px){
+    .hero h1{font-size:clamp(2rem,12vw,3rem)}
+    .stat-num{font-size:2.8rem}
+    .meditation-btn{width:100%;justify-content:center}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<canvas id="bgCanvas"></canvas>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">&#9790;</button>
+
+<!--  HERO  -->
+<section class="hero">
+  <div class="hero-line"></div>
+  <div class="hero-badge">A Year of Ruthless Wisdom</div>
+  <h1>
+    Daily <span class="hl">Robert Greene</span>
+    <span class="sm">366 Meditations</span>
+  </h1>
+  <p class="subtitle">Power, Seduction, Mastery, Strategy &amp; Human Nature — one meditation at a time.</p>
+  <p class="author">From the works of Robert Greene</p>
+  <div class="scroll-hint"><span></span></div>
+</section>
+
+<!--  STATS  -->
+<section>
+  <div class="container">
+    <div class="reveal reveal-d1">
+      <span class="section-label">The Arsenal</span>
+    </div>
+    <div class="stats-grid" style="margin-top:1rem">
+      <div class="stat-card reveal reveal-d2">
+        <div class="stat-num">366</div>
+        <div class="stat-label">Daily Meditations</div>
+      </div>
+      <div class="stat-card reveal reveal-d3">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Core Categories</div>
+      </div>
+      <div class="stat-card reveal reveal-d4">
+        <div class="stat-num">1</div>
+        <div class="stat-label">Year of Wisdom</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  TODAY'S MEDITATION  -->
+<section>
+  <div class="container">
+    <div class="reveal reveal-d1">
+      <span class="section-label">Forge Your Mind</span>
+      <h2 class="section-title">Today's Meditation</h2>
+      <p class="section-desc">A daily dose of Greene's most potent insights — click to receive your lesson.</p>
+    </div>
+    <div class="meditation-box reveal reveal-d2" id="meditationBox">
+      <div class="meditation-category" id="medCategory">Power</div>
+      <div class="meditation-text" id="medText">Click the button below to receive today's meditation.</div>
+      <div class="meditation-source" id="medSource">&mdash; The 48 Laws of Power</div>
+      <button class="meditation-btn" id="medBtn">&#9876; Receive Lesson</button>
+      <div class="meditation-history" id="medHistory">
+        <h4>Recent Meditations</h4>
+        <div class="history-tags" id="historyTags"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  CATEGORIES  -->
+<section>
+  <div class="container">
+    <div class="reveal reveal-d1">
+      <span class="section-label">The Five Disciplines</span>
+      <h2 class="section-title">Categories of Power</h2>
+      <p class="section-desc">Five domains of ruthless wisdom — each holding keys to a different dimension of human nature.</p>
+    </div>
+    <div class="category-tabs reveal reveal-d2" id="categoryTabs">
+      <button class="category-tab active" data-cat="all">All</button>
+      <button class="category-tab" data-cat="power">Power</button>
+      <button class="category-tab" data-cat="seduction">Seduction</button>
+      <button class="category-tab" data-cat="mastery">Mastery</button>
+      <button class="category-tab" data-cat="strategy">Strategy</button>
+      <button class="category-tab" data-cat="human">Human Nature</button>
+    </div>
+    <div class="category-grid reveal reveal-d3" id="categoryGrid"></div>
+  </div>
+</section>
+
+<!--  QUOTES  -->
+<section>
+  <div class="container">
+    <div class="reveal reveal-d1">
+      <span class="section-label">The Gospel of Greene</span>
+      <h2 class="section-title">Definitive Lines</h2>
+      <p class="section-desc">The most commanding passages from across Robert Greene's body of work.</p>
+    </div>
+    <div class="quotes-grid" id="quotesGrid"></div>
+  </div>
+</section>
+
+<!--  FOOTER  -->
+<footer>
+  <div class="footer-brand">Daily Robert Greene</div>
+  <div class="footer-sub">366 Meditations on Power, Seduction, Mastery, Strategy &amp; Human Nature</div>
+  <div class="footer-line"></div>
+  <div class="footer-copy">Read daily. Internalize relentlessly. Execute without mercy.</div>
+</footer>
+
+<script>
+// 
+//  DATA
+// 
+
+const MEDITATIONS = [
+  { cat:'Power', src:'The 48 Laws of Power', text:'Law 1: Never outshine the master. Always make those above you feel comfortably superior. In your desire to please or impress them, do not go too far in displaying your talents or you might accomplish the opposite — inspire fear and insecurity.' },
+  { cat:'Power', src:'The 48 Laws of Power', text:'Law 3: Conceal your intentions. Keep people off-balance and in the dark by never revealing the purpose behind your actions. If they have no clue what you are up to, they cannot prepare a defense.' },
+  { cat:'Power', src:'The 48 Laws of Power', text:'Law 6: Court attention at all costs. Everything is judged by its appearance; what is unseen counts for nothing. Never let yourself get lost in the crowd, then, or buried in oblivion. Stand out.' },
+  { cat:'Power', src:'The 48 Laws of Power', text:'Law 15: Crush your enemy totally. If you must attack, do so with overwhelming force. More is lost through stopping halfway than through total annihilation.' },
+  { cat:'Power', src:'The 48 Laws of Power', text:'Law 25: Re-create yourself. Do not accept the roles that society foists on you. Forge a new identity, one that commands attention and never bores the audience.' },
+  { cat:'Power', src:'The 48 Laws of Power', text:'Law 33: Discover each man\'s thumbscrew. Everyone has a weakness, a gap in their castle wall. That weakness is usually an insecurity, an uncontrollable emotion or need.' },
+  { cat:'Power', src:'The 48 Laws of Power', text:'Law 38: Think as you like but behave like others. If you make a show of going against the times, flaunting your unconventional ideas, people will think you only want attention.' },
+  { cat:'Power', src:'The 48 Laws of Power', text:'Law 47: Do not go past the mark you have aimed for. In victory, know when to stop. The moment of victory is often the moment of greatest peril.' },
+  { cat:'Seduction', src:'The Art of Seduction', text:'The Siren: The ultimate femme fatale. She is the master of the mixed message, offering promise one moment and indifference the next, keeping her target perpetually off-balance and hungry for more.' },
+  { cat:'Seduction', src:'The Art of Seduction', text:'The Rake: The dark, brooding figure whose very danger is his allure. He has a past that is hinted at but never fully revealed, making him endlessly fascinating.' },
+  { cat:'Seduction', src:'The Art of Seduction', text:'The Dandy: Style as a form of seduction. The dandy understands that appearance is reality and that what you wear, how you carry yourself, is a performance that can mesmerize.' },
+  { cat:'Seduction', src:'The Art of Seduction', text:'The Charmer: Make your target feel like the most important person in the world. Pay attention to every detail, mirror their moods, and create a bubble of intimacy.' },
+  { cat:'Seduction', src:'The Art of Seduction', text:'The Coquette: Master of withdrawal. The coquette excites desire by making her target pursue, then withdraws. She is never fully possessed.' },
+  { cat:'Seduction', src:'The Art of Seduction', text:'Seduction is a game of psychology, not sex. It appeals to the irrational, the repressed, the childlike side of human nature.' },
+  { cat:'Seduction', src:'The Art of Seduction', text:'Isolate your target. Create a world for two where the outside ceases to exist. The more cut off they are, the more they will succumb.' },
+  { cat:'Seduction', src:'The Art of Seduction', text:'The seductive gaze: Looking at someone as if they are the only person in the room, as if you see something in them no one else sees.' },
+  { cat:'Mastery', src:'Mastery', text:'The life path: Discover your calling — that deep inclination that feels fated. Your true life\'s task is not imposed from outside but emerges from within.' },
+  { cat:'Mastery', src:'Mastery', text:'The apprenticeship: Submit to a rigorous period of learning. Spend years observing, absorbing, and practicing. Mastery cannot be rushed.' },
+  { cat:'Mastery', src:'Mastery', text:'Social intelligence: Learn to read people, to see through their masks. The naive believe people are what they seem; the master knows everyone wears a social face.' },
+  { cat:'Mastery', src:'Mastery', text:'The creative-active phase: After years of apprenticeship, you must break from convention. Innovation comes from combining skills and disciplines in new ways.' },
+  { cat:'Mastery', src:'Mastery', text:'Masters are not born; they are made through a combination of intense practice, deep observation, and a relentless desire to improve.' },
+  { cat:'Mastery', src:'Mastery', text:'The intuitive mind: After enough deep practice, the master no longer thinks consciously. Decisions flow like instinct. This is the fruit of years of work.' },
+  { cat:'Mastery', src:'Mastery', text:'Avoid the comfort trap. The moment you feel comfortable, you have stopped growing. Seek out challenges that stretch you beyond your limits.' },
+  { cat:'Strategy', src:'The 33 Strategies of War', text:'The strategy of the void: Create a vacuum that draws your enemies in. When you leave an empty space, they rush to fill it and expose themselves.' },
+  { cat:'Strategy', src:'The 33 Strategies of War', text:'The controlled chaos strategy: Do not fear disorder — use it. Stir up confusion to conceal your movements and unbalance your opponents.' },
+  { cat:'Strategy', src:'The 33 Strategies of War', text:'The death-ground strategy: Place your back against the wall. When there is no retreat, you fight with the desperation that brings victory.' },
+  { cat:'Strategy', src:'The 33 Strategies of War', text:'The perfect strategy: Go where your opponent is weak. Do not attack strength; find the gap in their armor and strike there with everything you have.' },
+  { cat:'Strategy', src:'The 33 Strategies of War', text:'The grand strategy: See the whole board. Tactics are about the moment; strategy is about the entire campaign. Think years ahead, not minutes.' },
+  { cat:'Strategy', src:'The 33 Strategies of War', text:'The fait accompli: Present your opponent with a done deal. Make your move so swiftly and decisively that there is no time for them to react.' },
+  { cat:'Strategy', src:'The 33 Strategies of War', text:'Play the subtle enemy: Be unpredictable. If your enemy cannot discern your pattern, they cannot anticipate your moves.' },
+  { cat:'Human Nature', src:'The Laws of Human Nature', text:'The law of irrationality: We think we are rational, but we are driven by deep, unconscious emotions. Master your own irrationality before trying to master others.' },
+  { cat:'Human Nature', src:'The Laws of Human Nature', text:'The law of narcissism: Everyone has some degree of narcissism. The key is to transform unhealthy narcissism into the healthy kind — into self-worth and purpose.' },
+  { cat:'Human Nature', src:'The Laws of Human Nature', text:'The law of role-playing: We are all actors on a stage. People wear masks appropriate to the situation. See through the masks to the real person beneath.' },
+  { cat:'Human Nature', src:'The Laws of Human Nature', text:'The law of compulsive behavior: People are creatures of habit. Their past behaviors predict their future actions more reliably than their words.' },
+  { cat:'Human Nature', src:'The Laws of Human Nature', text:'The law of envy: Envy is the most toxic of emotions. People will mask their envy as criticism. Learn to detect it in yourself and others.' },
+  { cat:'Human Nature', src:'The Laws of Human Nature', text:'The law of grandiosity: Beware of grandiosity in yourself and others. It is a defense against deep insecurity. The grandiose person cannot admit weakness.' },
+  { cat:'Human Nature', src:'The Laws of Human Nature', text:'The law of aggression: Repressed aggression does not disappear — it finds indirect outlets. Understand the passive-aggressive patterns in those around you.' },
+];
+
+const CATEGORIES = [
+  {
+    id:'power', icon:'\u2694', title:'Power', count:'8 Laws',
+    preview:'The art of acquiring and maintaining power in any social dynamic. Greene draws from history\'s most cunning strategists.',
+    lessons:[
+      'Never outshine the master — make superiors feel secure',
+      'Conceal your intentions; keep people guessing',
+      'Court attention at all costs — invisibility is death',
+      'Crush your enemy totally — half-measures invite retaliation',
+      'Re-create yourself — forge an identity that commands respect',
+      'Find each man\'s thumbscrew and press it',
+      'Think as you like, but behave like others',
+      'Know when to stop — victory is the moment of greatest peril'
+    ]
+  },
+  {
+    id:'seduction', icon:'\u2726', title:'Seduction', count:'7 Archetypes',
+    preview:'The psychology of attraction — not merely romance, but the art of drawing people into your orbit.',
+    lessons:[
+      'The Siren: Master the mixed message — promise and withdrawal',
+      'The Rake: Danger itself can be the allure',
+      'The Dandy: Style as performance — appearance is reality',
+      'The Charmer: Make each person feel they are the only one',
+      'The Coquette: Withdrawal excites more than pursuit',
+      'Seduction is psychological, not physical — target the irrational',
+      'Isolate your target — create a world for two'
+    ]
+  },
+  {
+    id:'mastery', icon:'\u2606', title:'Mastery', count:'7 Stages',
+    preview:'The path to becoming the best in your field. A lifelong journey of discipline, observation, and craft.',
+    lessons:[
+      'Discover your calling — the vocation that feels fated',
+      'Submit to a rigorous apprenticeship — years of deep learning',
+      'Develop social intelligence — read people behind their masks',
+      'Enter the creative-active phase — break from convention',
+      'Masters are made, not born — relentless practice',
+      'Cultivate the intuitive mind — let decisions flow',
+      'Avoid the comfort trap — growth lives in discomfort'
+    ]
+  },
+  {
+    id:'strategy', icon:'\u265E', title:'Strategy', count:'7 Maneuvers',
+    preview:'The military and political mindset applied to everyday battles. Think like a general, act like a surgeon.',
+    lessons:[
+      'Create a void — let enemies rush in and expose themselves',
+      'Use controlled chaos — disorder conceals your movements',
+      'Place yourself on death-ground — no retreat, total commitment',
+      'Strike at weakness — never attack strength head-on',
+      'See the whole board — think in years, not minutes',
+      'Present a fait accompli — act before they can react',
+      'Be unpredictable — patternless movements cannot be countered'
+    ]
+  },
+  {
+    id:'human', icon:'\u25C7', title:'Human Nature', count:'7 Laws',
+    preview:'The deep, often ugly truths about why people think, feel, and act the way they do.',
+    lessons:[
+      'We are driven by unconscious emotions, not reason',
+      'Transform narcissism into purpose and self-worth',
+      'Everyone wears a mask — learn to see behind it',
+      'Past behavior predicts future actions, not words',
+      'Envy masks as criticism — detect it in yourself and others',
+      'Grandiosity is armor for deep insecurity',
+      'Repressed aggression finds indirect outlets'
+    ]
+  }
+];
+
+const QUOTES = [
+  { text:'The key to power is the ability to judge who is best able to further your interests in all kinds of situations.', src:'The 48 Laws of Power' },
+  { text:'In the game of power, the people who come out on top are those who can master their own emotions and exploit the emotions of others.', src:'The 48 Laws of Power' },
+  { text:'Seduction is a game of psychology, not sex — it appeals to the irrational, the repressed, the childlike side of human nature.', src:'The Art of Seduction' },
+  { text:'The future belongs to those who learn more skills and combine them in creative ways.', src:'Mastery' },
+  { text:'Your task is to build a power base so strong that you can afford to be generous, to disarm your enemies with kindness.', src:'The 48 Laws of Power' },
+  { text:'The greatest deception of all is to appear as a friend while working as an enemy.', src:'The 33 Strategies of War' },
+  { text:'Mistakes are the only way to learn deeply and permanently. Each failure brings you closer to mastery.', src:'Mastery' },
+  { text:'Understand: people are irrational. They are driven by emotions, not reason. To expect otherwise is to set yourself up for disappointment.', src:'The Laws of Human Nature' },
+  { text:'Power requires the ability to play with appearances. To seem better, nobler, more powerful than you really are.', src:'The 48 Laws of Power' },
+  { text:'The most dangerous person is the one who listens, thinks, and observes. The loud ones are the weakest.', src:'The 33 Strategies of War' },
+  { text:'All great masters are basically like children: they have a sense of wonder, of openness, of intense curiosity.', src:'Mastery' },
+  { text:'Do not waste valuable time on enemies who are beneath you. Their attacks will only drag you down to their level.', src:'The 48 Laws of Power' },
+];
+
+// 
+//  PARTICLE BACKGROUND
+// 
+
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouseX = 0, mouseY = 0;
+let animId;
+
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function initParticles(){
+  particles = [];
+  const count = Math.min(80, Math.floor(canvas.width * canvas.height / 12000));
+  for(let i=0; i<count; i++){
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: Math.random() * 2 + 0.5,
+    });
+  }
+}
+initParticles();
+window.addEventListener('resize', ()=>{
+  resizeCanvas();
+  initParticles();
+});
+
+document.addEventListener('mousemove', e=>{mouseX = e.clientX; mouseY = e.clientY});
+
+function drawParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const isLight = document.body.classList.contains('light');
+  const particleColor = isLight ? '180,60,50' : '200,60,50';
+  const lineColor = isLight ? '180,60,50' : '212,160,71';
+
+  for(let p of particles){
+    p.x += p.vx;
+    p.y += p.vy;
+    if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+    const dx = mouseX - p.x;
+    const dy = mouseY - p.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if(dist < 200){
+      p.x -= dx * 0.005;
+      p.y -= dy * 0.005;
+    }
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${particleColor},0.7)`;
+    ctx.fill();
+  }
+
+  for(let i=0; i<particles.length; i++){
+    for(let j=i+1; j<particles.length; j++){
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 150){
+        const opacity = (1 - dist/150) * 0.15;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(${lineColor},${opacity})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+
+  animId = requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// 
+//  THEME TOGGLE
+// 
+
+const themeToggle = document.getElementById('themeToggle');
+if(localStorage.getItem('rg-theme') === 'light'){
+  document.body.classList.add('light');
+  themeToggle.innerHTML = '&#9788;';
+}
+themeToggle.addEventListener('click', ()=>{
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  localStorage.setItem('rg-theme', isLight ? 'light' : 'dark');
+  themeToggle.innerHTML = isLight ? '&#9788;' : '&#9790;';
+});
+
+// 
+//  SCROLL REVEAL
+// 
+
+const revealObserver = new IntersectionObserver((entries)=>{
+  for(let entry of entries){
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+    }
+  }
+}, {threshold:0.1});
+
+document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+
+// 
+//  SCROLL PROGRESS
+// 
+
+const progressBar = document.getElementById('progress');
+window.addEventListener('scroll', ()=>{
+  const scroll = window.scrollY;
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = `${(scroll/max)*100}%`;
+});
+
+// 
+//  TODAY'S MEDITATION
+// 
+
+const medBtn = document.getElementById('medBtn');
+const medText = document.getElementById('medText');
+const medCategory = document.getElementById('medCategory');
+const medSource = document.getElementById('medSource');
+const historyTags = document.getElementById('historyTags');
+let medHistory = JSON.parse(localStorage.getItem('rg-history') || '[]');
+
+function renderHistory(){
+  historyTags.innerHTML = medHistory.map(t =>
+    `<span class="history-tag">${t}</span>`
+  ).join('');
+}
+
+function getRandomMeditation(){
+  const idx = Math.floor(Math.random() * MEDITATIONS.length);
+  return MEDITATIONS[idx];
+}
+
+function showMeditation(){
+  const m = getRandomMeditation();
+  medCategory.textContent = m.cat;
+  medText.textContent = `"${m.text}"`;
+  medSource.innerHTML = `&mdash; ${m.src}`;
+  medBox.style.borderColor = 'var(--gold)';
+  setTimeout(()=>{ medBox.style.borderColor = ''; }, 1500);
+
+  const short = m.text.length > 60 ? m.text.substring(0,60)+'...' : m.text;
+  medHistory.unshift(short);
+  if(medHistory.length > 5) medHistory.pop();
+  localStorage.setItem('rg-history', JSON.stringify(medHistory));
+  renderHistory();
+}
+
+const medBox = document.querySelector('.meditation-box');
+medBtn.addEventListener('click', showMeditation);
+renderHistory();
+
+// Show one on load
+setTimeout(showMeditation, 1000);
+
+// 
+//  CATEGORIES
+// 
+
+const categoryGrid = document.getElementById('categoryGrid');
+const categoryTabs = document.getElementById('categoryTabs');
+
+function renderCategories(filter='all'){
+  categoryGrid.innerHTML = '';
+  for(let cat of CATEGORIES){
+    if(filter !== 'all' && cat.id !== filter) continue;
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.dataset.cat = cat.id;
+    card.innerHTML = `
+      <div class="cat-card-icon">${cat.icon}</div>
+      <h3>${cat.title}</h3>
+      <div class="cat-count">${cat.count}</div>
+      <div class="cat-preview">${cat.preview}</div>
+      <div class="cat-expanded">
+        <ul>${cat.lessons.map(l=>`<li>${l}</li>`).join('')}</ul>
+      </div>
+      <div class="cat-toggle">Expand <span class="toggle-icon">&#9660;</span></div>
+    `;
+    card.addEventListener('click', ()=>{
+      card.classList.toggle('open');
+      const toggle = card.querySelector('.cat-toggle');
+      toggle.innerHTML = card.classList.contains('open')
+        ? 'Collapse <span class="toggle-icon">&#9650;</span>'
+        : 'Expand <span class="toggle-icon">&#9660;</span>';
+    });
+    categoryGrid.appendChild(card);
+  }
+}
+
+categoryTabs.addEventListener('click', e=>{
+  const tab = e.target.closest('.category-tab');
+  if(!tab) return;
+  categoryTabs.querySelectorAll('.category-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  renderCategories(tab.dataset.cat);
+});
+
+renderCategories();
+
+// 
+//  QUOTES
+// 
+
+const quotesGrid = document.getElementById('quotesGrid');
+for(let q of QUOTES){
+  const card = document.createElement('div');
+  card.className = 'quote-card reveal reveal-d' + ((QUOTES.indexOf(q) % 3) + 1);
+  card.innerHTML = `
+    <div class="quote-text">${q.text}</div>
+    <div class="quote-source">&mdash; ${q.src}</div>
+  `;
+  quotesGrid.appendChild(card);
+  revealObserver.observe(card);
+}
+
+// 
+//  KEYBOARD SHORTCUT
+// 
+
+document.addEventListener('keydown', e=>{
+  if(e.key === 'm' || e.key === 'M'){
+    showMeditation();
+  }
+});
+</script>
+</body>
+</html>

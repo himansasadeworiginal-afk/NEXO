@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Prince — Interactive Summary</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --parchment:#E8D5B7;
+    --parchment-dark:#d4be9e;
+    --parchment-light:#f0e3ce;
+    --terracotta:#C04000;
+    --terracotta-light:#d45a1a;
+    --terracotta-dim:#8a2e00;
+    --deep-red:#8B0000;
+    --deep-red-light:#b00000;
+    --deep-red-dim:#5c0000;
+    --gold:#B8860B;
+    --gold-light:#d4a030;
+    --gold-dim:#8a6a00;
+    --brown:#3b2a1a;
+    --brown-light:#5a4030;
+    --brown-dim:#241810;
+    --cream:#faf3e6;
+    --dark-bg:#1a1410;
+    --dark-surface:#241e18;
+    --dark-text:#e8ddd0;
+    --dark-text-dim:#8a7a6a;
+    --border:rgba(184,134,11,0.15);
+    --shadow:0 8px 32px rgba(0,0,0,0.4);
+    --transition:0.4s cubic-bezier(.22,1,.36,1);
+  }
+
+  .light{
+    --bg:var(--cream);
+    --bg-alt:var(--parchment-light);
+    --surface:var(--parchment);
+    --surface-hover:var(--parchment-dark);
+    --text:#2a1e14;
+    --text-dim:#6a5a4a;
+    --border:rgba(184,134,11,0.2);
+    --shadow:0 8px 32px rgba(0,0,0,0.08);
+  }
+
+  :root{--bg:var(--dark-bg);--bg-alt:#1f1814;--surface:var(--dark-surface);--surface-hover:#2e2620;--text:var(--dark-text);--text-dim:var(--dark-text-dim)}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    font-family:'Inter',-apple-system,sans-serif;
+    background:var(--bg);color:var(--text);
+    line-height:1.65;transition:background var(--transition),color var(--transition);
+    overflow-x:hidden;
+  }
+
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--terracotta-dim);border-radius:3px}
+
+  body::before{
+    content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(192,64,0,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(139,0,0,0.03) 0%, transparent 45%),
+      radial-gradient(ellipse at 20% 80%, rgba(184,134,11,0.03) 0%, transparent 40%),
+      radial-gradient(ellipse at 80% 20%, rgba(232,213,183,0.02) 0%, transparent 40%);
+    pointer-events:none;z-index:0;
+  }
+
+  #progress{
+    position:fixed;top:0;left:0;height:2px;
+    background:linear-gradient(90deg,var(--terracotta),var(--gold),var(--deep-red));
+    background-size:200% auto;z-index:999;width:0%;
+    transition:width 0.1s;
+  }
+
+  #ornaments{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:0;pointer-events:none;overflow:hidden;
+  }
+  .orn{
+    position:absolute;border-radius:50%;
+    filter:blur(100px);
+    animation:ornFloat var(--d) ease-in-out infinite;
+    animation-delay:var(--del);opacity:0;
+  }
+  @keyframes ornFloat{
+    0%{transform:translate(0,0) scale(0.8);opacity:0}
+    20%{opacity:var(--mo)}
+    80%{opacity:var(--mo)}
+    100%{transform:translate(var(--tx),var(--ty)) scale(1.3);opacity:0}
+  }
+
+  #noise{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    z-index:0;pointer-events:none;opacity:0.025;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:256px 256px;
+    animation:noiseShift 0.5s steps(4) infinite;
+  }
+  @keyframes noiseShift{
+    0%{background-position:0 0}
+    25%{background-position:4px 8px}
+    50%{background-position:8px 2px}
+    75%{background-position:2px 6px}
+  }
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+  @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  @keyframes glimmer{
+    0%,100%{opacity:0.8;text-shadow:0 0 8px rgba(184,134,11,0.2)}
+    50%{opacity:1;text-shadow:0 0 20px rgba(184,134,11,0.4)}
+  }
+  @keyframes inkDrop{
+    0%{width:0;opacity:1}
+    100%{width:100%;opacity:0.6}
+  }
+  @keyframes pageTurn{
+    0%{transform:perspective(600px) rotateY(-3deg);opacity:0.6}
+    100%{transform:perspective(600px) rotateY(0);opacity:1}
+  }
+
+  .theme-toggle{
+    position:fixed;top:20px;right:20px;z-index:1000;
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--gold);width:48px;height:48px;border-radius:50%;
+    cursor:pointer;font-size:1.3rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);transition:all var(--transition);
+    backdrop-filter:blur(8px);
+  }
+  .theme-toggle:hover{transform:scale(1.1);border-color:var(--gold);}
+
+  .container{max-width:1100px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
+
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+    padding:2rem;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(184,134,11,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(192,64,0,0.04) 0%, transparent 40%);
+    pointer-events:none;
+  }
+  .hero-ornament-top{
+    font-size:1.2rem;color:var(--gold);letter-spacing:12px;margin-bottom:1rem;
+    opacity:0;animation:fadeUp 0.8s 0.1s forwards;font-family:'Cormorant Garamond',serif;
+  }
+  .hero-line{
+    width:60px;height:1px;background:var(--gold);margin-bottom:1.5rem;
+    opacity:0;animation:fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-badge{
+    display:inline-block;padding:8px 28px;
+    border:1px solid rgba(184,134,11,0.3);color:var(--gold);
+    font-size:0.7rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;
+    margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s 0.3s forwards;font-family:'Inter',sans-serif;
+  }
+  .hero h1{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(3rem, 10vw, 7rem);
+    font-weight:700;letter-spacing:2px;line-height:1.05;
+    color:var(--text);margin-bottom:0.3rem;
+    opacity:0;animation:fadeUp 0.8s 0.5s forwards;
+  }
+  .hero h1 .hl{color:var(--gold);font-style:italic;}
+  .hero h1 .sm{
+    font-size:0.3em;display:block;font-family:'Inter',sans-serif;
+    font-weight:300;letter-spacing:8px;color:var(--text-dim);margin-top:0.8rem;text-transform:uppercase;
+  }
+  .hero h1 .orn{display:block;font-size:0.4em;color:var(--terracotta);letter-spacing:16px;margin-top:0.4rem;}
+  .hero p{
+    font-size:1.05rem;color:var(--text-dim);max-width:540px;
+    line-height:1.7;font-weight:300;margin-top:0.8rem;
+    opacity:0;animation:fadeUp 0.8s 0.7s forwards;
+  }
+  .hero-sub{
+    margin-top:0.8rem;color:var(--gold);font-size:0.8rem;
+    letter-spacing:3px;font-weight:500;font-family:'Cormorant Garamond',serif;font-style:italic;
+    opacity:0;animation:fadeUp 0.8s 0.9s forwards;
+  }
+  .hero-arrow{
+    margin-top:2.5rem;font-size:1.5rem;color:var(--gold);
+    opacity:0;animation:fadeUp 0.8s 1.2s forwards,bounce 2s 1.5s infinite;
+  }
+
+  .hero-stats{
+    display:flex;gap:2.5rem;flex-wrap:wrap;justify-content:center;margin-top:2rem;
+    opacity:0;animation:fadeUp 0.8s 1s forwards;
+  }
+  .hero-stats .hs-item{text-align:center;}
+  .hero-stats .hs-item strong{
+    display:block;font-size:1.8rem;font-weight:700;
+    background:linear-gradient(135deg,var(--gold),var(--terracotta));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .hero-stats .hs-item .hs-label{
+    font-size:0.7rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-top:0.2rem;
+  }
+
+  section{padding:5rem 0;position:relative;z-index:1}
+
+  .section-ornament{
+    text-align:center;color:var(--gold);font-size:0.9rem;letter-spacing:10px;
+    margin-bottom:0.8rem;opacity:0.6;font-family:'Cormorant Garamond',serif;
+  }
+  .section-label{
+    font-size:0.65rem;letter-spacing:5px;
+    text-transform:uppercase;color:var(--terracotta);margin-bottom:0.3rem;font-weight:600;
+  }
+  section h2{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(1.8rem,4.5vw,2.8rem);
+    font-weight:600;letter-spacing:0.5px;margin-bottom:0.3rem;
+  }
+  section h2 .hl{color:var(--gold);font-style:italic;}
+  section h2 .hl-r{color:var(--terracotta);}
+  .section-desc{
+    color:var(--text-dim);font-size:0.95rem;max-width:620px;
+    margin-bottom:2.5rem;font-weight:300;
+  }
+  .section-header{text-align:center;margin-bottom:3rem;}
+  .section-header h2{margin-bottom:0.3rem;}
+
+  .stats-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:1rem;margin:0;
+  }
+  .stat{
+    text-align:center;padding:1.5rem 1rem;
+    background:var(--surface);border:1px solid var(--border);
+    transition:all var(--transition);position:relative;overflow:hidden;
+  }
+  .stat::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--gold),var(--terracotta));
+    transform:scaleX(0);transform-origin:left;transition:transform 0.4s ease;
+  }
+  .stat:hover::before{transform:scaleX(1)}
+  .stat:hover{border-color:rgba(184,134,11,0.3);transform:translateY(-2px)}
+  .stat-value{
+    font-size:2rem;font-weight:800;
+    background:linear-gradient(135deg,var(--gold),var(--terracotta));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .stat-label{font-size:0.7rem;color:var(--text-dim);margin-top:0.3rem;letter-spacing:2px;text-transform:uppercase;}
+
+  .theme-cards{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:1rem;
+  }
+  .theme-card{
+    background:var(--surface);border:1px solid var(--border);
+    padding:1.8rem;transition:all var(--transition);
+    position:relative;overflow:hidden;opacity:0;transform:translateY(16px);
+  }
+  .theme-card.visible{opacity:1;transform:translateY(0);}
+  .theme-card:hover{border-color:rgba(184,134,11,0.3);background:var(--surface-hover);transform:translateY(-3px);}
+  .theme-card .tc-icon{font-size:2rem;margin-bottom:0.8rem;display:block;}
+  .theme-card h4{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.2rem;font-weight:600;margin-bottom:0.4rem;
+  }
+  .theme-card h4 .hl{color:var(--gold);}
+  .theme-card h4 .hl-r{color:var(--terracotta);}
+  .theme-card p{font-size:0.85rem;color:var(--text-dim);line-height:1.6;}
+
+  .chapters-bar{display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+  .chapters-bar .ch-tab{
+    padding:8px 18px;background:transparent;border:1px solid var(--border);color:var(--text-dim);
+    font-size:0.75rem;cursor:pointer;transition:all var(--transition);
+    font-family:'Inter',sans-serif;letter-spacing:0.5px;
+  }
+  .chapters-bar .ch-tab:hover{border-color:var(--gold);color:var(--gold);}
+  .chapters-bar .ch-tab.active{background:rgba(184,134,11,0.1);border-color:var(--gold);color:var(--gold);font-weight:600;}
+
+  .ch-grid{display:grid;gap:0.8rem;}
+  .ch-card{
+    background:var(--surface);border:1px solid var(--border);
+    padding:1.2rem 1.5rem;cursor:pointer;
+    transition:all var(--transition);position:relative;
+    opacity:0;transform:translateY(12px);
+  }
+  .ch-card.visible{opacity:1;transform:translateY(0);transition:all 0.4s ease;}
+  .ch-card:hover{border-color:rgba(184,134,11,0.3);background:var(--surface-hover);}
+  .ch-card.hidden{display:none;}
+  .ch-card .ch-num{
+    font-size:0.6rem;letter-spacing:3px;color:var(--terracotta);
+    font-weight:600;text-transform:uppercase;margin-bottom:0.2rem;
+  }
+  .ch-card h4{font-size:1rem;font-weight:600;margin-bottom:0.3rem;padding-right:2rem;}
+  .ch-card .ch-preview{font-size:0.85rem;color:var(--text-dim);line-height:1.5;}
+  .ch-card .ch-full{
+    max-height:0;overflow:hidden;
+    transition:max-height 0.5s ease,margin 0.4s ease;
+    margin-top:0;
+  }
+  .ch-card .ch-full-inner{
+    font-size:0.85rem;color:var(--text-dim);line-height:1.6;
+    border-top:1px solid var(--border);padding-top:0.8rem;margin-top:0.5rem;
+  }
+  .ch-card .ch-icon{
+    position:absolute;top:1.2rem;right:1.5rem;
+    color:var(--gold);font-size:1.2rem;transition:transform 0.4s ease;line-height:1;
+  }
+  .ch-card.open .ch-icon{transform:rotate(45deg);}
+  .ch-card.open .ch-full{max-height:500px;}
+
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;}
+
+  .tk-card{
+    background:var(--surface);border:1px solid var(--border);
+    padding:1.5rem;transition:all var(--transition);cursor:pointer;
+    position:relative;overflow:hidden;opacity:0;transform:translateY(16px);
+    text-align:center;
+  }
+  .tk-card.visible{opacity:1;transform:translateY(0);}
+  .tk-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--gold),var(--terracotta));
+    transform:scaleX(0);transform-origin:left;transition:transform 0.4s ease;
+  }
+  .tk-card:hover::before{transform:scaleX(1)}
+  .tk-card:hover{border-color:rgba(184,134,11,0.3);transform:translateY(-4px);background:var(--surface-hover);}
+  .tk-card .tk-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--terracotta));
+    color:#fff;font-size:0.85rem;font-weight:700;margin-bottom:0.8rem;
+  }
+  .tk-card h4{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.15rem;font-weight:600;margin-bottom:0.4rem;
+  }
+  .tk-card p{font-size:0.82rem;color:var(--text-dim);line-height:1.5;}
+  .tk-card .tk-full{
+    max-height:0;overflow:hidden;transition:max-height 0.4s ease;
+    margin-top:0;
+  }
+  .tk-card .tk-full-inner{
+    font-size:0.82rem;color:var(--text-dim);line-height:1.6;
+    border-top:1px solid var(--border);padding-top:0.6rem;margin-top:0.6rem;
+  }
+  .tk-card.open .tk-full{max-height:300px;}
+
+  .qualities-list{display:grid;gap:1rem;}
+  .q-item{
+    background:var(--surface);border:1px solid var(--border);
+    border-left:3px solid var(--gold);
+    padding:1.2rem 1.5rem;transition:all var(--transition);
+    opacity:0;transform:translateX(-12px);
+  }
+  .q-item.visible{opacity:1;transform:translateX(0);}
+  .q-item:hover{border-color:rgba(184,134,11,0.3);background:var(--surface-hover);}
+  .q-item .q-label{font-size:0.7rem;color:var(--terracotta);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.15rem;}
+  .q-item h4{font-size:1rem;font-weight:600;margin-bottom:0.2rem;}
+  .q-item p{font-size:0.85rem;color:var(--text-dim);line-height:1.5;}
+  .q-item .q-mach{font-size:0.8rem;color:var(--gold);font-style:italic;margin-top:0.4rem;}
+
+  .quote-block{
+    text-align:center;max-width:680px;margin:2.5rem auto;
+    padding:2rem 0;
+    opacity:0;transform:translateY(16px);
+  }
+  .quote-block.visible{opacity:1;transform:translateY(0);}
+  .quote-block .q-ornament{color:var(--gold);font-size:2.8rem;margin-bottom:0.3rem;font-family:'Cormorant Garamond',serif;line-height:1;}
+  .quote-block blockquote{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.2rem;font-style:italic;line-height:1.7;
+    color:var(--text);font-weight:500;
+  }
+  .quote-block cite{
+    display:block;margin-top:0.6rem;color:var(--terracotta);
+    font-style:normal;font-size:0.8rem;letter-spacing:1px;
+  }
+  .quote-block .q-ref{font-size:0.7rem;color:var(--text-dim);margin-top:0.2rem;}
+
+  .good-evil{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:0;margin:2rem 0;border:1px solid var(--border);overflow:hidden;
+  }
+  .good-evil .ge-side{padding:2rem;text-align:center;transition:all var(--transition);}
+  .good-evil .ge-side:hover{filter:brightness(1.1);}
+  .good-evil .ge-good{background:linear-gradient(135deg,rgba(184,134,11,0.08),rgba(232,213,183,0.05));}
+  .good-evil .ge-evil{background:linear-gradient(135deg,rgba(139,0,0,0.08),rgba(192,64,0,0.05));}
+  .good-evil .ge-label{
+    font-size:0.65rem;letter-spacing:5px;text-transform:uppercase;font-weight:600;margin-bottom:0.8rem;
+  }
+  .good-evil .ge-good .ge-label{color:var(--gold);}
+  .good-evil .ge-evil .ge-label{color:var(--deep-red);}
+  .good-evil h3{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.5rem;font-weight:600;margin-bottom:1rem;
+  }
+  .good-evil .ge-good h3{color:var(--gold);}
+  .good-evil .ge-evil h3{color:var(--deep-red-light);}
+  .good-evil ul{list-style:none;text-align:left;font-size:0.85rem;line-height:1.8;}
+  .good-evil ul li{padding:0.3rem 0;}
+  .good-evil ul li::before{content:'◆';color:var(--gold);}
+  .good-evil .ge-evil ul li::before{content:'◆';color:var(--deep-red);}
+  .good-evil .ge-divider{
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface);border-left:1px solid var(--border);border-right:1px solid var(--border);
+    font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);
+    padding:0 0.5rem;writing-mode:vertical-lr;letter-spacing:4px;
+  }
+
+  .quiz-section{
+    background:var(--surface);border:1px solid var(--border);
+    padding:2rem;margin:2rem 0;
+  }
+  .quiz-section .quiz-intro{text-align:center;margin-bottom:2rem;}
+  .quiz-section .quiz-intro h3{
+    font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;margin-bottom:0.5rem;
+  }
+  .quiz-section .quiz-intro p{font-size:0.85rem;color:var(--text-dim);}
+  .quiz-q{margin-bottom:1.5rem;padding:1.2rem;border:1px solid var(--border);}
+  .quiz-q .qq-num{font-size:0.65rem;color:var(--terracotta);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.3rem;}
+  .quiz-q .qq-text{font-size:0.95rem;font-weight:600;margin-bottom:0.8rem;}
+  .quiz-q .qq-opt{display:flex;flex-direction:column;gap:0.4rem;}
+  .quiz-q .qq-opt label{
+    display:flex;align-items:center;gap:0.6rem;
+    padding:0.5rem 0.8rem;border:1px solid var(--border);
+    cursor:pointer;font-size:0.85rem;color:var(--text-dim);
+    transition:all var(--transition);
+  }
+  .quiz-q .qq-opt label:hover{border-color:var(--gold);background:var(--surface-hover);}
+  .quiz-q .qq-opt input[type="radio"]{accent-color:var(--gold);}
+  .quiz-q .qq-opt label.selected{border-color:var(--gold);background:rgba(184,134,11,0.08);color:var(--text);}
+  .quiz-btn{
+    display:inline-block;padding:12px 36px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--terracotta),var(--deep-red));
+    color:#fff;font-size:0.85rem;font-weight:600;letter-spacing:1.5px;
+    text-transform:uppercase;transition:all var(--transition);
+    font-family:'Inter',sans-serif;margin-top:0.5rem;
+  }
+  .quiz-btn:hover{transform:translateY(-2px);filter:brightness(1.1);}
+  .quiz-result{
+    text-align:center;padding:2rem;margin-top:1.5rem;
+    border:1px solid var(--gold);display:none;
+    background:rgba(184,134,11,0.05);
+  }
+  .quiz-result.show{display:block;animation:fadeUp 0.5s ease;}
+  .quiz-result h4{font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:0.5rem;}
+  .quiz-result .qr-type{
+    font-size:1.1rem;color:var(--gold);margin-bottom:0.5rem;
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+  }
+  .quiz-result p{font-size:0.85rem;color:var(--text-dim);line-height:1.6;}
+
+  .modern-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;}
+  .modern-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-top:2px solid var(--terracotta);
+    padding:1.5rem;transition:all var(--transition);
+    opacity:0;transform:translateY(16px);
+  }
+  .modern-card.visible{opacity:1;transform:translateY(0);}
+  .modern-card:hover{border-color:rgba(192,64,0,0.3);background:var(--surface-hover);transform:translateY(-3px);}
+  .modern-card h4{font-size:1rem;font-weight:600;margin-bottom:0.4rem;}
+  .modern-card .mc-icon{font-size:1.5rem;margin-bottom:0.5rem;display:block;}
+  .modern-card p{font-size:0.85rem;color:var(--text-dim);line-height:1.5;}
+
+  footer{
+    text-align:center;padding:3rem 2rem;color:var(--text-dim);
+    font-size:0.8rem;border-top:1px solid var(--border);margin-top:2rem;
+  }
+  footer .ft-logo{
+    font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--gold);margin-bottom:0.3rem;
+  }
+  footer .ft-ornament{color:var(--gold);font-size:0.8rem;letter-spacing:8px;margin-bottom:0.5rem;}
+  footer a{color:var(--terracotta);text-decoration:none;}
+  footer a:hover{color:var(--gold);}
+
+  .back-link{
+    position:fixed;bottom:20px;left:20px;z-index:100;
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--text-dim);padding:8px 16px;font-size:0.75rem;text-decoration:none;
+    transition:all var(--transition);backdrop-filter:blur(8px);
+    font-family:'Inter',sans-serif;
+  }
+  .back-link:hover{color:var(--gold);border-color:var(--gold);}
+
+  @media(max-width:700px){
+    .container{padding:0 1.2rem;}
+    section{padding:3.5rem 0;}
+    .hero h1{font-size:clamp(2.5rem,12vw,4rem);}
+    .hero h1 .sm{font-size:0.25em;letter-spacing:4px;}
+    .hero{padding:1.5rem;min-height:85vh;}
+    .hero-stats{gap:1.5rem;}
+    .good-evil{grid-template-columns:1fr;}
+    .good-evil .ge-divider{writing-mode:horizontal-tb;padding:0.5rem;border-left:none;border-right:none;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+    .theme-cards,.grid-2,.grid-3{grid-template-columns:1fr;}
+    .chapters-bar{flex-wrap:nowrap;overflow-x:auto;padding-bottom:0.5rem;}
+    .chapters-bar .ch-tab{white-space:nowrap;flex-shrink:0;}
+    .theme-toggle{top:12px;right:12px;width:40px;height:40px;font-size:1rem;}
+    .back-link{bottom:10px;left:10px;padding:6px 12px;font-size:0.7rem;}
+  }
+
+  .icon{width:16px;height:16px;vertical-align:middle;display:inline-block;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="ornaments"></div>
+<div id="noise"></div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+
+<a class="back-link" href="../index.html">← Back to NEXO</a>
+
+<header class="hero">
+  <div class="hero-ornament-top"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></div>
+  <div class="hero-line"></div>
+  <div class="hero-badge">A Renaissance Treatise on Power</div>
+  <h1>
+    The <span class="hl">Prince</span>
+    <span class="orn"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></span>
+    <span class="sm">Niccolò Machiavelli</span>
+  </h1>
+  <p>Of principalities, statecraft, and the acquisition &amp; maintenance of power — a timeless manual on the art of ruling.</p>
+  <div class="hero-sub">Published 1532 · Dedicated to Lorenzo de' Medici</div>
+  <div class="hero-stats">
+    <div class="hs-item"><strong>26</strong><div class="hs-label">Chapters</div></div>
+    <div class="hs-item"><strong>1513</strong><div class="hs-label">Year Written</div></div>
+    <div class="hs-item"><strong>10+</strong><div class="hs-label">Principles of Power</div></div>
+    <div class="hs-item"><strong>5</strong><div class="hs-label">Centuries of Influence</div></div>
+  </div>
+  <div class="hero-arrow">↓</div>
+</header>
+
+<!-- STATS -->
+<section>
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-value">26</div><div class="stat-label">Chapters</div></div>
+      <div class="stat"><div class="stat-value">1</div><div class="stat-label">Dedicatee — Medici</div></div>
+      <div class="stat"><div class="stat-value">3</div><div class="stat-label">Types of Principalities</div></div>
+      <div class="stat"><div class="stat-value">2</div><div class="stat-label">Arms: Own vs. Mercenary</div></div>
+      <div class="stat"><div class="stat-value">∞</div><div class="stat-label">Enduring Relevance</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE THEMES -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+      <div class="section-label">The Pillars</div>
+      <h2>Core <span class="hl">Themes</span></h2>
+      <p class="section-desc" style="margin:0.5rem auto 0;">The foundational ideas that underpin Machiavelli's philosophy of power.</p>
+    </div>
+    <div class="theme-cards">
+      <div class="theme-card">
+        <span class="tc-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></span>
+        <h4>Fortune vs. <span class="hl">Virtù</span></h4>
+        <p>Fortune controls half our actions, but the other half is within our power. A prince with <em>virtù</em> — skill, strength, and decisive will — can shape his destiny. Fortune favors the bold, the impetuous, the one who adapts to the times.</p>
+      </div>
+      <div class="theme-card">
+        <span class="tc-icon">🦁</span>
+        <h4>The Lion and <span class="hl">the Fox</span></h4>
+        <p>A prince must be both beast and man. The lion defends against wolves; the fox recognizes traps. Strength without cunning is insufficient; cunning without strength is vulnerable. To rule is to master both natures.</p>
+      </div>
+      <div class="theme-card">
+        <span class="tc-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M8 22h8"/><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>️</span>
+        <h4>The Ends <span class="hl">Justify the Means</span></h4>
+        <p>In matters of state, the ruler must sometimes act immorally for the greater good. The welfare of the people and the stability of the state justify harsh actions. A prince who tries to be good at all times will be destroyed among so many who are not.</p>
+      </div>
+      <div class="theme-card">
+        <span class="tc-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>️</span>
+        <h4>Feared vs. <span class="hl">Loved</span></h4>
+        <p>If a prince cannot be both loved and feared, it is far safer to be feared. Love is held by a thread of obligation, easily broken. Fear is sustained by the dread of punishment, which never fails. But a prince must avoid being hated.</p>
+      </div>
+      <div class="theme-card">
+        <span class="tc-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2h-5L7 8h10l-2.5-6z"/><path d="M7 8v11a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V8"/></svg>️</span>
+        <h4>Arms &amp; <span class="hl">the Law</span></h4>
+        <p>Good laws and good arms — these are the foundations of every state. A prince must master the art of war above all else. One's own arms are the only reliable defense; mercenaries and auxiliaries are useless and dangerous.</p>
+      </div>
+      <div class="theme-card">
+        <span class="tc-icon"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>️</span>
+        <h4>Appearance <span class="hl">vs. Reality</span></h4>
+        <p>A prince should appear merciful, faithful, humane, religious, and upright — but must be ready to act otherwise when necessary. The common people judge by what they see and hear. The appearance of virtue matters more than virtue itself.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY CHAPTERS -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+      <div class="section-label">The Text</div>
+      <h2>Key <span class="hl">Chapters</span></h2>
+      <p class="section-desc" style="margin:0.5rem auto 0;">The essential chapters of <em>The Prince</em>, organized by theme — tap to expand.</p>
+    </div>
+    <div class="chapters-bar" id="chapterTabs">
+      <button class="ch-tab active" data-ch="all">All</button>
+      <button class="ch-tab" data-ch="principalities">Principalities</button>
+      <button class="ch-tab" data-ch="arms">Arms &amp; War</button>
+      <button class="ch-tab" data-ch="qualities">Qualities of a Prince</button>
+      <button class="ch-tab" data-ch="fortune">Fortune &amp; Virtù</button>
+    </div>
+    <div class="ch-grid" id="chapterGrid"></div>
+  </div>
+</section>
+
+<!-- THE PRINCE'S TOOLKIT -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+      <div class="section-label">Principles of Power</div>
+      <h2>The Prince's <span class="hl">Toolkit</span></h2>
+      <p class="section-desc" style="margin:0.5rem auto 0;">Machiavelli's strategic principles — click each card to reveal deeper wisdom.</p>
+    </div>
+    <div class="grid-2" id="toolkitGrid"></div>
+  </div>
+</section>
+
+<!-- GOOD VS EVIL -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+      <div class="section-label">The Dilemma</div>
+      <h2>Good Prince vs. <span class="hl">Effective Prince</span></h2>
+      <p class="section-desc" style="margin:0.5rem auto 0;">Machiavelli's most controversial insight — the tension between moral virtue and effective rule.</p>
+    </div>
+    <div class="good-evil">
+      <div class="ge-side ge-good">
+        <div class="ge-label">The Good Prince</div>
+        <h3>Virtue · Morality · Honor</h3>
+        <ul>
+          <li>Keeps all promises and oaths</li>
+          <li>Rules with mercy and compassion</li>
+          <li>Gives generously to all</li>
+          <li>Fights openly and honorably</li>
+          <li>Remains faithful to allies</li>
+          <li>Acts only within moral bounds</li>
+          <li>Seeks to be loved by all</li>
+        </ul>
+      </div>
+      <div class="ge-divider">vs.</div>
+      <div class="ge-side ge-evil">
+        <div class="ge-label">The Effective Prince</div>
+        <h3>Power · Pragmatism · Statecraft</h3>
+        <ul>
+          <li>Breaks promises when convenient</li>
+          <li>Uses cruelty decisively when needed</li>
+          <li>Practices parsimony to avoid taxing subjects</li>
+          <li>Employs deception and cunning</li>
+          <li>Shifts alliances as circumstances demand</li>
+          <li>Enters evil knowingly when necessary</li>
+          <li>Prefers to be feared rather than loved</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text-dim);text-align:center;font-style:italic;margin-top:1rem;">"A prince who wants to maintain his position cannot always be good, for to preserve his state he must often act against faith, charity, humanity, and religion." — <em>The Prince, Ch. 18</em></p>
+  </div>
+</section>
+
+<!-- QUALITIES OF A PRINCE -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+      <div class="section-label">Character</div>
+      <h2>The Qualities of <span class="hl">a Prince</span></h2>
+      <p class="section-desc" style="margin:0.5rem auto 0;">Machiavelli's practical counsel on how a prince should conduct himself.</p>
+    </div>
+    <div class="qualities-list" id="qualitiesList"></div>
+  </div>
+</section>
+
+<!-- LEADERSHIP STYLE QUIZ -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+      <div class="section-label">Self-Assessment</div>
+      <h2>What Kind of <span class="hl">Prince</span> Are You?</h2>
+      <p class="section-desc" style="margin:0.5rem auto 0;">How would Machiavelli classify your leadership style? Answer these five dilemmas.</p>
+    </div>
+    <div class="quiz-section" id="quizSection">
+      <div class="quiz-intro">
+        <h3><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> The Machiavelli Test <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></h3>
+        <p>Choose the option that most closely matches your approach to leadership.</p>
+      </div>
+      <div id="quizQuestions"></div>
+      <div style="text-align:center;">
+        <button class="quiz-btn" id="quizSubmit"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> Reveal Your Ruler Type <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg></button>
+      </div>
+      <div class="quiz-result" id="quizResult">
+        <h4>Your Ruler Archetype</h4>
+        <div class="qr-type" id="qrType"></div>
+        <p id="qrDesc"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+      <div class="section-label">Wisdom</div>
+      <h2>Notable <span class="hl">Quotes</span></h2>
+      <p class="section-desc" style="margin:0.5rem auto 0;">The most enduring passages from Machiavelli's masterpiece.</p>
+    </div>
+    <div id="quotesContainer"></div>
+  </div>
+</section>
+
+<!-- MODERN RELEVANCE -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+      <div class="section-label">Legacy</div>
+      <h2>Modern <span class="hl">Relevance</span></h2>
+      <p class="section-desc" style="margin:0.5rem auto 0;">Why a 500-year-old political treatise still shapes how we think about power today.</p>
+    </div>
+    <div class="modern-grid" id="modernGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg> <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg></div>
+  <div class="ft-logo">The Prince</div>
+  <p>Interactive Summary · Niccolò Machiavelli · 1513–1532</p>
+  <p style="margin-top:0.3rem;">NEXO — Interactive Book Summaries</p>
+</footer>
+
+<script>
+  //  FLOATING ORNAMENTS 
+  (function(){
+    const c = document.getElementById('ornaments');
+    const colors = [
+      'rgba(184,134,11,0.08)',
+      'rgba(192,64,0,0.06)',
+      'rgba(139,0,0,0.05)',
+      'rgba(232,213,183,0.04)'
+    ];
+    for (let i = 0; i < 5; i++) {
+      const o = document.createElement('div');
+      o.className = 'orn';
+      const size = 200 + Math.random() * 300;
+      o.style.cssText = `
+        width:${size}px;height:${size}px;
+        left:${Math.random()*100}%;top:${Math.random()*100}%;
+        background:${colors[i%colors.length]};
+        --d:${25+Math.random()*30}s;
+        --del:${Math.random()*10}s;
+        --mo:0.5;
+        --tx:${(Math.random()-0.5)*500}px;
+        --ty:${(Math.random()-0.5)*500}px;
+      `;
+      c.appendChild(o);
+    }
+  })();
+
+  //  SCROLL PROGRESS 
+  window.addEventListener('scroll',()=>{
+    const s=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+    document.getElementById('progress').style.width=s+'%';
+  });
+
+  //  THEME 
+  const themeToggle=document.getElementById('themeToggle');
+  themeToggle.addEventListener('click',()=>{
+    document.body.classList.toggle('light');
+    themeToggle.innerHTML=document.body.classList.contains('light')
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  });
+
+  //  SCROLL REVEAL 
+  const observer=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+  },{threshold:0.08});
+
+  //  CHAPTERS DATA 
+  const chapters=[
+    {n:1,title:"Of the Various Kinds of Principalities",cat:"principalities",text:"All states and dominions that have held sway over men are either republics or principalities. Principalities are either hereditary (passed down through a ruling family) or new. New principalities are either entirely new or annexed to an existing state. They are acquired by one's own arms and virtù, by fortune and the arms of others, or by wickedness."},
+    {n:2,title:"Of Hereditary Principalities",cat:"principalities",text:"Hereditary principalities are far easier to maintain than new ones. A prince of hereditary stock can keep his state with only modest effort, so long as he does not depart from the customs of his ancestors and deals with unforeseen events as they arise. The natural affection of the people for their ancient line is a powerful anchor."},
+    {n:3,title:"Of Mixed Principalities",cat:"principalities",text:"Mixed principalities — those annexed to an existing state — present the greatest difficulty. The conqueror must consider: those he has injured by his conquest, the expectation of improvement among the people, the need to pacify the conquered territory. Live in the conquered territory, plant colonies, protect smaller neighbors, weaken the strong, and prevent any foreign power from entering."},
+    {n:4,title:"Why the Kingdom of Darius Did Not Rebel",cat:"principalities",text:"States accustomed to living under a prince are harder to conquer but easier to hold. The memory of the prince's family fades with his death. States governed by a prince and his barons are easier to conquer through a disaffected baron but harder to hold, as the people may rally to a new leader from the old nobility."},
+    {n:5,title:"How Cities or Provinces Should Be Administered",cat:"principalities",text:"Three ways to hold a state accustomed to its own laws: ruin it, go live there, or let it keep its laws under tribute with a friendly government. The safest is to ruin it. He who does not destroy a rebellious city may one day be destroyed by it. A city accustomed to freedom is harder to hold."},
+    {n:6,title:"Of New Principalities Acquired by One's Own Arms and Virtù",cat:"principalities",text:"The greatest princes rise through their own virtù, not fortune. Moses, Cyrus, Romulus, Theseus — all were armed prophets who succeeded through their own ability. Difficulties in acquiring a new state are many, but once established, such princes are secure. Men who become princes through their own merit face many initial dangers but enjoy lasting security."},
+    {n:7,title:"Of New Principalities Acquired by Fortune",cat:"principalities",text:"Those who rise by fortune — through bribery, favor, or inheritance — do so with little effort but must labor mightily to maintain their state. They depend on the goodwill of those who raised them, which is unreliable. A prince who rises by fortune may lack the virtù to command his own destiny. His state is built on sand."},
+    {n:8,title:"Of Those Who Become Princes by Wickedness",cat:"principalities",text:"Some rise through crime and violence. Cruelty used well is inflicted at once, for necessity, and then ceased. Cruelty used badly is inflicted gradually and without end. A prince should commit all necessary cruelties at once, so he may later dispense benefits gradually. Injuries must be done all at once; benefits, one by one."},
+    {n:12,title:"Of the Different Kinds of Soldiers",cat:"arms",text:"The foundation of every state is good laws and good arms. There are three types of armies: one's own, mercenaries, and auxiliaries. Mercenaries are disunited, ambitious, undisciplined, and treacherous. They will fight well enough for pay but will not die for you. Auxiliaries are even more dangerous — they are united under their own commander and can turn on you."},
+    {n:13,title:"Of Auxiliary, Mixed, and Citizen Soldiers",cat:"arms",text:"Auxiliary troops — those borrowed from a foreign power — are the most dangerous. If they win, you are their prisoner. If they lose, you are ruined. A wise prince always fights with his own arms. Without one's own army, no prince is truly secure. The arms of others either fall away, burden you, or constrain you."},
+    {n:14,title:"What a Prince Should Do Concerning the Art of War",cat:"arms",text:"A prince must study the art of war above all else. It is his only profession. In peacetime, he must train harder than in war. He must study history, the actions of great men, the terrain of his country. To neglect the art of war is to invite ruin. An armed prince is surrounded by armed subjects; an unarmed prince is at the mercy of his armed servants."},
+    {n:15,title:"Of Things for Which Men and Princes Are Praised or Blamed",cat:"qualities",text:"A prince who wants to maintain his position cannot always do what is considered good. Many qualities for which men are praised — generosity, mercy, honesty — can ruin a prince if practiced without discretion. The prince must be willing to enter evil when necessity commands. He must understand that some virtuous qualities lead to ruin, while some vices lead to security and well-being."},
+    {n:16,title:"Of Liberality and Parsimony",cat:"qualities",text:"Liberality practiced virtuously will harm you. To maintain a reputation for generosity, you must tax your people heavily, which makes you hated. Parsimony is a wiser course — it lets you live within your means, defend your state, and undertake ventures without burdening your subjects. In time, you will be considered generous by all those you do not tax."},
+    {n:17,title:"Of Cruelty and Mercy",cat:"qualities",text:"A prince should desire to be considered merciful rather than cruel, but he must not misuse mercy. A prince who keeps his subjects united and loyal should not worry about the reputation for cruelty. It is far safer to be feared than loved. Love is held by a thread of obligation; fear is sustained by the dread of punishment. But a prince must never be hated."},
+    {n:18,title:"How Princes Should Keep Faith",cat:"qualities",text:"A prudent prince cannot and should not keep his word when doing so would work against his interests. Men are wretched creatures who would not keep their word to you, so you need not keep yours to them. A prince must be a great feigner and dissembler. He should appear merciful, faithful, humane, religious, and upright — and be so in truth, but ready to act otherwise when needed."},
+    {n:19,title:"Of Avoiding Contempt and Hatred",cat:"qualities",text:"A prince must avoid being hated and despised. He is hated for rapaciousness and for meddling with the property and women of his subjects. He is despised for being fickle, effeminate, cowardly, and irresolute. A prince should demonstrate greatness, courage, wisdom, and strength. The people judge by appearances; a prince who commands respect is safe."},
+    {n:22,title:"Of the Ministers of Princes",cat:"qualities",text:"The first judgment of a ruler's intelligence comes from the men around him. If his ministers are capable and loyal, the prince is wise. If they are not, the prince is weak. A wise prince chooses shrewd ministers and keeps them loyal with honors, wealth, and responsibilities. He seeks counsel from many but gives his own judgment."},
+    {n:25,title:"How Much Fortune Can Do in Human Affairs",cat:"fortune",text:"Fortune governs half our actions, but the other half is within our control. Fortune is like a river that floods its banks — it rages when unopposed, but in calm seasons, men can build dams and levees. The prince who adapts his nature to the times will succeed. Fortune favors the bold. It is better to be impetuous than cautious."},
+    {n:26,title:"Exhortation to Liberate Italy",cat:"fortune",text:"Machiavelli's passionate plea: Italy, disunited and overrun by foreign powers, awaits a prince who will free her. Never was a time more favorable for a new prince. God has shown signs of deliverance. The Medici are called to take up this cause. 'Not, then, let your illustrious House reject this opportunity, that Italy may at last find her savior.'"}
+  ];
+
+  //  RENDER CHAPTERS 
+  const chapterGrid=document.getElementById('chapterGrid');
+  const chapterTabs=document.querySelectorAll('.ch-tab');
+  let activeChapterFilter='all';
+
+  function renderChapters(filter='all'){
+    chapterGrid.innerHTML='';
+    const q=filter.toLowerCase();
+    let visible=0;
+
+    chapters.forEach(ch=>{
+      const match=q==='all'||ch.cat===q;
+      if(match)visible++;
+
+      const card=document.createElement('div');
+      card.className=`ch-card${match?'':' hidden'}`;
+      card.innerHTML=`
+        <div class="ch-num">Chapter ${ch.n}</div>
+        <h4>${ch.title}</h4>
+        <div class="ch-preview">${ch.text.substring(0,140)}…</div>
+        <div class="ch-full"><div class="ch-full-inner">${ch.text}</div></div>
+        <div class="ch-icon">+</div>
+      `;
+      card.addEventListener('click',()=>card.classList.toggle('open'));
+      chapterGrid.appendChild(card);
+      if(match)observer.observe(card);
+    });
+
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('.ch-card:not(.hidden)').forEach((el,i)=>{
+        setTimeout(()=>el.classList.add('visible'),i*40);
+      });
+    });
+  }
+
+  renderChapters();
+
+  chapterTabs.forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      chapterTabs.forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      activeChapterFilter=tab.dataset.ch;
+      renderChapters(activeChapterFilter);
+    });
+  });
+
+  //  TOOLKIT 
+  const toolkitData=[
+    {n:1,t:"Master the Art of War",p:"A prince must have no other object than war, its organization, and its discipline. In peacetime, train harder than in war. Study terrain, history, and the actions of great commanders. The neglect of military art is the first cause of ruin."},
+    {n:2,t:"Be Both Lion and Fox",p:"The lion cannot defend against traps; the fox cannot defend against wolves. A prince must be both — strong enough to frighten wolves, cunning enough to recognize snares. Pure strength invites traps; pure cunning invites attack."},
+    {n:3,t:"Use Cruelty Well",p:"All necessary cruelties must be inflicted at once and then ceased. Benefits should be dispensed gradually. The prince who settles his accounts in one stroke will not need to be cruel again. Sporadic cruelty breeds perpetual hatred."},
+    {n:4,t:"Never Rely on Mercenaries",p:"Mercenaries are disunited, ambitious, and treacherous. They fight for pay, not loyalty. In peace they rob you; in war they flee. Your own arms — citizens loyal to their prince — are the only reliable defense of any state."},
+    {n:5,t:"Appear Virtuous",p:"The prince should appear merciful, faithful, humane, religious, and upright. The multitude judges by appearances. But he must be ready, when necessity commands, to act against every virtue. The appearance of virtue is your shield; the willingness to set it aside is your sword."},
+    {n:6,t:"Secure the People's Support",p:"The goodwill of the people is the prince's best fortress. Fortresses and walls are useful, but nothing protects a prince like the loyalty of his subjects. A prince who has the people on his side need fear no conspiracy."},
+    {n:7,t:"Eliminate Threats Early",p:"Emerging problems must be dealt with while they are small and manageable. Recognize trouble at its inception. A prince must treat a small fire as he would a great conflagration — extinguish it before it spreads beyond control."},
+    {n:8,t:"Choose Wise Counselors",p:"A prince's intelligence is judged by the men around him. Choose ministers who are capable, loyal, and honest. Keep them loyal through honor, wealth, and shared responsibility. Avoid flatterers — the greatest trap of any court."},
+    {n:9,t:"Keep Your Word... Strategically",p:"A prudent prince cannot keep his word when it harms his interests. Men are wretched; they will not keep faith with you, so you need not keep faith with them. But never break your word without just cause, and always maintain the appearance of honesty."},
+    {n:10,t:"Fortify Your State",p:"Good laws and good arms are the foundations of every state. Fortify your territories, but remember: the strongest fortress is not being hated by your people. Internal strength and external deterrence must go hand in hand."}
+  ];
+
+  const toolkitGrid=document.getElementById('toolkitGrid');
+  toolkitData.forEach(item=>{
+    const card=document.createElement('div');
+    card.className='tk-card';
+    card.innerHTML=`
+      <div class="tk-num">${item.n}</div>
+      <h4>${item.t}</h4>
+      <p>${item.p.substring(0,80)}…</p>
+      <div class="tk-full"><div class="tk-full-inner">${item.p}</div></div>
+    `;
+    card.addEventListener('click',()=>card.classList.toggle('open'));
+    toolkitGrid.appendChild(card);
+    observer.observe(card);
+  });
+
+  //  QUALITIES 
+  const qualitiesData=[
+    {label:"Liberality vs. Parsimony",t:"Give Sparingly, Keep Plenty",p:"Generosity depletes your resources and forces you to tax the people, making you hated. It is wiser to be considered miserly than to be generous at the people's expense. In time, your parsimony will be seen as liberality — for you take nothing from your subjects."},
+    {label:"Cruelty vs. Mercy",t:"Be Feared but Not Hated",p:"A prince should be slow to believe accusations and slow to act. He must punish when necessary but never confiscate property without cause — men forgive the death of a father more quickly than the loss of a patrimony. Be feared, but never despised."},
+    {label:"Keeping Faith",t:"Break Promises When Needed",p:"Honesty is admirable, but the prince who always keeps his word will be destroyed among the dishonest. Break your promises when the reasons for making them no longer exist. But always maintain the appearance of integrity."},
+    {label:"Avoiding Contempt",t:"Be Decisive and Resolute",p:"A prince who is fickle, effeminate, cowardly, or irresolute will be despised. He must demonstrate greatness, courage, and wisdom in all his actions. His decisions should be irrevocable, so that no one will think to deceive him."},
+    {label:"Choosing Ministers",t:"The Mirror of Your Judgment",p:"The quality of your ministers reflects your own intelligence. Reward honest counsel and punish flattery. Listen to advice from many sources, but make your own decisions. A prince who asks for advice from everyone will have no will of his own."}
+  ];
+
+  const qualitiesList=document.getElementById('qualitiesList');
+  qualitiesData.forEach((q,i)=>{
+    const el=document.createElement('div');
+    el.className='q-item';
+    el.innerHTML=`
+      <div class="q-label">${q.label}</div>
+      <h4>${q.t}</h4>
+      <p>${q.p}</p>
+      <div class="q-mach">— Machiavelli, The Prince</div>
+    `;
+    qualitiesList.appendChild(el);
+    observer.observe(el);
+  });
+
+  //  QUIZ 
+  const quizQuestions=[
+    {
+      q:"Your trusted ally makes a promise that would now harm your state. Do you keep your word?",
+      opts:[
+        {v:3,t:"Make an honorable withdrawal — find a legal or diplomatic way out that preserves your reputation"},
+        {v:2,t:"Keep your word reluctantly; a prince's honor is his bond"},
+        {v:4,t:"Break the promise without hesitation; the state's welfare trumps personal obligations"},
+        {v:1,t:"Delegate the decision to your ministers so you bear no direct blame"}
+      ]
+    },
+    {
+      q:"A rebellious province threatens the stability of your entire realm. How do you respond?",
+      opts:[
+        {v:4,t:"Crush the rebellion swiftly and decisively; make an example that deters future revolt"},
+        {v:1,t:"Negotiate terms of surrender with concessions on both sides"},
+        {v:2,t:"Send a trusted general to handle it while you remain above the conflict"},
+        {v:3,t:"Punish only the leaders severely, but pardon the common people to win their gratitude"}
+      ]
+    },
+    {
+      q:"Your army faces a superior force. What is your primary consideration?",
+      opts:[
+        {v:4,t:"Fight using strategy and deception — divide their forces, attack at night, feign retreat"},
+        {v:1,t:"Avoid battle at all costs; preserve your army for another day through diplomacy"},
+        {v:2,t:"Rely on your professional soldiers; they know better than you how to fight"},
+        {v:3,t:"Lead from the front; your men will fight harder seeing their prince in the ranks"}
+      ]
+    },
+    {
+      q:"A minister grows very popular — perhaps too popular. The people adore him. What do you do?",
+      opts:[
+        {v:1,t:"Celebrate his success publicly; a popular minister is a reflection of your wisdom in choosing him"},
+        {v:4,t:"Transfer him to a position of honor far from the capital; neutral power or remove him"},
+        {v:2,t:"Publicly rebuke him for something minor to remind the people who truly rules"},
+        {v:3,t:"Promote him further, but place a loyal observer at his side to report on his activities"}
+      ]
+    },
+    {
+      q:"Fortune has dealt you a setback. A territory is lost. Your reputation is shaken. How do you regain control?",
+      opts:[
+        {v:4,t:"Seize the moment with bold, impetuous action — fortune favors the audacious"},
+        {v:1,t:"Retreat, consolidate your remaining forces, and wait for a more favorable opportunity"},
+        {v:2,t:"Send ambassadors to negotiate favorable terms while rebuilding in secret"},
+        {v:3,t:"Study what went wrong, adapt your methods, and prepare to strike again with new wisdom"}
+      ]
+    }
+  ];
+
+  const quizContainer=document.getElementById('quizQuestions');
+  quizQuestions.forEach((qq,i)=>{
+    const d=document.createElement('div');
+    d.className='quiz-q';
+    let opts='';
+    qq.opts.forEach((o,oi)=>{
+      opts+=`<label data-v="${o.v}">
+        <input type="radio" name="q${i}" value="${oi}">
+        <span>${o.t}</span>
+      </label>`;
+    });
+    d.innerHTML=`
+      <div class="qq-num">Dilemma ${i+1}</div>
+      <div class="qq-text">${qq.q}</div>
+      <div class="qq-opt">${opts}</div>
+    `;
+    quizContainer.appendChild(d);
+    d.querySelectorAll('label').forEach(l=>{
+      l.querySelector('input').addEventListener('change',()=>{
+        d.querySelectorAll('label').forEach(x=>x.classList.remove('selected'));
+        l.classList.add('selected');
+      });
+    });
+  });
+
+  document.getElementById('quizSubmit').addEventListener('click',()=>{
+    let total=0;
+    let answered=0;
+    document.querySelectorAll('.quiz-q').forEach(q=>{
+      const sel=q.querySelector('input:checked');
+      if(sel){
+        answered++;
+        total+=parseInt(sel.closest('label').dataset.v);
+      }
+    });
+
+    if(answered<5){
+      alert('Answer all five dilemmas before revealing your ruler type.');
+      return;
+    }
+
+    const result=document.getElementById('quizResult');
+    const rType=document.getElementById('qrType');
+    const rDesc=document.getElementById('qrDesc');
+
+    let type,desc;
+    if(total<=8){
+      type='The Cautious Diplomat';
+      desc='You favor negotiation, patience, and preservation. Like Machiavelli\'s more conservative prince, you seek stability through restraint and deliberation. Your strength lies in avoiding unnecessary conflict — but watch that caution does not become indecision. The bold still have their place in the world.';
+    }else if(total<=12){
+      type='The Balanced Ruler';
+      desc='You blend pragmatism with principle. Neither purely lion nor purely fox, you choose your approach based on circumstance. Machiavelli would approve of your flexibility — but caution you: in matters of state, consistency can become a prison. Be ready to set aside even your virtues when necessity demands.';
+    }else if(total<=16){
+      type='The Cunning Strategist';
+      desc='You think three moves ahead. Deception, timing, and human nature are your tools. Machiavelli would recognize you as a kindred spirit — one who understands that appearances matter as much as reality. Your risk: that cunning without strength will leave you vulnerable when force is needed.';
+    }else{
+      type='The Lion Prince';
+      desc='Bold, decisive, and unafraid of cruelty when it serves your purpose. You lead from the front and trust in strength and action. Machiavelli\'s ideal prince would recognize your virtù. Your danger: impetuosity without caution. Remember — the fox also has its place. Not every battle is won by charging.';
+    }
+
+    rType.innerHTML='<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg> '+type+' <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9 9 9 12 2"/></svg>';
+    rDesc.textContent=desc;
+    result.classList.add('show');
+    result.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+
+  //  QUOTES 
+  const quotes=[
+    {q:"It is much safer to be feared than loved, if one must choose.",c:"Chapter 17 — Of Cruelty and Mercy"},
+    {q:"The ends justify the means.",c:"Chapter 18 — How Princes Should Keep Faith"},
+    {q:"A prince never lacks legitimate reasons to break his promise.",c:"Chapter 18 — How Princes Should Keep Faith"},
+    {q:"The first method for estimating the intelligence of a ruler is to look at the men he has around him.",c:"Chapter 22 — Of the Ministers of Princes"},
+    {q:"There is no avoiding war; it can only be postponed to the advantage of others.",c:"Chapter 3 — Of Mixed Principalities"},
+    {q:"He who neglects what is done for what ought to be done will sooner bring about his ruin than his preservation.",c:"Chapter 15 — Of Things for Which Princes Are Praised or Blamed"},
+    {q:"All armed prophets have conquered; unarmed prophets have been destroyed.",c:"Chapter 6 — Of New Principalities Acquired by Virtù"},
+    {q:"Fortune is a woman, and if you wish to keep her under, it is necessary to beat and ill-use her.",c:"Chapter 25 — How Much Fortune Can Do"},
+    {q:"Men are quick to change their nature when it serves their interest.",c:"Chapter 18 — How Princes Should Keep Faith"},
+    {q:"A prince should appear merciful, faithful, humane, religious, and upright — and should actually be so, but with a mind so trained that, when the need arises, he can become the opposite.",c:"Chapter 18 — How Princes Should Keep Faith"},
+    {q:"The wise prince does not keep faith when such faith works against his interests.",c:"Chapter 18 — How Princes Should Keep Faith"},
+    {q:"It is better to be impetuous than cautious, for fortune is a woman.",c:"Chapter 25 — How Much Fortune Can Do"}
+  ];
+
+  const quotesContainer=document.getElementById('quotesContainer');
+  quotes.forEach((q,i)=>{
+    const d=document.createElement('div');
+    d.className='quote-block';
+    d.innerHTML=`
+      <div class="q-ornament"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg></div>
+      <blockquote>"${q.q}"</blockquote>
+      <cite>— Niccolò Machiavelli, <em>The Prince</em></cite>
+      <div class="q-ref">${q.c}</div>
+    `;
+    quotesContainer.appendChild(d);
+    observer.observe(d);
+  });
+
+  //  MODERN RELEVANCE 
+  const modernData=[
+    {i:"🏛️",t:"Political Strategy",p:"Modern political campaigns, diplomacy, and international relations still follow Machiavelli's principles — alliances, calculated deception, and the pragmatic use of power are standard tools of statecraft."},
+    {i:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-4a2 2 0 0 1-2-2V3"/><path d="M4 7V3a2 2 0 0 1 2-2h10l4 4v13a2 2 0 0 1-2 2"/><circle cx="12" cy="15" r="4"/><path d="M12 11v4"/></svg>',t:"Business & Leadership",p:"Corporate strategy, competitive positioning, and organizational leadership echo Machiavelli. Concepts like strategic alliances, brand perception, and competitive advantage mirror the Prince's playbook."},
+    {i:"⚔️",t:"Military Doctrine",p:"The emphasis on one's own arms, preparation during peace, and the study of war remain central to military academies worldwide. Clausewitz, Sun Tzu, and Machiavelli form the bedrock of strategic thought."},
+    {i:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',t:"Psychology of Power",p:"Machiavelli understood human nature — fear, ambition, self-interest — with piercing clarity. Modern behavioral economics and social psychology confirm many of his observations about how people respond to authority."},
+    {i:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',t:"Negotiation Tactics",p:"The principles of leverage, appearing strong while being flexible, and knowing when to break a commitment are taught in every serious negotiation program. Machiavelli's fingerprints are everywhere."},
+    {i:'<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',t:"Enduring Controversy",p:"'Machiavellian' remains a byword for cunning and duplicity. The book continues to provoke debate about ethics, power, and whether the ends truly justify the means — a testament to its enduring power."}
+  ];
+
+  const modernGrid=document.getElementById('modernGrid');
+  modernData.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='modern-card';
+    d.innerHTML=`
+      <span class="mc-icon">${item.i}</span>
+      <h4>${item.t}</h4>
+      <p>${item.p}</p>
+    `;
+    modernGrid.appendChild(d);
+    observer.observe(d);
+  });
+
+  //  OBSERVE ALL 
+  document.querySelectorAll('.theme-card, .tk-card, .q-item, .quote-block, .modern-card').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
