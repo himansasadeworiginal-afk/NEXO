@@ -184,6 +184,21 @@ Define a `QUIZ_DATA` object keyed by subject and lesson ID. Populate with REAL q
 
 ---
 
+---
+
+### PHASE 2 — Account Page & Sidebar
+
+Build a full account page (`account.html`) and an account sidebar panel integrated into `index.html`. Both are UI-only with all data mocked in a `NEXO_MOCK_USER` object. Every data point must be marked with `// BACKEND: replace with real API call`.
+
+For the full spec, see the `NEXO — My Account Page + Account Sidebar` prompt document (included as a separate spec).
+
+Key deliverables:
+1. `account.html` — full page with fixed sidebar navigation (220px), 6 sections (Overview, My Progress, Quiz History, Bookmarks, Activity Feed, Premium), mobile responsive
+2. `index.html` additions — avatar button top-right, slide-in sidebar panel (320px, slides from right, dark overlay), quick stats, subject progress, recent activity, quick links
+3. `NEXO_MOCK_USER` object at top of each file with `// BACKEND:` comments
+4. URL hash-based section switching so sidebar quick links navigate to correct section (e.g. `account.html#progress`)
+5. No external CDN dependencies — fully self-contained, `file://` compatible
+
 ### DELIVERABLE
 
 Output the complete upgraded index.html file. If the file is very long, output it in clearly labeled chunks (Part 1: HTML+CSS, Part 2: JS Data, Part 3: JS Logic) and confirm when complete. Do not truncate or summarize — output the full working code.

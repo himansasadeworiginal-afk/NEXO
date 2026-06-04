@@ -250,6 +250,33 @@ Changes go live automatically after pushing to `main`. Make sure `.nojekyll` is 
 | **Concept Map Viewer** — Interactive SVG node-link diagrams per lesson. Clickable nodes, pan/zoom, defined as JSON edge lists. | Hard | Pending |
 | **Global Cmd+K Search** — Spotlight-style overlay searching all lessons, glossary, books. Arrow-key navigation, grouped results. Build last — needs full content first. | Hardest | Pending |
 
+## Account & Profile System
+
+NEXO includes a full account page (`account.html`) and a slide-in sidebar panel integrated into `index.html` for viewing study progress at a glance.
+
+### Account Page (`account.html`)
+
+- **Left sidebar navigation** — fixed sidebar (220px) with avatar, user info, and 6 navigation sections: Overview, My Progress, Quiz History, Bookmarks, Activity Feed, Premium
+- **Overview** — stat cards (streak, lessons done, quizzes taken, avg score), subject progress bars, recent activity feed
+- **My Progress** — detailed per-subject breakdown with progress bars and lesson status dot grids
+- **Quiz History** — table of all quiz attempts with score bars and color-coded results
+- **Bookmarks** — grid of bookmarked books and lessons
+- **Activity Feed** — full timeline view with day grouping and type filters
+- **Premium** — upgrade UI with feature list and mock pricing
+- **Mobile responsive** — sidebar collapses to horizontal tab bar on small screens
+- **All data mocked** — `NEXO_MOCK_USER` object with `// BACKEND:` comments marking every integration point
+
+### Account Sidebar (in `index.html`)
+
+- **Avatar button** — fixed top-right 36px circle with user initials
+- **Slide-in panel** — 320px wide, slides from right, dark overlay behind
+- **Quick stats** — 2x2 grid of compact stat cards
+- **Subject progress** — compact progress bars per subject
+- **Recent activity** — last 3 items
+- **Quick links** — icon buttons for Quiz History, Bookmarks, Premium sections
+- **View full profile** link → `account.html`
+- **Keyboard shortcut**: Escape closes the sidebar
+
 ## Credits
 
 Summaries, interactive pages, and quizzes built from notes on each respective work.

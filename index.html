@@ -897,6 +897,160 @@ footer .footer-info{color:var(--text-muted);font-size:0.75rem;letter-spacing:0.5
 footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 
 /* ===== RESPONSIVE ===== */
+/* ===== ACCOUNT AVATAR BUTTON ===== */
+.account-avatar-btn{
+  position:fixed;top:1rem;right:1rem;z-index:500;
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.75rem;font-weight:600;
+  cursor:pointer;border:none;
+  transition:all var(--transition);
+  box-shadow:0 2px 12px rgba(0,0,0,0.4);
+  text-decoration:none;
+}
+.account-avatar-btn:hover{
+  transform:scale(1.1);
+  box-shadow:0 4px 20px rgba(46,168,76,0.3);
+}
+
+/* ===== ACCOUNT SIDEBAR ===== */
+.sidebar-overlay{
+  position:fixed;inset:0;z-index:1999;
+  background:rgba(0,0,0,0.6);
+  opacity:0;pointer-events:none;
+  transition:opacity 0.25s ease;
+}
+.sidebar-overlay.open{opacity:1;pointer-events:auto;}
+
+.account-sidebar{
+  position:fixed;top:0;right:0;width:320px;height:100vh;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  z-index:2000;
+  transform:translateX(320px);
+  transition:transform 0.25s ease;
+  display:flex;flex-direction:column;
+}
+.account-sidebar.open{transform:translateX(0);}
+
+.as-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 1.2rem 0.8rem;
+  border-bottom:1px solid var(--border);
+}
+.as-header-left{display:flex;align-items:center;gap:0.75rem;}
+.as-avatar{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.85rem;font-weight:600;color:var(--bg);flex-shrink:0;
+}
+.as-user-info{}
+.as-name{font-size:0.85rem;font-weight:600;color:var(--text);}
+.as-username{font-size:0.7rem;color:var(--text-dim);}
+.as-plan{
+  display:inline-block;margin-top:3px;
+  font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;
+  padding:2px 8px;border:1px solid var(--border);color:var(--text-dim);
+}
+.as-plan.premium{border-color:var(--green-dim);color:var(--green);}
+.as-close{
+  width:32px;height:32px;display:flex;
+  align-items:center;justify-content:center;
+  background:none;border:none;color:var(--text-dim);
+  cursor:pointer;font-size:1.2rem;transition:color 0.2s;
+  border-radius:4px;
+}
+.as-close:hover{color:var(--text);background:var(--surface-hover);}
+
+.as-body{
+  flex:1;overflow-y:auto;padding:1rem 1.2rem;
+}
+
+.as-section-title{
+  font-size:0.65rem;color:var(--text-muted);
+  letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:0.6rem;margin-top:0.2rem;
+}
+
+.as-stats-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;
+  margin-bottom:1.2rem;
+}
+.as-stat{
+  background:var(--bg);border:1px solid var(--border);
+  padding:0.6rem 0.8rem;border-radius:6px;
+}
+.as-stat-value{
+  font-size:1rem;font-weight:700;
+}
+.as-stat-label{
+  font-size:0.6rem;color:var(--text-dim);letter-spacing:0.3px;
+  margin-top:1px;
+}
+
+.as-subject-row{
+  display:flex;align-items:center;gap:0.6rem;
+  margin-bottom:0.5rem;
+}
+.as-subject-row .ass-name{
+  font-size:0.75rem;color:var(--text);width:70px;flex-shrink:0;
+}
+.as-subject-row .ass-bar{
+  flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;
+}
+.as-subject-row .ass-fill{
+  height:100%;border-radius:2px;width:0%;
+  transition:width 0.8s ease-out;
+}
+.as-subject-row .ass-frac{
+  font-size:0.6rem;color:var(--text-dim);width:30px;text-align:right;
+}
+
+.as-activity-item{
+  display:flex;align-items:center;gap:0.6rem;
+  padding:0.4rem 0;font-size:0.75rem;
+  border-bottom:1px solid var(--border);
+}
+.as-activity-item:last-child{border-bottom:none;}
+.as-activity-item .aai-icon{
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.as-activity-item .aai-icon svg{width:12px;height:12px;}
+.as-activity-item .aai-label{flex:1;color:var(--text);}
+.as-activity-item .aai-time{font-size:0.65rem;color:var(--text-dim);flex-shrink:0;}
+
+.as-quick-links{
+  display:flex;gap:0.5rem;margin-top:0.5rem;
+}
+.as-quick-link{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--surface-hover);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-dim);cursor:pointer;text-decoration:none;
+  transition:all 0.2s;
+}
+.as-quick-link:hover{
+  border-color:var(--green);color:var(--green);
+}
+.as-quick-link svg{width:18px;height:18px;}
+
+.as-footer{
+  padding:0.8rem 1.2rem;
+  border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:6px;
+}
+.as-footer-btn{
+  display:flex;align-items:center;gap:0.6rem;
+  padding:8px 12px;background:none;border:1px solid var(--border);
+  color:var(--text-dim);font-size:0.78rem;cursor:pointer;
+  transition:all 0.2s;font-family:inherit;text-decoration:none;
+  justify-content:center;
+}
+.as-footer-btn:hover{background:var(--surface-hover);color:var(--text);border-color:var(--green-dim);}
+.as-footer-btn.muted{background:none;border:none;color:var(--text-muted);}
+.as-footer-btn.muted:hover{color:var(--text-dim);background:none;}
+
 @media(max-width:700px){
   .container{padding:1.5rem 1rem;}
   .grid{grid-template-columns:1fr;}
@@ -926,6 +1080,8 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   .quiz-modal{padding:1.5rem;max-height:85vh;}
   .quiz-modal .quiz-question{font-size:0.9rem;}
   .quiz-modal .quiz-option{padding:10px 12px;font-size:0.85rem;}
+  .account-sidebar{width:100%;}
+  .account-avatar-btn{top:0.6rem;right:0.6rem;width:32px;height:32px;font-size:0.65rem;}
 }
 </style>
 </head>
@@ -937,6 +1093,33 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 <div id="orbs"></div>
 <div id="noise"></div>
 <div id="mouseGlow"></div>
+
+<!-- ===== ACCOUNT AVATAR BUTTON ===== -->
+<!-- BACKEND: show this button only when user is logged in, hide otherwise -->
+<a class="account-avatar-btn" id="accountAvatarBtn" style="background:#2ea84c;color:#060906;" href="#" onclick="event.preventDefault();toggleAccountSidebar()">AS</a>
+
+<!-- ===== ACCOUNT SIDEBAR OVERLAY ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeAccountSidebar()"></div>
+
+<!-- ===== ACCOUNT SIDEBAR ===== -->
+<aside class="account-sidebar" id="accountSidebar">
+  <div class="as-header">
+    <div class="as-header-left">
+      <div class="as-avatar" id="asAvatar" style="background:#2ea84c">AS</div>
+      <div class="as-user-info">
+        <div class="as-name" id="asName">Aiden Silva</div>
+        <div class="as-username" id="asUsername">@aidensilva</div>
+        <div class="as-plan" id="asPlan">Free Plan</div>
+      </div>
+    </div>
+    <button class="as-close" onclick="closeAccountSidebar()" aria-label="Close sidebar">&times;</button>
+  </div>
+  <div class="as-body" id="asBody"></div>
+  <div class="as-footer">
+    <a class="as-footer-btn" href="account.html">View full profile &rarr;</a>
+    <button class="as-footer-btn muted" id="asLogout">Log out</button>
+  </div>
+</aside>
 
 <!-- ===== HERO ===== -->
 <section class="hero">
@@ -2131,6 +2314,162 @@ renderStudyHub();
 buildSubjectNav();
 updateMyListCount();
 document.getElementById('subjectNav').classList.add('show');
+
+// =====================================================================
+// === ACCOUNT SIDEBAR ===
+// =====================================================================
+// BACKEND: replace with authenticated user object from your auth provider
+const NEXO_MOCK_USER = {
+  name: "Aiden Silva",
+  username: "aidensilva",
+  email: "aiden@example.com",
+  avatarInitials: "AS",
+  avatarColor: "#2ea84c",
+  joinDate: "January 2025",
+  plan: "free",
+  streak: 7,
+  totalLessonsCompleted: 14,
+  totalQuizzesTaken: 9,
+  totalBooksBookmarked: 5,
+  avgQuizScore: 78,
+  subjects: [
+    { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 7, avgScore: 82 },
+    { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 5, avgScore: 74 },
+    { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 2, avgScore: 91 }
+  ],
+  recentActivity: [
+    { type: "lesson", label: "Completed: Demand, Supply & Equilibrium", subject: "Economics", time: "2 hours ago", icon: "check" },
+    { type: "quiz",   label: "Quiz passed: Business Organizations — 7/8", subject: "Business Studies", time: "Yesterday", icon: "quiz" },
+    { type: "lesson", label: "Started: Python — Basics", subject: "ICT", time: "2 days ago", icon: "start" },
+    { type: "book",   label: "Bookmarked: Atomic Habits", subject: "Books", time: "3 days ago", icon: "bookmark" },
+    { type: "quiz",   label: "Quiz passed: Introduction to Economics — 6/8", subject: "Economics", time: "4 days ago", icon: "quiz" }
+  ],
+  premium: { status: "not_subscribed", features: [], price: "$4.99 / month" }
+};
+
+const AS_ICONS = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+  start: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+  bookmark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'
+};
+const AS_COLORS = { check: 'var(--green)', quiz: 'var(--teal)', start: 'var(--amber)', bookmark: 'var(--purple)' };
+
+function renderAccountSidebar() {
+  const U = NEXO_MOCK_USER;
+
+  // Avatar button
+  const btn = document.getElementById('accountAvatarBtn');
+  btn.textContent = U.avatarInitials;
+  btn.style.background = U.avatarColor;
+  btn.style.color = '#060906';
+
+  // Sidebar header
+  document.getElementById('asAvatar').textContent = U.avatarInitials;
+  document.getElementById('asAvatar').style.background = U.avatarColor;
+  document.getElementById('asName').textContent = U.name;
+  document.getElementById('asUsername').textContent = '@' + U.username;
+  const planEl = document.getElementById('asPlan');
+  planEl.textContent = U.plan === 'premium' ? 'Premium' : 'Free Plan';
+  planEl.className = 'as-plan' + (U.plan === 'premium' ? ' premium' : '');
+
+  // Body content
+  const body = document.getElementById('asBody');
+
+  // Quick stats 2x2
+  const aIcons = {
+    streak: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+    lessons: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    quizzes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+    avg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'
+  };
+
+  body.innerHTML =
+    '<div class="as-section-title">Quick Stats</div>' +
+    '<div class="as-stats-grid">' +
+      '<div class="as-stat"><div class="as-stat-value" style="color:var(--green)">' + U.streak + '</div><div class="as-stat-label">day streak</div></div>' +
+      '<div class="as-stat"><div class="as-stat-value" style="color:var(--teal)">' + U.totalLessonsCompleted + '</div><div class="as-stat-label">lessons</div></div>' +
+      '<div class="as-stat"><div class="as-stat-value" style="color:var(--purple)">' + U.totalQuizzesTaken + '</div><div class="as-stat-label">quizzes</div></div>' +
+      '<div class="as-stat"><div class="as-stat-value" style="color:var(--amber)">' + U.avgQuizScore + '%</div><div class="as-stat-label">avg score</div></div>' +
+    '</div>' +
+    '<div class="as-section-title">Subject Progress</div>' +
+    '<div id="asSubjectProgress">' +
+      U.subjects.map(sub =>
+        '<div class="as-subject-row">' +
+          '<span class="ass-name">' + sub.name + '</span>' +
+          '<div class="ass-bar"><div class="ass-fill" style="background:' + sub.color + '" data-pct="' + (sub.completedLessons/sub.totalLessons*100) + '"></div></div>' +
+          '<span class="ass-frac">' + sub.completedLessons + '/' + sub.totalLessons + '</span>' +
+        '</div>'
+      ).join('') +
+    '</div>' +
+    '<div class="as-section-title" style="margin-top:0.8rem;">Recent Activity</div>' +
+    '<div id="asActivity">' +
+      U.recentActivity.slice(0, 3).map(a =>
+        '<div class="as-activity-item">' +
+          '<div class="aai-icon" style="background:' + AS_COLORS[a.icon] + '20;color:' + AS_COLORS[a.icon] + '">' + AS_ICONS[a.icon] + '</div>' +
+          '<span class="aai-label">' + a.label + '</span>' +
+          '<span class="aai-time">' + a.time + '</span>' +
+        '</div>'
+      ).join('') +
+    '</div>' +
+    '<div class="as-section-title" style="margin-top:0.8rem;">Quick Links</div>' +
+    '<div class="as-quick-links">' +
+      '<a class="as-quick-link" href="account.html#quizzes" aria-label="Quiz History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></a>' +
+      '<a class="as-quick-link" href="account.html#bookmarks" aria-label="Bookmarks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></a>' +
+      '<a class="as-quick-link" href="account.html#premium" aria-label="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></a>' +
+    '</div>';
+
+  // Animate progress bars
+  setTimeout(() => {
+    document.querySelectorAll('#asSubjectProgress .ass-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 300);
+}
+
+function toggleAccountSidebar() {
+  const sidebar = document.getElementById('accountSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const isOpen = sidebar.classList.contains('open');
+  if (isOpen) {
+    closeAccountSidebar();
+  } else {
+    openAccountSidebar();
+  }
+}
+
+function openAccountSidebar() {
+  document.getElementById('accountSidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAccountSidebar() {
+  document.getElementById('accountSidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Logout confirm
+document.getElementById('asLogout').addEventListener('click', function() {
+  if (confirm('Are you sure you want to log out?')) {
+    // BACKEND: connect to auth signOut()
+  }
+});
+
+// Render sidebar on load
+renderAccountSidebar();
+
+// Extend Escape key handler to close sidebar
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const quizOpen = document.getElementById('quizOverlay').classList.contains('open');
+    if (!quizOpen && document.getElementById('accountSidebar').classList.contains('open')) {
+      closeAccountSidebar();
+      e.preventDefault();
+    }
+  }
+});
 </script>
 </body>
 </html>
