@@ -220,7 +220,7 @@ Changes go live automatically after pushing to `main`. Make sure `.nojekyll` is 
 | **Lesson Completion Tracker** — Dot/pill on each lesson card cycles: Not started → In Progress → Done. Saves to localStorage. | Easy | Done |
 | **Quiz Best Score Badges** — Show "Best: 7/8" on lesson cards after a quiz is completed, pulled from existing localStorage quiz data. | Easy | Done |
 | **ICT Section + Terminal Component** — Add ICT as a new subject. Embed the nexo-terminal in programming lessons. Skulpt for Python execution. | Easy | Done |
-| **Theme Customiser** — Accent colour picker (green/teal/purple/amber), font size toggle, reduced-motion switch. All in localStorage. | Easy | Later |
+| **Theme Customiser** — Accent colour picker (green/teal/purple/amber), font size toggle, reduced-motion switch. All in localStorage. | Easy | Done |
 
 ## Phase 2 — Meaningful Features (half a day each)
 
