@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXO Terminal</title>
+<!-- Skulpt for Python execution -->
+<script src="https://skulpt.org/js/skulpt.min.js"></script>
+<script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+</head>
+<body style="margin:0;padding:0;background:#060906;">
+<div id="nexo-terminal-mount"></div>
+
+<!-- Load config from URL parameters or use defaults -->
+<script>
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const lessonId = params.get('lesson');
+  const lang = params.get('lang') || 'python';
+
+  // If lesson param is given, look up from challenge library
+  if (lessonId) {
+    const CHALLENGES = {
+      'py-hello-world': {
+        lang: 'python', title: 'Hello World',
+        challenge: 'Print "Hello, World!" to the screen.',
+        expectedOutput: 'Hello, World!',
+        hint: 'Use the print() function.',
+        starterCode: { python: 'print("Hello, World!")\n' }
+      },
+      'py-variables': {
+        lang: 'python', title: 'Variables',
+        challenge: 'Create variables for your name (string) and age (integer), then print both.',
+        expectedOutput: 'Name: Alice\nAge: 17',
+        hint: 'Remember: strings need quotes, integers do not.',
+        starterCode: { python: 'name = "Alice"\nage = 17\nprint("Name:", name)\nprint("Age:", age)\n' }
+      },
+      'py-input': {
+        lang: 'python', title: 'User Input',
+        challenge: 'Ask the user for two numbers and print their sum.',
+        expectedOutput: 'Enter first number: 5\nEnter second number: 3\nThe sum is: 8',
+        hint: 'input() returns a string — use int() to convert.',
+        starterCode: { python: 'a = int(input("Enter first number: "))\nb = int(input("Enter second number: "))\nprint("The sum is:", a + b)\n' }
+      },
+      'py-if-else': {
+        lang: 'python', title: 'If/Else',
+        challenge: 'Ask the user for a number. Print "Positive", "Negative", or "Zero".',
+        expectedOutput: 'Enter a number: -5\nNegative',
+        hint: 'You need three branches: if, elif, and else.',
+        starterCode: { python: 'num = int(input("Enter a number: "))\nif num > 0:\n    print("Positive")\nelif num < 0:\n    print("Negative")\nelse:\n    print("Zero")\n' }
+      },
+      'py-for-loop': {
+        lang: 'python', title: 'For Loop',
+        challenge: 'Print a multiplication table for 5 (5×1 to 5×10).',
+        expectedOutput: '5 x 1 = 5\n5 x 2 = 10\n...\n5 x 10 = 50',
+        hint: 'Use range(1, 11) inside your for loop.',
+        starterCode: { python: 'n = 5\nfor i in range(1, 11):\n    print(f"{n} x {i} = {n * i}")\n' }
+      },
+      'py-while-loop': {
+        lang: 'python', title: 'While Loop',
+        challenge: 'Keep asking the user for a password until they enter "nexo123".',
+        expectedOutput: 'Enter password: hello\nAccess denied.\nEnter password: nexo123\nAccess granted!',
+        hint: 'Use a while loop with a condition that checks the input.',
+        starterCode: { python: 'password = ""\nwhile password != "nexo123":\n    password = input("Enter password: ")\n    if password == "nexo123":\n        print("Access granted!")\n    else:\n        print("Access denied.")\n' }
+      },
+      'py-functions': {
+        lang: 'python', title: 'Functions',
+        challenge: 'Write a function called "greet" that takes a name and returns "Hello, [name]!"',
+        expectedOutput: 'Hello, Alice!',
+        hint: 'Define with def, use return, then call the function and print the result.',
+        starterCode: { python: 'def greet(name):\n    return f"Hello, {name}!"\n\nprint(greet("Alice"))\n' }
+      },
+      'psc-variables': {
+        lang: 'pseudocode', title: 'Pseudocode Variables',
+        challenge: 'Declare two INTEGER variables, assign values, and OUTPUT their sum.',
+        expectedOutput: 'Sum: 15',
+        hint: 'Use DECLARE, ←, and OUTPUT keywords.',
+        starterCode: { pseudocode: 'BEGIN\n  DECLARE a : INTEGER\n  DECLARE b : INTEGER\n  a ← 7\n  b ← 8\n  OUTPUT "Sum: ", a + b\nEND' }
+      },
+      'psc-loop': {
+        lang: 'pseudocode', title: 'Pseudocode Loop',
+        challenge: 'Write a FOR loop that outputs numbers 1 to 5.',
+        expectedOutput: '1\n2\n3\n4\n5',
+        hint: 'FOR i ← 1 TO 5 / OUTPUT i / NEXT i',
+        starterCode: { pseudocode: 'BEGIN\n  FOR i ← 1 TO 5\n    OUTPUT i\n  NEXT i\nEND' }
+      }
+    };
+
+    const ch = CHALLENGES[lessonId];
+    if (ch) {
+      window.NEXO_TERMINAL_CONFIG = {
+        lang: ch.lang,
+        lesson: {
+          title: ch.title,
+          challenge: ch.challenge,
+          expectedOutput: ch.expectedOutput,
+          hint: ch.hint,
+          starterCode: {
+            python: ch.starterCode.python || '# Write your code here\nprint("Hello")\n',
+            pseudocode: ch.starterCode.pseudocode || 'BEGIN\n  OUTPUT "Hello"\nEND',
+            javascript: ch.starterCode.javascript || '// Write your code here\nconsole.log("Hello");\n'
+          }
+        }
+      };
+    } else {
+      window.NEXO_TERMINAL_CONFIG = {
+        lang: lang,
+        lesson: {
+          title: params.get('title') || 'Coding Challenge',
+          challenge: params.get('challenge') || 'Write your solution here.',
+          expectedOutput: params.get('expected') || '',
+          hint: params.get('hint') || '',
+          starterCode: {
+            python: params.get('code_py') || '# Write your code here\nprint("Hello, World!")\n',
+            pseudocode: params.get('code_psc') || 'BEGIN\n  OUTPUT "Hello"\nEND',
+            javascript: params.get('code_js') || '// Write your code here\nconsole.log("Hello");\n'
+          }
+        }
+      };
+    }
+  }
+})();
+</script>
+<script src="nexo-terminal-embed.js"></script>
+</body>
+</html>

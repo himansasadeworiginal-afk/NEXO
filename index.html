@@ -934,9 +934,9 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
     and dive into a library of book summaries. Everything in one self-contained page.
   </p>
   <div class="hero-stats">
-    <div class="hs-item"><strong class="countup" data-target="20">0</strong><div class="hs-label">Lessons</div></div>
+    <div class="hs-item"><strong class="countup" data-target="22">0</strong><div class="hs-label">Lessons</div></div>
     <div class="hs-item"><strong class="countup" data-target="24">0</strong><div class="hs-label">Books</div></div>
-    <div class="hs-item"><strong class="countup" data-target="2">0</strong><div class="hs-label">Subjects</div></div>
+    <div class="hs-item"><strong class="countup" data-target="3">0</strong><div class="hs-label">Subjects</div></div>
     <div class="hs-item"><strong class="countup" data-target="10">0</strong><div class="hs-label">k+ Lines of Notes</div></div>
   </div>
   <a class="cta-btn" href="#study-hub" onclick="switchTab('study')">
@@ -1119,6 +1119,15 @@ const SUBJECTS_DATA = [
       {id:7, title:'Insurance', desc:'Insurance principles, policy types, risk management, and the insurance industry\'s role.', path:'Study Notes/Business/7/lesson7.html'},
       {id:8, title:'Communication', desc:'Business communication methods, written and oral, technology, and presentation skills.', path:'Study Notes/Business/8/lesson8.html'}
     ]
+  },
+  {
+    id: 'ict',
+    name: 'ICT',
+    accent: 'purple',
+    lessons: [
+      {id:1, title:'Introduction to Python Programming', desc:'Fundamentals of Python — variables, data types, input/output, and your first programs.', path:'Study Notes/ICT/1/index.html'},
+      {id:2, title:'Control Flow: Conditionals & Loops', desc:'Decision-making with if/else and repetition with for/while loops in Python.', path:'Study Notes/ICT/2/index.html'}
+    ]
   }
   // == TODO: Add future subjects here ==
   // { id: 'new-subject', name: 'New Subject', accent: 'purple', lessons: [...] }
@@ -1276,12 +1285,34 @@ const QUIZ_DATA = {
       {q:'Placeholder question for Insurance #3', options:['A','B','C','D'], answer:0},
       {q:'Placeholder question for Insurance #4', options:['A','B','C','D'], answer:0}
     ],
-    8: [
+     8: [
       /* TODO: Replace with real questions */
       {q:'Placeholder question for Communication #1', options:['A','B','C','D'], answer:0},
       {q:'Placeholder question for Communication #2', options:['A','B','C','D'], answer:0},
       {q:'Placeholder question for Communication #3', options:['A','B','C','D'], answer:0},
       {q:'Placeholder question for Communication #4', options:['A','B','C','D'], answer:0}
+    ]
+  },
+  ict: {
+    1: [
+      {q:'What function is used to display output in Python?', options:['output()','display()','print()','write()'], answer:2, explain:'print() is Python\'s built-in function for displaying output to the console.'},
+      {q:'Which of the following is a valid variable name in Python?', options:['2name','my-name','my_name','my name'], answer:2, explain:'Variable names can include underscores but cannot start with a number or contain spaces/hyphens.'},
+      {q:'What type does input() always return?', options:['Integer','Float','String','List'], answer:2, explain:'input() always returns a string. Use int() or float() to convert to numeric types.'},
+      {q:'Which symbol is used for comments in Python?', options:['//','/* */','#','--'], answer:2, explain:'Python uses # for single-line comments.'},
+      {q:'What will print(type(3.14)) output?', options:['<class \'int\'>','<class \'float\'>','<class \'str\'>','<class \'bool\'>'], answer:1, explain:'3.14 is a floating-point number, so type() returns <class \'float\'>.'},
+      {q:'Which of these is NOT a Python data type?', options:['int','float','char','bool'], answer:2, explain:'Python does not have a char type — single characters are just strings of length 1.'},
+      {q:'What does the expression 17 % 5 evaluate to?', options:['2','3','4','5'], answer:0, explain:'% is the modulo operator — 17 divided by 5 is 3 remainder 2, so 17 % 5 = 2.'},
+      {q:'What is the correct way to convert "42" to an integer?', options:['integer("42")','int("42")','toInt("42")','str("42")'], answer:1, explain:'Use int() to convert a string to an integer: int("42") → 42.'}
+    ],
+    2: [
+      {q:'What keyword starts a conditional block in Python?', options:['when','if','switch','case'], answer:1, explain:'Python uses if, elif, and else for conditional logic.'},
+      {q:'What is the correct indentation for Python code blocks?', options:['2 spaces','4 spaces','1 tab','Any of the above, but consistent'], answer:3, explain:'Python requires consistent indentation. The standard is 4 spaces, but any consistent indentation works.'},
+      {q:'What does range(1, 6) generate?', options:['1,2,3,4,5,6','1,2,3,4,5','0,1,2,3,4,5','0,1,2,3,4'], answer:1, explain:'range(1,6) goes from 1 to 5 (stop is exclusive).'},
+      {q:'Which operator checks if two values are equal in Python?', options:['=','==','!=','==='], answer:1, explain:'= is assignment, == is equality comparison.'},
+      {q:'How do you exit a loop immediately?', options:['stop','exit','break','return'], answer:2, explain:'The break statement exits the current loop immediately.'},
+      {q:'What is the output of: print(not True)', options:['True','False','None','Error'], answer:1, explain:'not reverses the boolean value: not True = False.'},
+      {q:'Which loop is guaranteed to run at least once?', options:['for','while','do-while','None of the above'], answer:3, explain:'Python does not have a do-while loop. A while loop may not run at all if the condition is initially False.'},
+      {q:'What will print(5 > 3 and 2 > 4) output?', options:['True','False','Error','5'], answer:1, explain:'5 > 3 is True, but 2 > 4 is False. True and False = False.'}
     ]
   }
 };
