@@ -629,6 +629,19 @@ body::before{
 .card.visible{
   animation:appear 0.45s ease forwards;
 }
+.bookmark-btn{
+  position:absolute;top:0.7rem;right:0.8rem;
+  background:none;border:none;color:var(--text-muted);
+  cursor:pointer;padding:4px;z-index:2;opacity:0;
+  transition:all var(--transition);line-height:0;
+  border-radius:2px;
+}
+.card:hover .bookmark-btn{opacity:0.5;}
+.bookmark-btn:hover{opacity:1 !important;color:var(--amber) !important;}
+.bookmark-btn.bookmarked{opacity:1;color:var(--amber);}
+.bookmark-btn.bookmarked:hover{color:var(--amber-light) !important;}
+#tab-mylist .bookmark-btn{opacity:1;}
+
 .card .card-accent{
   position:absolute;top:0;left:0;right:0;
   height:2px;
@@ -887,6 +900,8 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 @media(max-width:700px){
   .container{padding:1.5rem 1rem;}
   .grid{grid-template-columns:1fr;}
+  .bookmark-btn{opacity:1;}
+  #tab-mylist .bookmark-btn{opacity:1;}
   .controls-row{flex-direction:column;align-items:stretch;}
   .search-wrapper{max-width:100%;}
   .hero h1{font-size:clamp(2.5rem, 15vw, 4rem);}
@@ -958,6 +973,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <div class="tab-nav">
     <button class="tab-btn active" data-tab="study" onclick="switchTab('study')">Study Hub</button>
     <button class="tab-btn" data-tab="books" onclick="switchTab('books')">Book Library</button>
+    <button class="tab-btn" data-tab="mylist" onclick="switchTab('mylist')">My List (<span id="mylistCount">0</span>)</button>
   </div>
 </div>
 
@@ -1012,6 +1028,30 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
       </div>
     </div>
     <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<!-- ===== MY LIST TAB ===== -->
+<div class="tab-content" id="tab-mylist">
+  <div class="section-label" style="padding-top:2rem;">
+    <h2>My Reading List</h2>
+    <div class="label-line"></div>
+    <div class="label-sub">Bookmarked books saved for later</div>
+  </div>
+  <div class="container">
+    <div class="toolbar">
+      <div class="result-count" id="mylistCountLabel">0 bookmarked</div>
+      <div class="layout-toggle">
+        <button class="layout-btn active" data-layout="grid" onclick="setMyListLayout('grid')">Grid</button>
+        <button class="layout-btn" data-layout="list" onclick="setMyListLayout('list')">List</button>
+      </div>
+    </div>
+    <div class="grid" id="mylistGrid"></div>
+    <div id="mylistEmpty" style="text-align:center;padding:4rem 0;color:var(--text-muted);display:none;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:1rem;"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      <p style="font-size:1.1rem;margin-bottom:0.5rem;">Your list is empty</p>
+      <p style="font-size:0.85rem;">Browse the Book Library and click the bookmark icon on any book to save it here.</p>
+    </div>
   </div>
 </div>
 
@@ -1661,6 +1701,86 @@ function switchTab(tab) {
   } else {
     document.getElementById('subjectNav').classList.remove('show');
   }
+  if (tab === 'mylist') {
+    renderMyList();
+  }
+}
+
+// =====================================================================
+// === BOOKMARKS / MY LIST ===
+// =====================================================================
+function getBookmarks() {
+  try { return JSON.parse(localStorage.getItem('nexo_bookmarks')) || []; } catch(e) { return []; }
+}
+function setBookmarks(ids) {
+  localStorage.setItem('nexo_bookmarks', JSON.stringify(ids));
+}
+function toggleBookmark(id) {
+  let bks = getBookmarks();
+  const idx = bks.indexOf(id);
+  if (idx > -1) bks.splice(idx, 1);
+  else bks.push(id);
+  setBookmarks(bks);
+  renderBooks();
+  renderMyList();
+  updateMyListCount();
+}
+function isBookmarked(id) {
+  return getBookmarks().indexOf(id) > -1;
+}
+function updateMyListCount() {
+  const c = getBookmarks().length;
+  const el = document.getElementById('mylistCount');
+  if (el) el.textContent = c;
+}
+
+let mylistLayout = 'grid';
+function setMyListLayout(l) {
+  mylistLayout = l;
+  document.querySelectorAll('#tab-mylist .layout-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('#tab-mylist .layout-btn[data-layout="' + l + '"]').classList.add('active');
+  document.getElementById('mylistGrid').classList.toggle('list', l === 'list');
+  renderMyList();
+}
+function renderMyList() {
+  const grid = document.getElementById('mylistGrid');
+  const empty = document.getElementById('mylistEmpty');
+  const countLabel = document.getElementById('mylistCountLabel');
+  const bks = getBookmarks();
+  grid.innerHTML = '';
+
+  if (bks.length === 0) {
+    empty.style.display = 'block';
+    if (countLabel) countLabel.textContent = '0 bookmarked';
+    return;
+  }
+  empty.style.display = 'none';
+  if (countLabel) countLabel.textContent = bks.length + ' bookmarked';
+
+  BOOKS_DATA.filter(book => bks.indexOf(book.id) > -1).forEach(book => {
+    const card = document.createElement('a');
+    card.className = 'card visible';
+    card.href = book.path;
+    card.setAttribute('data-filter', book.filter);
+    card.innerHTML = `
+      <div class="card-accent"></div>
+      <div class="shimmer-line"></div>
+      <span class="bookmark-btn bookmarked" onclick="event.preventDefault();event.stopPropagation();toggleBookmark('${book.id}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </span>
+      <div class="card-top">
+        <h3>${book.title}</h3>
+        <span class="badge ${book.filter}">${book.filter}</span>
+      </div>
+      <div class="author">${book.author}</div>
+      <div class="desc">${book.desc}</div>
+      <div class="card-footer">
+        <span class="open-hint">Open <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        <span class="card-num">${book.id}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
 }
 
 // =====================================================================
@@ -1686,6 +1806,7 @@ function renderBooks() {
     const show = matchFilter && matchSearch;
     if (show) visible++;
 
+    const bm = isBookmarked(book.id);
     const card = document.createElement('a');
     card.className = 'card' + (show ? '' : ' hidden');
     card.href = book.path;
@@ -1693,6 +1814,9 @@ function renderBooks() {
     card.innerHTML = `
       <div class="card-accent"></div>
       <div class="shimmer-line"></div>
+      <span class="bookmark-btn${bm ? ' bookmarked' : ''}" onclick="event.preventDefault();event.stopPropagation();toggleBookmark('${book.id}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="${bm ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </span>
       <div class="card-top">
         <h3>${book.title}</h3>
         <span class="badge ${book.filter}">${book.filter}</span>
@@ -2005,6 +2129,7 @@ document.addEventListener('mousemove', e => {
 // =====================================================================
 renderStudyHub();
 buildSubjectNav();
+updateMyListCount();
 document.getElementById('subjectNav').classList.add('show');
 </script>
 </body>

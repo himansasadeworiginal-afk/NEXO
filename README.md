@@ -212,15 +212,43 @@ git push origin main
 
 Changes go live automatically after pushing to `main`. Make sure `.nojekyll` is present at the root for proper file serving.
 
-## Planned Enhancements
+## Phase 1 — Quick Wins
 
-- Replace placeholder quiz questions with real questions (Econ L3-12, Business L3-8)
-- Add new subjects (Psychology, Philosophy, Power, Finance as structured subjects with lessons)
-- More ICT lessons (functions, lists, OOP, algorithms, file handling)
-- ICT Terminal: add more pre-loaded challenges, auto-completion, test runner mode
-- Keyboard shortcut cheat sheet overlay in Study Hub
-- Dark/light theme toggle
-- Lesson bookmarking / favorites
+| Task | Difficulty | Status |
+|------|-----------|--------|
+| **Bookmarks & Reading List** — Bookmark icon on every card, saved to localStorage. "My List" tab in the hub nav. | Easy | Done |
+| **Lesson Completion Tracker** — Dot/pill on each lesson card cycles: Not started → In Progress → Done. Saves to localStorage. | Easy | Done |
+| **Quiz Best Score Badges** — Show "Best: 7/8" on lesson cards after a quiz is completed, pulled from existing localStorage quiz data. | Easy | Done |
+| **ICT Section + Terminal Component** — Add ICT as a new subject. Embed the nexo-terminal in programming lessons. Skulpt for Python execution. | Easy | Done |
+| **Theme Customiser** — Accent colour picker (green/teal/purple/amber), font size toggle, reduced-motion switch. All in localStorage. | Easy | Later |
+
+## Phase 2 — Meaningful Features (half a day each)
+
+| Task | Difficulty | Status |
+|------|-----------|--------|
+| **Glossary System** — Per-subject keyword lists with inline tooltip popovers on lesson pages. Standalone glossary page per subject. | Medium | Pending |
+| **Subject Progress Bars** — Live progress bars on each subject panel in the Study Hub, updating as lessons are marked done. | Medium | Pending |
+| **Flashcard System** — CSS flip cards with Easy/Hard/Again buttons. FLASHCARDS array per lesson. Deck overview with due count. | Medium | Pending |
+| **Study Dashboard Home Screen** — Personalised home for returning users: streak, last lesson, completion rings per subject, quiz scores summary. | Medium | Pending |
+| **Timed Exam Mode** — User picks subject + time limit. Randomised questions, no mid-exam feedback, full results report at the end. | Medium | Pending |
+| **Past Paper / Structured Questions** — Written practice questions with mark allocations. Textarea for answers, "Show model answer" reveal, self-mark checklist. | Medium | Pending |
+| **XP & Achievement Badges** — Earn XP for completing lessons, acing quizzes, streaks. Badge collection shown in the Study Dashboard. | Medium | Pending |
+
+## Phase 3 — Content Work (writing-heavy)
+
+| Task | Difficulty | Status |
+|------|-----------|--------|
+| **Fill All Quiz Placeholders** — Replace TODO placeholder questions with real curriculum questions across all Economics and Business lessons. | Content | Pending |
+| **Add ICT Lesson Notes Content** — Write the actual lesson HTML pages for ICT — algorithms, data types, networks, hardware, etc. | Content | Pending |
+| **Populate Glossary Data** — Write the GLOSSARY_DATA arrays for Economics, Business, and ICT — terms, definitions, lesson references. | Content | Pending |
+
+## Phase 4 — Hard / Future (full day+)
+
+| Task | Difficulty | Status |
+|------|-----------|--------|
+| **Study Planner** — User sets an exam date + subjects. NEXO generates a day-by-day revision schedule covering all lessons in time. | Hard | Pending |
+| **Concept Map Viewer** — Interactive SVG node-link diagrams per lesson. Clickable nodes, pan/zoom, defined as JSON edge lists. | Hard | Pending |
+| **Global Cmd+K Search** — Spotlight-style overlay searching all lessons, glossary, books. Arrow-key navigation, grouped results. Build last — needs full content first. | Hardest | Pending |
 
 ## Credits
 
