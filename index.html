@@ -898,25 +898,17 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 
 /* ===== RESPONSIVE ===== */
 /* ===== THEME CUSTOMISER ===== */
-.theme-toggle-btn{
-  position:fixed;top:1rem;right:3.2rem;z-index:500;
-  width:36px;height:36px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;border:1px solid var(--border);
-  background:var(--surface);color:var(--text-dim);
-  transition:all var(--transition);
-  box-shadow:0 2px 12px rgba(0,0,0,0.4);
+.theme-nav-btn{
+  margin-left:auto;font-size:1.1rem;padding:14px 16px;
+  cursor:pointer;opacity:0.6;transition:opacity 0.2s;
 }
-.theme-toggle-btn:hover{
-  border-color:var(--green-dim);color:var(--text);
-  background:var(--surface-hover);
-}
-.theme-toggle-btn svg{width:16px;height:16px;}
+.theme-nav-btn:hover{opacity:1;}
 
 .theme-panel{
-  position:fixed;top:4.2rem;right:1rem;z-index:501;
+  position:absolute;top:100%;right:0;z-index:100;
   width:240px;background:var(--surface);
   border:1px solid var(--border);
+  border-top:none;
   box-shadow:0 12px 40px rgba(0,0,0,0.6);
   padding:1rem 1.2rem;
   opacity:0;pointer-events:none;
@@ -1160,8 +1152,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   .quiz-modal .quiz-option{padding:10px 12px;font-size:0.85rem;}
   .account-sidebar{width:100%;}
   .account-avatar-btn{top:0.6rem;right:0.6rem;width:32px;height:32px;font-size:0.65rem;}
-  .theme-toggle-btn{top:0.6rem;right:3rem;width:32px;height:32px;}
-  .theme-panel{top:3.8rem;right:0.5rem;width:220px;}
+  .theme-panel{width:220px;right:0.5rem;}
 }
 </style>
 </head>
@@ -1177,38 +1168,6 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 <!-- ===== ACCOUNT AVATAR BUTTON ===== -->
 <!-- BACKEND: show this button only when user is logged in, hide otherwise -->
 <a class="account-avatar-btn" id="accountAvatarBtn" style="background:#2ea84c;color:#060906;" href="#" onclick="event.preventDefault();toggleAccountSidebar()">AS</a>
-
-<!-- ===== THEME TOGGLE ===== -->
-<button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleThemePanel()" aria-label="Theme settings">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-</button>
-
-<!-- ===== THEME PANEL ===== -->
-<div class="theme-panel" id="themePanel">
-  <div class="tp-row">
-    <div class="tp-label">Accent Color</div>
-    <div class="tp-colors">
-      <button class="tp-color active" data-accent="green" style="background:#2ea84c" onclick="setAccent('green')" aria-label="Green accent"></button>
-      <button class="tp-color" data-accent="teal" style="background:#2aaf8f" onclick="setAccent('teal')" aria-label="Teal accent"></button>
-      <button class="tp-color" data-accent="purple" style="background:#8a5abe" onclick="setAccent('purple')" aria-label="Purple accent"></button>
-      <button class="tp-color" data-accent="amber" style="background:#d4a040" onclick="setAccent('amber')" aria-label="Amber accent"></button>
-    </div>
-  </div>
-  <div class="tp-row">
-    <div class="tp-label">Font Size</div>
-    <div class="tp-font-row">
-      <button class="tp-font-btn" onclick="adjustFontSize(-1)" aria-label="Decrease font size">A−</button>
-      <span class="tp-font-size" id="tpFontSize">14</span>
-      <button class="tp-font-btn" onclick="adjustFontSize(1)" aria-label="Increase font size">A+</button>
-    </div>
-  </div>
-  <div class="tp-row">
-    <div class="tp-toggle">
-      <span class="tp-label" style="margin-bottom:0">Reduced Motion</span>
-      <div class="tp-switch" id="tpReducedMotion" onclick="toggleReducedMotion()" role="switch" aria-label="Reduced motion toggle"></div>
-    </div>
-  </div>
-</div>
 
 <!-- ===== ACCOUNT SIDEBAR OVERLAY ===== -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeAccountSidebar()"></div>
@@ -1264,11 +1223,38 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 </nav>
 
 <!-- ===== TAB NAVIGATION ===== -->
-<div class="container" style="padding-bottom:0;">
+<div class="container" style="padding-bottom:0;position:relative;">
   <div class="tab-nav">
     <button class="tab-btn active" data-tab="study" onclick="switchTab('study')">Study Hub</button>
     <button class="tab-btn" data-tab="books" onclick="switchTab('books')">Book Library</button>
     <button class="tab-btn" data-tab="mylist" onclick="switchTab('mylist')">My List (<span id="mylistCount">0</span>)</button>
+    <button class="tab-btn theme-nav-btn" id="themeToggleBtn" onclick="toggleThemePanel()" aria-label="Theme settings" title="Theme">🎨</button>
+  </div>
+  <!-- ===== THEME PANEL ===== -->
+  <div class="theme-panel" id="themePanel">
+    <div class="tp-row">
+      <div class="tp-label">Accent Color</div>
+      <div class="tp-colors">
+        <button class="tp-color active" data-accent="green" style="background:#2ea84c" onclick="setAccent('green')" aria-label="Green accent"></button>
+        <button class="tp-color" data-accent="teal" style="background:#2aaf8f" onclick="setAccent('teal')" aria-label="Teal accent"></button>
+        <button class="tp-color" data-accent="purple" style="background:#8a5abe" onclick="setAccent('purple')" aria-label="Purple accent"></button>
+        <button class="tp-color" data-accent="amber" style="background:#d4a040" onclick="setAccent('amber')" aria-label="Amber accent"></button>
+      </div>
+    </div>
+    <div class="tp-row">
+      <div class="tp-label">Font Size</div>
+      <div class="tp-font-row">
+        <button class="tp-font-btn" onclick="adjustFontSize(-1)" aria-label="Decrease font size">A−</button>
+        <span class="tp-font-size" id="tpFontSize">14</span>
+        <button class="tp-font-btn" onclick="adjustFontSize(1)" aria-label="Increase font size">A+</button>
+      </div>
+    </div>
+    <div class="tp-row">
+      <div class="tp-toggle">
+        <span class="tp-label" style="margin-bottom:0">Reduced Motion</span>
+        <div class="tp-switch" id="tpReducedMotion" onclick="toggleReducedMotion()" role="switch" aria-label="Reduced motion toggle"></div>
+      </div>
+    </div>
   </div>
 </div>
 
