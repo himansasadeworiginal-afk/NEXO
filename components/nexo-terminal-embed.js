@@ -1746,13 +1746,15 @@ NXT.mount = function(containerId) {
   }
 };
 
-// Auto-mount if container exists
-if (document.getElementById('nexo-terminal-mount')) {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() { NXT.mount('nexo-terminal-mount'); });
-  } else {
-    NXT.mount('nexo-terminal-mount');
-  }
+// Auto-mount when container appears (handles div before or after script tag)
+function tryMount() {
+  var el = document.getElementById('nexo-terminal-mount');
+  if (el) NXT.mount('nexo-terminal-mount');
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', tryMount);
+} else {
+  tryMount();
 }
 
 // Expose for manual mounting
