@@ -11,9 +11,9 @@
   --bg:#060906;
   --surface:#0c110c;
   --surface-hover:#141c14;
-  --text:#d8e8d8;
-  --text-dim:#607a60;
-  --text-muted:#3a4f3a;
+  --text:#e0f0e0;
+  --text-dim:#90b090;
+  --text-muted:#6a8a6a;
   --green:#2ea84c;
   --green-light:#4cd96b;
   --green-dim:#1a5c2a;
@@ -279,7 +279,7 @@ body{
 .search-no-results p{margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted);}
 
 /* === LIGHT MODE === */
-.light-mode{--bg:#f4f7f4;--surface:#e8efe8;--surface-hover:#dce6dc;--text:#1a3a1a;--text-dim:#4a6a4a;--text-muted:#7a9a7a;--border:#c8d8c8}
+.light-mode{--bg:#f5f8f5;--surface:#eaf1ea;--surface-hover:#dfe8df;--text:#1a3a1a;--text-dim:#4a7a4a;--text-muted:#7aaa7a;--border:#c8d8c8}
 .light-mode .navbar{background:rgba(244,247,244,0.85);border-bottom-color:var(--border)}
 .light-mode .hero .version-badge:hover{background:var(--border)}
 .light-mode .navbar-links .navbar-link.active::after{background:var(--green)}
@@ -1848,14 +1848,13 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <h1>NEXO</h1>
   <p class="subtitle" id="typewriter"></p>
   <p class="desc">
-    A curated interactive learning platform — explore structured lessons, take quizzes,
-    and dive into a library of book summaries. Everything in one self-contained page.
+    Economics &bull; Business Studies &bull; ICT &bull; 24 Book Summaries
   </p>
   <div class="hero-stats">
     <div class="hs-item"><strong class="countup" data-target="22">0</strong><div class="hs-label">Lessons</div></div>
-    <div class="hs-item"><strong class="countup" data-target="24">0</strong><div class="hs-label">Books</div></div>
+    <div class="hs-item"><strong class="countup" data-target="24">0</strong><div class="hs-label">Book Summaries</div></div>
     <div class="hs-item"><strong class="countup" data-target="3">0</strong><div class="hs-label">Subjects</div></div>
-    <div class="hs-item"><strong class="countup" data-target="10">0</strong><div class="hs-label">k+ Lines of Notes</div></div>
+    <div class="hs-item"><strong class="countup" data-target="10">0</strong><div class="hs-label">Practice Quizzes</div></div>
   </div>
   <a class="cta-btn" href="#study-hub" onclick="switchTab('study')">
     Start Learning
@@ -1876,8 +1875,8 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <div class="tab-nav">
     <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</button>
     <button class="tab-btn" data-tab="study" onclick="switchTab('study')">Study Hub</button>
-    <button class="tab-btn" data-tab="books" onclick="switchTab('books')">Book Library</button>
-    <button class="tab-btn" data-tab="mylist" onclick="switchTab('mylist')">My List (<span id="mylistCount">0</span>)</button>
+    <button class="tab-btn" data-tab="books" onclick="switchTab('books')">Library</button>
+    <button class="tab-btn" data-tab="mylist" onclick="switchTab('mylist')">Bookmarks (<span id="mylistCount">0</span>)</button>
     <button class="tab-btn" data-tab="glossary" onclick="switchTab('glossary')">Glossary</button>
   </div>
 </div>
@@ -1887,7 +1886,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <div class="section-label" style="padding-top:2rem;">
     <h2>Dashboard</h2>
     <div class="label-line"></div>
-    <div class="label-sub">Your Learning Overview</div>
+    <div class="label-sub">Your Learning Hub</div>
   </div>
   <div class="container" id="dashboard-container" style="scroll-margin-top:52px;">
     <div id="dashboardContent"></div>
@@ -1899,7 +1898,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <div class="section-label" style="padding-top:2rem;">
     <h2>Study Hub</h2>
     <div class="label-line"></div>
-    <div class="label-sub">Structured Lessons Across Subjects</div>
+    <div class="label-sub">Economics &bull; Business Studies &bull; ICT</div>
   </div>
   <div class="container" id="study-hub" style="scroll-margin-top:52px;">
     <div class="study-controls">
@@ -1922,7 +1921,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <div class="section-label" style="padding-top:2rem;">
     <h2>Book Library</h2>
     <div class="label-line"></div>
-    <div class="label-sub">24 Interactive Book Summaries</div>
+    <div class="label-sub">24 Summaries &mdash; Philosophy, Psychology, Power, Finance, Productivity</div>
   </div>
   <div class="container" style="scroll-margin-top:52px;">
     <div class="controls-row">
@@ -1951,9 +1950,9 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 <!-- ===== MY LIST TAB ===== -->
 <div class="tab-content" id="tab-mylist">
   <div class="section-label" style="padding-top:2rem;">
-    <h2>My Reading List</h2>
+    <h2>Bookmarks</h2>
     <div class="label-line"></div>
-    <div class="label-sub">Bookmarked books saved for later</div>
+    <div class="label-sub">Saved Books &amp; Lessons</div>
   </div>
   <div class="container">
     <div class="toolbar">
@@ -1977,7 +1976,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <div class="section-label" style="padding-top:2rem;">
     <h2>Glossary</h2>
     <div class="label-line"></div>
-    <div class="label-sub">Key Terms Across All Subjects</div>
+    <div class="label-sub">Economics &bull; Business Studies &bull; ICT</div>
   </div>
   <div class="container" style="scroll-margin-top:52px;">
     <div class="glossary-controls">
@@ -2108,7 +2107,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <div class="footer-inner">
     <div class="footer-logo">NEXO 2.0</div>
     <div class="footer-info">
-      Interactive Learning Platform <span>|</span> Lessons + Quizzes + Book Summaries <span>|</span> Open index.html to begin
+      Interactive Learning Platform <span>|</span> Lessons &bull; Quizzes &bull; Book Summaries <span>|</span> NEXO 2.0
     </div>
   </div>
 </footer>
@@ -3078,7 +3077,7 @@ layoutBtns.forEach(btn => {
 // === TYPEWRITER EFFECT ===
 // =====================================================================
 (function() {
-  const text = 'Turn Books and Notes Into Interactive Pages';
+  const text = 'Master Any Subject — Lessons, Quizzes & Book Summaries';
   const el = document.getElementById('typewriter');
   let i = 0;
   function type() {

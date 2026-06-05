@@ -109,6 +109,14 @@ body::before{
   pointer-events:none;z-index:0;
 }
 
+/* === LIGHT MODE === */
+.light-mode{--bg:#f5f8f5;--surface:#eaf1ea;--surface-hover:#dfe8df;--text:#1a3a1a;--text-dim:#4a7a4a;--text-muted:#7aaa7a;--border:#c8d8c8}
+.light-mode .sidebar{background:#eaf1ea;border-right-color:var(--border)}
+.light-mode .sidebar-nav-btn:hover{background:#dfe8df}
+.light-mode .stat-card,.light-mode .subject-progress-row,.light-mode .progress-subject-card,.light-mode .qs-card,.light-mode .bm-card,.light-mode .activity-item,.light-mode .summary-row{background:#eaf1ea}
+.light-mode .stat-card:hover,.light-mode .subject-progress-row:hover,.light-mode .progress-subject-card:hover{background:#dfe8df}
+.light-mode .mobile-header,.light-mode .mobile-tabs{background:#eaf1ea}
+
 /* ===== LAYOUT ===== */
 .page-wrap{
   display:flex;min-height:100vh;position:relative;z-index:1;
@@ -642,11 +650,11 @@ body::before{
       </button>
       <button class="sidebar-nav-btn" data-section="progress" onclick="switchSection('progress')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        My Progress
+        Progress
       </button>
       <button class="sidebar-nav-btn" data-section="quizzes" onclick="switchSection('quizzes')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        Quiz History
+        Quizzes
       </button>
       <button class="sidebar-nav-btn" data-section="bookmarks" onclick="switchSection('bookmarks')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
@@ -654,7 +662,7 @@ body::before{
       </button>
       <button class="sidebar-nav-btn" data-section="activity" onclick="switchSection('activity')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Activity Feed
+        Activity
       </button>
       <button class="sidebar-nav-btn" data-section="premium" onclick="switchSection('premium')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -662,6 +670,10 @@ body::before{
       </button>
     </nav>
     <div class="sidebar-bottom">
+      <button class="sidebar-bottom-btn" id="themeToggleBtn" onclick="toggleBgMode()">
+        <svg id="themeToggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <span id="themeToggleLabel">Dark Mode</span>
+      </button>
       <a class="sidebar-bottom-btn" href="index.html">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Back to NEXO
@@ -685,7 +697,7 @@ body::before{
 
   <!-- ===== MOBILE TABS ===== -->
   <div class="mobile-tabs" id="mobileTabs">
-    <button class="mobile-tab active" data-section="overview" onclick="switchSection('overview')">Overview</button>
+    <button class="mobile-tab active" data-section="overview" onclick="switchSection('overview')">Dashboard</button>
     <button class="mobile-tab" data-section="progress" onclick="switchSection('progress')">Progress</button>
     <button class="mobile-tab" data-section="quizzes" onclick="switchSection('quizzes')">Quizzes</button>
     <button class="mobile-tab" data-section="bookmarks" onclick="switchSection('bookmarks')">Bookmarks</button>
@@ -699,7 +711,7 @@ body::before{
     <!-- SECTION: Overview -->
     <div class="section active" id="section-overview">
       <h1 class="page-heading" id="ovHeading">Welcome back, Aiden Silva</h1>
-      <p class="page-subheading">Here's your study snapshot.</p>
+      <p class="page-subheading">Your learning dashboard at a glance.</p>
 
       <div class="stats-grid" id="ovStats"></div>
 
@@ -714,7 +726,7 @@ body::before{
     <!-- SECTION: My Progress -->
     <div class="section" id="section-progress">
       <h1 class="page-heading">My Progress</h1>
-      <p class="page-subheading">Full breakdown across all subjects.</p>
+      <p class="page-subheading">Economics &bull; Business Studies &bull; ICT</p>
       <div id="progressCards"></div>
       <div class="summary-row" id="progressSummary"></div>
     </div>
@@ -722,7 +734,7 @@ body::before{
     <!-- SECTION: Quiz History -->
     <div class="section" id="section-quizzes">
       <h1 class="page-heading">Quiz History</h1>
-      <p class="page-subheading">All your quiz attempts.</p>
+      <p class="page-subheading">Track your scores across all subjects.</p>
       <div class="quiz-summary-cards" id="quizSummaryCards"></div>
       <div id="quizHistoryBody"></div>
     </div>
@@ -730,7 +742,7 @@ body::before{
     <!-- SECTION: Bookmarks -->
     <div class="section" id="section-bookmarks">
       <h1 class="page-heading">Bookmarks</h1>
-      <p class="page-subheading">Saved books and lessons.</p>
+      <p class="page-subheading">Your saved books &amp; lessons for quick access.</p>
       <div class="bm-grid" id="bookmarksGrid"></div>
       <div class="empty-state" id="bmEmpty" style="display:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
@@ -742,7 +754,7 @@ body::before{
     <!-- SECTION: Activity Feed -->
     <div class="section" id="section-activity">
       <h1 class="page-heading">Activity Feed</h1>
-      <p class="page-subheading">Your learning timeline.</p>
+      <p class="page-subheading">Every study session, quiz, and bookmark at a glance.</p>
       <div class="feed-filters" id="feedFilters">
         <button class="feed-filter active" data-ftype="all" onclick="filterFeed('all')">All</button>
         <button class="feed-filter" data-ftype="lesson" onclick="filterFeed('lesson')">Lessons</button>
@@ -1322,6 +1334,46 @@ document.addEventListener('mousemove', e => {
   mouseGlow.style.left = e.clientX + 'px';
   mouseGlow.style.top = e.clientY + 'px';
 });
+
+// =====================================================================
+// === BACKGROUND MODE TOGGLE (dark / light) ===
+// =====================================================================
+
+function loadBgMode() {
+  try {
+    const val = localStorage.getItem('nexo_bg_mode');
+    if (val === 'light' || val === 'dark') return val;
+  } catch(e) {}
+  return 'dark';
+}
+
+function saveBgMode(mode) {
+  localStorage.setItem('nexo_bg_mode', mode);
+}
+
+function applyBgMode(mode) {
+  const isLight = mode === 'light';
+  document.body.classList.toggle('light-mode', isLight);
+  const icon = document.getElementById('themeToggleIcon');
+  const label = document.getElementById('themeToggleLabel');
+  if (icon) {
+    icon.innerHTML = isLight
+      ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+      : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+  if (label) label.textContent = isLight ? 'Light Mode' : 'Dark Mode';
+}
+
+(function() {
+  applyBgMode(loadBgMode());
+})();
+
+function toggleBgMode() {
+  const current = loadBgMode();
+  const next = current === 'light' ? 'dark' : 'light';
+  saveBgMode(next);
+  applyBgMode(next);
+}
 
 // =====================================================================
 // INIT
