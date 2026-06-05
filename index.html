@@ -278,61 +278,24 @@ body{
 }
 .search-no-results p{margin-top:0.5rem;font-size:0.8rem;color:var(--text-muted);}
 
-/* === THEME WHEEL POPOVER === */
-.theme-wheel-btn:hover svg{transform:rotate(30deg);transition:transform 300ms ease;}
-.theme-wheel-popover{
-  position:absolute;top:calc(100% + 8px);right:0;z-index:100;
-  width:200px;background:#0c110c;
-  border:1px solid var(--border);border-radius:10px;
-  padding:14px;
-  opacity:0;pointer-events:none;
-  transform:scale(0.9);transform-origin:top right;
-  transition:all 180ms ease;
-}
-.theme-wheel-popover.open{opacity:1;pointer-events:auto;transform:scale(1);}
-.twp-header{
-  font-size:0.7rem;color:var(--text-dim);
-  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;
-}
-.twp-label{
-  font-size:0.68rem;color:var(--text-muted);margin-bottom:6px;
-}
-.twp-swatches{display:flex;gap:6px;margin-bottom:12px;}
-.twp-swatch{
-  width:22px;height:22px;border-radius:50%;
-  border:none;cursor:pointer;padding:0;flex-shrink:0;
-  transition:transform 0.15s;
-}
-.twp-swatch:hover{transform:scale(1.2);}
-.twp-swatch.active{
-  box-shadow:0 0 0 2px #060906, 0 0 0 4px var(--swatch-color, var(--green));
-}
-.twp-size-row{display:flex;gap:6px;margin-bottom:12px;}
-.twp-size-btn{
-  width:28px;height:28px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.68rem;background:transparent;
-  border:1px solid var(--border);color:var(--text-dim);
-  cursor:pointer;font-family:inherit;transition:all 0.15s;
-}
-.twp-size-btn.active{border-color:var(--green);color:var(--green);}
-.twp-toggle-row{
-  display:flex;align-items:center;justify-content:space-between;
-}
-.twp-toggle-label{font-size:0.75rem;color:var(--text-dim);}
-.twp-switch{
-  width:36px;height:20px;border-radius:10px;
-  background:var(--border);cursor:pointer;position:relative;
-  transition:background 0.2s;flex-shrink:0;
-}
-.twp-switch.on{background:var(--green-dim);}
-.twp-switch::after{
-  content:'';position:absolute;top:2px;left:2px;
-  width:16px;height:16px;border-radius:50%;
-  background:var(--text-dim);transition:all 0.2s;
-}
-.twp-switch.on::after{left:18px;background:var(--green);}
-
+/* === LIGHT MODE === */
+.light-mode{--bg:#f4f7f4;--surface:#e8efe8;--surface-hover:#dce6dc;--text:#1a3a1a;--text-dim:#4a6a4a;--text-muted:#7a9a7a;--border:#c8d8c8}
+.light-mode .navbar{background:rgba(244,247,244,0.85);border-bottom-color:var(--border)}
+.light-mode .hero .version-badge:hover{background:var(--border)}
+.light-mode .navbar-links .navbar-link.active::after{background:var(--green)}
+.light-mode .search-panel{background:#e8efe8}
+.light-mode .search-result-row:hover,.light-mode .search-result-row.highlighted{background:#dce6dc}
+.light-mode .account-sidebar{background:#e8efe8}
+.light-mode .subject-panel{background:#e8efe8}
+.light-mode .subject-panel-header:hover{background:#dce6dc}
+.light-mode .card,.light-mode .dashboard-card,.light-mode .dashboard-welcome,.light-mode .as-stat,.light-mode .glossary-subject-group,.light-mode .xp-bar,.light-mode .badge-item,.light-mode .quiz-modal,.light-mode .flashcard-modal{background:#e8efe8}
+.light-mode .card:hover{background:#dce6dc}
+.light-mode .lesson-card,.light-mode .glossary-term-row,.light-mode .glossary-sg-inner,.light-mode .subject-panel-inner,.light-mode .flip-card-front,.light-mode .flip-card-back{background:#f4f7f4}
+.light-mode .lesson-card:hover{background:#e8efe8}
+.light-mode .quiz-option{background:#f4f7f4}
+.light-mode .quiz-option:hover:not(.disabled){background:#dce6dc}
+.light-mode .search-bar,.light-mode .study-search,.light-mode .glossary-search{background:#f4f7f4}
+.light-mode .badge-notify{background:#e8efe8}
 /* scroll-margin-top for sections */
 .scroll-margin{margin-bottom:0;}
 
@@ -1809,40 +1772,11 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
     <button class="navbar-action-btn search-btn" onclick="openSearchOverlay()" aria-label="Search" title="Search (Cmd+K)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     </button>
-    <button class="navbar-action-btn theme-btn" id="themeWheelBtn" onclick="toggleThemeWheel(event)" aria-label="Theme" title="Theme">
-      <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M12 2 A10 10 0 0 1 22 12 A2 2 0 0 1 20 14 L12 4 A2 2 0 0 1 12 2Z" fill="#2ea84c"/>
-        <path d="M12 2 A10 10 0 0 0 2 12 A2 2 0 0 0 4 14 L12 4 A2 2 0 0 0 12 2Z" fill="#2aaf8f"/>
-        <path d="M2 12 A10 10 0 0 0 12 22 A2 2 0 0 0 14 20 L4 12 A2 2 0 0 0 2 12Z" fill="#4cdbb8"/>
-        <path d="M12 22 A10 10 0 0 0 22 12 A2 2 0 0 0 20 10 L12 20 A2 2 0 0 0 12 22Z" fill="#8a5abe"/>
-        <path d="M22 12 A10 10 0 0 0 12 2 A2 2 0 0 0 10 4 L20 12 A2 2 0 0 0 22 12Z" fill="#d4a040"/>
-        <path d="M12 22 A10 10 0 0 1 2 12 A2 2 0 0 1 4 10 L12 20 A2 2 0 0 1 12 22Z" fill="#d4606a"/>
-        <circle cx="12" cy="12" r="3" fill="#0c110c"/>
+    <button class="navbar-action-btn theme-btn" id="themeToggleBtn" onclick="toggleBgMode()" aria-label="Toggle background" title="Toggle light/dark background">
+      <svg id="themeToggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
     </button>
-    <!-- Theme wheel popover -->
-    <div class="theme-wheel-popover" id="themeWheelPopover">
-      <div class="twp-header">Theme</div>
-      <div class="twp-label">Accent</div>
-      <div class="twp-swatches">
-        <button class="twp-swatch active" data-accent="green" style="background:#2ea84c;--swatch-color:#2ea84c" onclick="setAccentWheel('green')" aria-label="Green"></button>
-        <button class="twp-swatch" data-accent="teal" style="background:#2aaf8f;--swatch-color:#2aaf8f" onclick="setAccentWheel('teal')" aria-label="Teal"></button>
-        <button class="twp-swatch" data-accent="purple" style="background:#8a5abe;--swatch-color:#8a5abe" onclick="setAccentWheel('purple')" aria-label="Purple"></button>
-        <button class="twp-swatch" data-accent="amber" style="background:#d4a040;--swatch-color:#d4a040" onclick="setAccentWheel('amber')" aria-label="Amber"></button>
-        <button class="twp-swatch" data-accent="rose" style="background:#d4606a;--swatch-color:#d4606a" onclick="setAccentWheel('rose')" aria-label="Rose"></button>
-      </div>
-      <div class="twp-label">Size</div>
-      <div class="twp-size-row">
-        <button class="twp-size-btn" data-size="s" onclick="setFontSizeWheel('s')">S</button>
-        <button class="twp-size-btn active" data-size="m" onclick="setFontSizeWheel('m')">M</button>
-        <button class="twp-size-btn" data-size="l" onclick="setFontSizeWheel('l')">L</button>
-      </div>
-      <div class="twp-toggle-row">
-        <span class="twp-toggle-label">Reduce motion</span>
-        <div class="twp-switch" id="twpReducedMotion" onclick="toggleReducedMotionWheel()" role="switch" aria-label="Reduced motion"></div>
-      </div>
-    </div>
     <button class="navbar-action-btn bm-btn" onclick="openBookmarks()" aria-label="Bookmarks" title="Bookmarks">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       <span class="navbar-bm-dot" id="navbarBmDot"></span>
@@ -3976,98 +3910,13 @@ document.getElementById('searchOverlay').addEventListener('keydown', function(e)
   }
 });
 
-// =====================================================================
-// === THEME WHEEL ===
-// =====================================================================
-const THEME_WHEEL_COLORS = {
-  rose: { base:'#d4606a', light:'#e88090', dim:'#7a1a20', grads:['#d4606a','#e88090','#2aaf8f'] }
-};
-// Merge with existing THEMES
-Object.assign(THEMES, THEME_WHEEL_COLORS);
-
-function toggleThemeWheel(e) {
-  e.stopPropagation();
-  document.getElementById('themeWheelPopover').classList.toggle('open');
-}
-
-function setAccentWheel(name) {
-  const t = loadTheme();
-  t.accent = name;
-  saveTheme(t);
-  applyTheme(t);
-
-  // Update swatch active state
-  document.querySelectorAll('.twp-swatch').forEach(el => {
-    el.classList.toggle('active', el.dataset.accent === name);
-  });
-}
-
-function setFontSizeWheel(size) {
-  const sizes = { s: 13, m: 15, l: 17 };
-  const px = sizes[size] || 15;
-  const t = loadTheme();
-  t.fontSize = px;
-  saveTheme(t);
-  applyTheme(t);
-
-  document.querySelectorAll('.twp-size-btn').forEach(el => {
-    el.classList.toggle('active', el.dataset.size === size);
-  });
-}
-
-function toggleReducedMotionWheel() {
-  const t = loadTheme();
-  t.reducedMotion = !t.reducedMotion;
-  saveTheme(t);
-  applyTheme(t);
-  document.getElementById('twpReducedMotion').classList.toggle('on', t.reducedMotion);
-}
-
-// Close theme wheel popover on outside click
-document.addEventListener('click', function(e) {
-  const popover = document.getElementById('themeWheelPopover');
-  const btn = document.getElementById('themeWheelBtn');
-  if (popover.classList.contains('open') && !popover.contains(e.target) && !btn.contains(e.target)) {
-    popover.classList.remove('open');
-  }
-});
-
 function openBookmarks() {
   switchTab('mylist');
   renderMyList();
   closeMobileMenu();
-  // Smooth scroll to library section
   const container = document.querySelector('#tab-mylist .container');
   if (container) container.scrollIntoView({behavior:'smooth'});
 }
-
-// Override loadTheme/applyTheme/accent calls to sync with theme wheel
-(function() {
-  const origApplyTheme = applyTheme;
-  applyTheme = function(t) {
-    origApplyTheme(t);
-
-    // Sync theme wheel UI
-    document.querySelectorAll('.twp-swatch').forEach(el => {
-      el.classList.toggle('active', el.dataset.accent === t.accent);
-    });
-
-    const sizeMap = { 13: 's', 15: 'm', 17: 'l' };
-    const sizeKey = sizeMap[t.fontSize] || 'm';
-    document.querySelectorAll('.twp-size-btn').forEach(el => {
-      el.classList.toggle('active', el.dataset.size === sizeKey);
-    });
-
-    document.getElementById('twpReducedMotion').classList.toggle('on', t.reducedMotion);
-
-    // Sync avatar button in navbar
-    const navAvatar = document.getElementById('navAvatarBtn');
-    if (navAvatar) {
-      const theme = THEMES[t.accent] || THEMES.green;
-      navAvatar.style.background = theme.base;
-    }
-  };
-})();
 
 // =====================================================================
 // === XP & BADGES ===
@@ -4762,10 +4611,7 @@ document.addEventListener('keydown', function(e) {
       closeAccountSidebar();
       e.preventDefault();
     }
-    const twp = document.getElementById('themeWheelPopover');
-    if (twp && twp.classList.contains('open')) {
-      twp.classList.remove('open');
-    }
+
     const gtooltip = document.getElementById('glossaryTooltip');
     if (gtooltip && gtooltip.classList.contains('show')) {
       gtooltip.classList.remove('show');
@@ -4782,136 +4628,42 @@ document.addEventListener('click', function(e) {
 });
 
 // =====================================================================
-// === THEME CUSTOMISER ===
+// === BACKGROUND MODE TOGGLE (dark / light) ===
 // =====================================================================
-const THEMES = {
-  green:  { base:'#2ea84c', light:'#4cd96b', dim:'#1a5c2a', grads:['#2ea84c','#4cd96b','#2aaf8f'] },
-  teal:   { base:'#2aaf8f', light:'#4cdbb8', dim:'#1a6a55', grads:['#2aaf8f','#4cdbb8','#2ea84c'] },
-  purple: { base:'#8a5abe', light:'#b07ae0', dim:'#5a2a8a', grads:['#8a5abe','#b07ae0','#2aaf8f'] },
-  amber:  { base:'#d4a040', light:'#e8c060', dim:'#7a5a1a', grads:['#d4a040','#e8c060','#2ea84c'] }
-};
 
-function loadTheme() {
-  let t;
-  try { t = JSON.parse(localStorage.getItem('nexo_theme')); } catch(e) {}
-  if (!t) t = { accent:'green', fontSize:14, reducedMotion:false };
-  return t;
+function loadBgMode() {
+  try {
+    const val = localStorage.getItem('nexo_bg_mode');
+    if (val === 'light' || val === 'dark') return val;
+  } catch(e) {}
+  return 'dark';
 }
 
-function saveTheme(t) {
-  localStorage.setItem('nexo_theme', JSON.stringify(t));
+function saveBgMode(mode) {
+  localStorage.setItem('nexo_bg_mode', mode);
 }
 
-function applyTheme(t) {
-  const root = document.documentElement;
-  const theme = THEMES[t.accent] || THEMES.green;
-  root.style.setProperty('--green', theme.base);
-  root.style.setProperty('--green-light', theme.light);
-  root.style.setProperty('--green-dim', theme.dim);
-  root.style.setProperty('--gradient-green', 'linear-gradient(135deg, ' + theme.base + ', ' + theme.light + ')');
-  root.style.setProperty('--gradient-wide', 'linear-gradient(135deg, ' + theme.grads.join(', ') + ')');
-
-  // Update avatar button color
-  const avatarBtn = document.getElementById('navAvatarBtn') || document.getElementById('accountAvatarBtn');
-  if (avatarBtn) avatarBtn.style.background = theme.base;
-
-  // Font size
-  root.style.fontSize = t.fontSize + 'px';
-
-  // Reduced motion
-  const rm = document.getElementById('twpReducedMotion');
-  if (rm) rm.classList.toggle('on', t.reducedMotion);
-  let styleEl = document.getElementById('nexo-reduced-motion');
-  if (t.reducedMotion) {
-    if (!styleEl) {
-      styleEl = document.createElement('style');
-      styleEl.id = 'nexo-reduced-motion';
-      styleEl.textContent = '*,*::before,*::after{animation-duration:0s !important;animation-delay:0s !important;transition-duration:0s !important;}';
-      document.head.appendChild(styleEl);
-    }
-  } else {
-    if (styleEl) styleEl.remove();
+function applyBgMode(mode) {
+  const isLight = mode === 'light';
+  document.body.classList.toggle('light-mode', isLight);
+  const icon = document.getElementById('themeToggleIcon');
+  if (icon) {
+    icon.innerHTML = isLight
+      ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+      : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
   }
-
-  // Active color swatch
-  document.querySelectorAll('.twp-swatch').forEach(el => {
-    el.classList.toggle('active', el.dataset.accent === t.accent);
-  });
-
-  // Active size button
-  const sizeMap = { 12: 's', 14: 'm', 16: 'l' };
-  const activeSize = sizeMap[t.fontSize] || 'm';
-  document.querySelectorAll('.twp-size-btn').forEach(el => {
-    el.classList.toggle('active', el.dataset.size === activeSize);
-  });
 }
 
-// Init theme
 (function() {
-  const t = loadTheme();
-  applyTheme(t);
+  applyBgMode(loadBgMode());
 })();
 
-function setAccent(name) {
-  const t = loadTheme();
-  t.accent = name;
-  saveTheme(t);
-  applyTheme(t);
+function toggleBgMode() {
+  const current = loadBgMode();
+  const next = current === 'light' ? 'dark' : 'light';
+  saveBgMode(next);
+  applyBgMode(next);
 }
-
-function adjustFontSize(delta) {
-  const t = loadTheme();
-  t.fontSize = Math.max(12, Math.min(18, t.fontSize + delta));
-  saveTheme(t);
-  applyTheme(t);
-}
-
-function toggleReducedMotion() {
-  const t = loadTheme();
-  t.reducedMotion = !t.reducedMotion;
-  saveTheme(t);
-  applyTheme(t);
-}
-
-// =====================================================================
-// === THEME WHEEL (navbar popover) ===
-// =====================================================================
-
-function toggleThemeWheel(e) {
-  e.stopPropagation();
-  document.getElementById('themeWheelPopover').classList.toggle('open');
-}
-
-function setAccentWheel(color) {
-  setAccent(color);
-  document.querySelectorAll('.twp-swatch').forEach(el => {
-    el.classList.toggle('active', el.dataset.accent === color);
-  });
-}
-
-function setFontSizeWheel(size) {
-  const sizeMap = { s: 12, m: 14, l: 16 };
-  const t = loadTheme();
-  t.fontSize = sizeMap[size] || 14;
-  saveTheme(t);
-  applyTheme(t);
-  document.querySelectorAll('.twp-size-btn').forEach(el => {
-    el.classList.toggle('active', el.dataset.size === size);
-  });
-}
-
-function toggleReducedMotionWheel() {
-  toggleReducedMotion();
-}
-
-// Close theme wheel popover when clicking outside
-document.addEventListener('click', function(e) {
-  const popover = document.getElementById('themeWheelPopover');
-  const btn = document.getElementById('themeWheelBtn');
-  if (popover && popover.classList.contains('open') && !popover.contains(e.target) && !btn.contains(e.target)) {
-    popover.classList.remove('open');
-  }
-});
 </script>
 </body>
 </html>
