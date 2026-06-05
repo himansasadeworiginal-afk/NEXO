@@ -4843,6 +4843,13 @@ function applyTheme(t) {
   document.querySelectorAll('.tp-color, .twp-swatch').forEach(el => {
     el.classList.toggle('active', el.dataset.accent === t.accent);
   });
+
+  // Active size button
+  const sizeMap = { 12: 's', 14: 'm', 16: 'l' };
+  const activeSize = sizeMap[t.fontSize] || 'm';
+  document.querySelectorAll('.twp-size-btn').forEach(el => {
+    el.classList.toggle('active', el.dataset.size === activeSize);
+  });
 }
 
 // Init theme
@@ -4888,6 +4895,46 @@ document.addEventListener('click', function(e) {
     if (panel.classList.contains('open') && !panel.contains(e.target) && !btn.contains(e.target)) {
       closeThemePanel();
     }
+  }
+});
+
+// =====================================================================
+// === THEME WHEEL (navbar popover) ===
+// =====================================================================
+
+function toggleThemeWheel(e) {
+  e.stopPropagation();
+  document.getElementById('themeWheelPopover').classList.toggle('open');
+}
+
+function setAccentWheel(color) {
+  setAccent(color);
+  document.querySelectorAll('.twp-swatch').forEach(el => {
+    el.classList.toggle('active', el.dataset.accent === color);
+  });
+}
+
+function setFontSizeWheel(size) {
+  const sizeMap = { s: 12, m: 14, l: 16 };
+  const t = loadTheme();
+  t.fontSize = sizeMap[size] || 14;
+  saveTheme(t);
+  applyTheme(t);
+  document.querySelectorAll('.twp-size-btn').forEach(el => {
+    el.classList.toggle('active', el.dataset.size === size);
+  });
+}
+
+function toggleReducedMotionWheel() {
+  toggleReducedMotion();
+}
+
+// Close theme wheel popover when clicking outside
+document.addEventListener('click', function(e) {
+  const popover = document.getElementById('themeWheelPopover');
+  const btn = document.getElementById('themeWheelBtn');
+  if (popover && popover.classList.contains('open') && !popover.contains(e.target) && !btn.contains(e.target)) {
+    popover.classList.remove('open');
   }
 });
 </script>
