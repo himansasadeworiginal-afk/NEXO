@@ -1,0 +1,124 @@
+## NEXO — Global Navigation Bar
+
+You are adding a navigation bar to index.html only. This is a surgical addition — do not rewrite any existing code. Read the entire file carefully before touching anything. The navbar must feel completely native to NEXO's dark green terminal aesthetic.
+
+---
+
+### WHAT TO BUILD
+
+Three things in one task:
+1. A smart hide/show fixed navbar at the top of index.html
+2. A global search overlay (Cmd+K) that searches lessons, books, and glossary
+3. A theme colour wheel inside the navbar replacing the old settings gear button (remove the old gear button entirely after building the new one into the navbar)
+
+---
+
+### PART 1 — THE NAVBAR
+
+#### Structure
+
+The navbar is a single fixed bar across the top of the page.
+- Position: fixed, top 0, left 0, right 0, z-index 900
+- Height: 52px
+- Background: rgba(6, 9, 6, 0.85) — semi-transparent dark, same base as --bg
+- Backdrop-filter: blur(12px) saturate(160%) — frosted glass effect
+- Border-bottom: 1px solid rgba(24, 34, 24, 0.8) — subtle, matches --border
+- Padding: 0 2rem
+
+The existing scroll progress bar (#progress) must sit directly below the navbar, not behind it. Move it so its top is at 52px (the navbar height). Keep all its existing behavior.
+
+All existing page sections must have their scroll positions offset by 52px so anchor links and smooth scrolls land in the right place. Add scroll-margin-top: 52px to the hero, about, categories, and library sections.
+
+#### Left side — Logo
+
+The NEXO logo text on the left side of the navbar.
+- Text: "NEXO" in the same gradient (green to teal) as the hero heading
+- Font-size: 1.1rem, font-weight: 800, letter-spacing: 0.06em
+- Clicking it smooth-scrolls to the top of the page (the hero section)
+- To the right of NEXO: a small version badge "1.0" in a teal pill, font-size 0.6rem, same style as the hero version badge but smaller
+
+#### Center — Navigation links
+
+Five nav links in a horizontal row centered in the navbar:
+- Study Hub — smooth scrolls to the Study Hub / subjects section
+- Library — smooth scrolls to the Library section
+- Books — smooth scrolls to the books grid (filter to books view)
+- About — smooth scrolls to the About section
+- Account — navigates to account.html
+
+Link style:
+- Font-size: 0.78rem, color: var(--text-dim), letter-spacing: 0.03em
+- On hover: color var(--text), transition 150ms
+- Active state (when that section is in view): color var(--green), a 2px green underline dot below the link (a small 4px circle centered below, not an underline bar)
+- Active state detection: use IntersectionObserver on each major section. When a section is more than 40% in the viewport, mark its corresponding nav link as active.
+- The "Account" link has no active state — it is always dim until hovered
+
+#### Right side — Action icons
+
+Four icon buttons in a row on the right, with 4px gap between them:
+
+Button 1 — Search
+- Magnifying glass SVG icon, 18px
+- Color: var(--text-dim), on hover: var(--text)
+- Clicking opens the global search overlay (see Part 2)
+- Keyboard shortcut Cmd+K / Ctrl+K also opens it from anywhere on the page
+
+Button 2 — Theme colour wheel
+- A custom circular colour wheel icon (see Part 3 for full spec)
+- Clicking opens a small colour picker popover anchored below this button
+
+Button 3 — Bookmarks
+- Bookmark SVG icon, 18px
+- Color: var(--text-dim), on hover: var(--green)
+- Shows a small green dot badge if any bookmarks exist (reads nexo_bookmark_* keys from localStorage)
+- Clicking activates the "My List" filter in the library and smooth-scrolls to the library section
+
+Button 4 — Account avatar
+- 30px circle, background from NEXO_MOCK_USER.avatarColor (#2ea84c default), initials "AS" in dark text, font-size 0.65rem, font-weight 600
+- On hover: ring appears — box-shadow 0 0 0 2px var(--green)
+- Clicking opens the account sidebar (the slide-in panel already built in index.html)
+- Add comment: // BACKEND: show initials from real auth user, show "?" if not logged in
+
+All four buttons: 34px circle hit target, background transparent, border none, cursor pointer.
+
+#### Hide on scroll down / show on scroll up behavior
+
+Track the user's scroll direction using a scroll event listener.
+
+Variables needed:
+- lastScrollY: stores the previous scroll position
+- ticking: prevents scroll handler from firing too many times (use requestAnimationFrame)
+
+Logic:
+- If scrolling DOWN and scrollY > 80px: add class navbar-hidden to the navbar
+- If scrolling UP: remove class navbar-hidden from the navbar
+- If scrollY < 80px: always show the navbar (near the top of the page)
+
+CSS for hiding:
+  .navbar-hidden {
+    transform: translateY(-100%);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+Default (shown) state also has the same transition so it slides back in smoothly.
+
+When the global search overlay is open, always show the navbar regardless of scroll direction. Remove navbar-hidden class when overlay opens.
+
+#### Navbar on mobile (under 768px)
+
+- Hide the center nav links entirely
+- Keep left logo and right icons
+- The search, theme, bookmarks, account buttons reduce to 30px hit targets
+- Add a hamburger menu button (three lines icon) on the right after the account avatar
+- Clicking hamburger opens a full-screen mobile menu overlay:
+  - Background #060906, z-index 1100
+  - The 5 nav links stacked vertically, centered, large font (1.1rem)
+  - Same active state detection
+  - An X button top-right to close
+  - Clicking any link closes the menu and scrolls to the section
+  - Slide in from the top: translateY(-100%) to translateY(0), 250ms ease
+
+---
+
+### PART 2 — GLOBAL SEARCH OVERLAY
+
+... (full prompt as provided above)

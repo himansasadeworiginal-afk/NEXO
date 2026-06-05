@@ -19,12 +19,15 @@ It has three main sections:
 
 ## Features
 
+- **Global Navigation Bar** — Fixed smart-hide navbar with frosted glass effect, gradient logo, section links with active detection (IntersectionObserver), and action icons
+- **Global Search (Cmd+K)** — Full-screen search overlay that searches lessons, books, and glossary with scored results, highlight matching, keyboard navigation, and recent searches
+- **Theme Colour Wheel** — Accent colour picker (5 colours), text size presets (S/M/L), and reduced motion toggle — all persisted to localStorage
 - **Study Hub** — Subject-first layout with collapsible panels, progress tracking, and lesson cards
 - **Interactive Quizzes** — Multiple-choice quiz per lesson with instant feedback, explanations, and best score tracking (stored in localStorage)
 - **Book Library** — All 24 book summaries with category filters, search, and grid/list toggle
 - **ICT Terminal** — Blank-editor code playground with Python (Skulpt), Pseudocode tracer, and JavaScript sandbox execution — starts empty so students write their own code
 - **Progress Tracking** — Mark lessons as Not Started / In Progress / Done; progress rings per subject
-- **Keyboard Shortcuts** — `/` to search, `Escape` to clear, arrow keys to navigate lesson cards, `1-4` for quiz answers
+- **Keyboard Shortcuts** — `Cmd+K` for global search, `/` to focus inline search, `Escape` to clear, arrow keys to navigate, `1-4` for quiz answers, `Ctrl+Enter` to run code
 - **Expand/Collapse All** — Toggle all subject panels at once
 - **Ambient Environment** — Particle network, floating orbs, mouse-reactive glow, animated gradients, noise texture
 - **Dark Theme** — Green/teal/purple/amber color palette with smooth animations throughout
@@ -32,33 +35,37 @@ It has three main sections:
 - **Typewriter Effect** — Subtitle types itself in on page load
 - **Sticky Subject Nav** — Quick-jump pill nav appears when scrolling past the hero
 - **Scroll Progress** — Gradient progress bar with percentage tooltip on hover
+- **Account Sidebar** — Slide-in panel with quick stats, subject progress, recent activity, and links to full profile
+- **Mobile Responsive** — Hamburger menu, adaptive layout, reduced particle count on mobile
 - **Fully Offline** — Everything runs from a single HTML file via `file://` protocol
 
 ## Structure
 
 ```
 nexo 2.0/
-├── index.html                # Main app — hub, study hub, book library, quizzes
+├── index.html                       # Main app — hub, study hub, book library, quizzes
+├── account.html                     # Full account/profile page with progress, history, bookmarks
 ├── README.md
 ├── nexo-2.0-upgrade-prompt.txt
 ├── nexo-ict-terminal-prompt.txt
+├── nexo-global-nav-prompt.txt
 ├── components/
-│   ├── nexo-terminal.html          # Standalone iframe-ready terminal
-│   └── nexo-terminal-embed.js      # Embeddable terminal via <script> tag
-├── <Book Title>/             # Each book's interactive summary folder
+│   ├── nexo-terminal.html           # Standalone iframe-ready terminal
+│   └── nexo-terminal-embed.js       # Embeddable terminal via <script> tag
+├── <Book Title>/                    # Each book's interactive summary folder
 │   ├── index.html
 │   ├── <summary>.txt
 │   └── <book>.(pdf|epub)
 ├── Study Notes/
-│   ├── Business/             # Business Studies lessons (1-8)
+│   ├── Business/                    # Business Studies lessons (1-8)
 │   │   └── <n>/
 │   │       ├── index.html
 │   │       └── <n>.pdf
-│   ├── Econ/                 # Economics lessons (1-12)
+│   ├── Econ/                        # Economics lessons (1-12)
 │   │   └── <n>/
 │   │       ├── index.html
 │   │       └── <n>.pdf
-│   └── ICT/                  # ICT / Programming lessons
+│   └── ICT/                         # ICT / Programming lessons
 │       ├── 1/ (Introduction to Python Programming)
 │       └── 2/ (Control Flow: Conditionals & Loops)
 └── ...
@@ -163,9 +170,11 @@ Challenges are defined per-lesson in `NEXO_TERMINAL_CONFIG`. Built-in presets (w
 
 | Key | Action |
 |-----|--------|
+| `Cmd+K` / `Ctrl+K` | Open global search overlay |
 | `/` | Focus search bar |
-| `Escape` | Clear search / reset view |
-| `↑` / `↓` | Navigate lesson cards (when search focused) |
+| `Escape` | Clear search / reset view / close overlay |
+| `↑` / `↓` | Navigate results / lesson cards |
+| `Enter` | Open selected search result |
 | `1` `2` `3` `4` | Select quiz answer A/B/C/D |
 
 ### Terminal Shortcuts
@@ -268,7 +277,7 @@ NEXO includes a full account page (`account.html`) and a slide-in sidebar panel 
 
 ### Account Sidebar (in `index.html`)
 
-- **Avatar button** — fixed top-right 36px circle with user initials
+- **Avatar button** — in the navbar, 30px circle with user initials
 - **Slide-in panel** — 320px wide, slides from right, dark overlay behind
 - **Quick stats** — 2x2 grid of compact stat cards
 - **Subject progress** — compact progress bars per subject
