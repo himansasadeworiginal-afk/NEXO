@@ -4754,17 +4754,13 @@ document.getElementById('asLogout').addEventListener('click', function() {
 // Render sidebar on load
 renderAccountSidebar();
 
-// Extend Escape key handler to close sidebar (and theme panel)
+// Extend Escape key handler
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     const quizOpen = document.getElementById('quizOverlay').classList.contains('open');
     if (!quizOpen && document.getElementById('accountSidebar').classList.contains('open')) {
       closeAccountSidebar();
       e.preventDefault();
-    }
-    const tp = document.getElementById('themePanel');
-    if (tp && tp.classList.contains('open')) {
-      closeThemePanel();
     }
     const twp = document.getElementById('themeWheelPopover');
     if (twp && twp.classList.contains('open')) {
@@ -4821,11 +4817,9 @@ function applyTheme(t) {
 
   // Font size
   root.style.fontSize = t.fontSize + 'px';
-  const tpFz = document.getElementById('tpFontSize');
-  if (tpFz) tpFz.textContent = t.fontSize;
 
   // Reduced motion
-  const rm = document.getElementById('tpReducedMotion') || document.getElementById('twpReducedMotion');
+  const rm = document.getElementById('twpReducedMotion');
   if (rm) rm.classList.toggle('on', t.reducedMotion);
   let styleEl = document.getElementById('nexo-reduced-motion');
   if (t.reducedMotion) {
@@ -4840,7 +4834,7 @@ function applyTheme(t) {
   }
 
   // Active color swatch
-  document.querySelectorAll('.tp-color, .twp-swatch').forEach(el => {
+  document.querySelectorAll('.twp-swatch').forEach(el => {
     el.classList.toggle('active', el.dataset.accent === t.accent);
   });
 
@@ -4857,14 +4851,6 @@ function applyTheme(t) {
   const t = loadTheme();
   applyTheme(t);
 })();
-
-function toggleThemePanel() {
-  document.getElementById('themePanel').classList.toggle('open');
-}
-
-function closeThemePanel() {
-  document.getElementById('themePanel').classList.remove('open');
-}
 
 function setAccent(name) {
   const t = loadTheme();
@@ -4886,17 +4872,6 @@ function toggleReducedMotion() {
   saveTheme(t);
   applyTheme(t);
 }
-
-// Close theme panel when clicking outside (legacy)
-document.addEventListener('click', function(e) {
-  const panel = document.getElementById('themePanel');
-  if (panel) {
-    const btn = document.getElementById('themeToggleBtn');
-    if (panel.classList.contains('open') && !panel.contains(e.target) && !btn.contains(e.target)) {
-      closeThemePanel();
-    }
-  }
-});
 
 // =====================================================================
 // === THEME WHEEL (navbar popover) ===
