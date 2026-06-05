@@ -710,6 +710,24 @@ body::before{
 }
 .subject-panel.open .subject-panel-arrow{transform:rotate(180deg);}
 
+/* Subject progress bar */
+.subject-progress-strip{
+  padding:0 1.5rem 0.6rem;
+  display:flex;align-items:center;gap:0.75rem;
+}
+.subject-progress-track{
+  flex:1;height:4px;background:var(--border);
+  border-radius:2px;overflow:hidden;
+}
+.subject-progress-fill{
+  height:100%;border-radius:2px;
+  width:0%;transition:width 0.8s cubic-bezier(.22,1,.36,1);
+}
+.subject-progress-label{
+  font-size:0.6rem;color:var(--text-muted);
+  letter-spacing:0.5px;white-space:nowrap;flex-shrink:0;
+}
+
 .subject-panel-body{
   max-height:0;overflow:hidden;
   transition:max-height 0.5s cubic-bezier(.22,1,.36,1);
@@ -1174,6 +1192,429 @@ footer .footer-logo{
 footer .footer-info{color:var(--text-muted);font-size:0.75rem;letter-spacing:0.5px;}
 footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 
+/* ===== GLOSSARY TAB ===== */
+.glossary-controls{
+  display:flex;gap:0.75rem;flex-wrap:wrap;
+  align-items:center;justify-content:space-between;
+  margin-bottom:1.5rem;
+}
+.glossary-subject-filters{
+  display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;
+}
+.glossary-search-wrapper{
+  position:relative;display:inline-block;
+  min-width:200px;max-width:280px;
+}
+.glossary-search-wrapper svg{
+  position:absolute;left:10px;top:50%;
+  transform:translateY(-50%);
+  width:12px;height:12px;color:var(--text-muted);
+}
+.glossary-search{
+  width:100%;padding:7px 10px 7px 28px;
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-size:0.8rem;outline:none;
+  transition:all var(--transition);font-family:inherit;
+}
+.glossary-search:focus{
+  border-color:var(--green-dim);
+  box-shadow:0 0 0 2px rgba(46,168,76,0.08);
+}
+.glossary-search::placeholder{color:var(--text-muted);}
+.glossary-count{
+  font-size:0.72rem;color:var(--text-dim);letter-spacing:0.3px;
+}
+.glossary-list{
+  display:flex;flex-direction:column;gap:1rem;
+}
+.glossary-subject-group{
+  background:var(--surface);
+  border:1px solid var(--border);
+  overflow:hidden;
+  transition:all var(--transition);
+}
+.glossary-subject-group:hover{border-color:var(--green-dim);}
+.glossary-sg-header{
+  display:flex;align-items:center;gap:1rem;
+  padding:1rem 1.5rem;
+  cursor:pointer;
+  transition:background var(--transition);
+}
+.glossary-sg-header:hover{background:var(--surface-hover);}
+.glossary-sg-accent{
+  width:3px;height:24px;border-radius:2px;flex-shrink:0;
+}
+.glossary-sg-title{
+  font-size:0.95rem;font-weight:600;flex:1;
+}
+.glossary-sg-count{
+  font-size:0.65rem;color:var(--text-muted);
+  letter-spacing:0.5px;
+}
+.glossary-sg-arrow{
+  width:14px;height:14px;color:var(--text-muted);
+  flex-shrink:0;transition:transform 0.4s ease;
+}
+.glossary-subject-group.open .glossary-sg-arrow{transform:rotate(180deg);}
+.glossary-sg-body{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.4s cubic-bezier(.22,1,.36,1);
+}
+.glossary-subject-group.open .glossary-sg-body{
+  max-height:5000px;
+}
+.glossary-sg-inner{
+  padding:0 1.5rem 1.5rem;
+  border-top:1px solid var(--border);
+  padding-top:1rem;
+}
+.glossary-term-row{
+  display:flex;gap:1rem;
+  padding:0.7rem 0;
+  border-bottom:1px solid var(--border);
+  position:relative;
+}
+.glossary-term-row:last-child{border-bottom:none;}
+.glossary-term-name{
+  font-size:0.85rem;font-weight:600;color:var(--green);
+  min-width:160px;flex-shrink:0;
+  cursor:help;
+}
+.glossary-term-def{
+  font-size:0.78rem;color:var(--text-dim);
+  line-height:1.5;
+}
+.glossary-term-lesson{
+  font-size:0.6rem;color:var(--text-muted);
+  letter-spacing:0.3px;white-space:nowrap;flex-shrink:0;
+  align-self:flex-start;margin-top:2px;
+}
+.glossary-empty{
+  text-align:center;padding:3rem 0;
+  color:var(--text-muted);
+}
+.glossary-empty p{margin-top:0.5rem;font-size:0.82rem;color:var(--text-dim);}
+
+/* Glossary tooltip popover */
+.glossary-tooltip{
+  position:fixed;z-index:1800;
+  max-width:320px;
+  background:var(--surface);
+  border:1px solid var(--green-dim);
+  padding:0.8rem 1rem;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  opacity:0;pointer-events:none;
+  transition:opacity 0.15s ease;
+}
+.glossary-tooltip.show{opacity:1;pointer-events:auto;}
+.glossary-tooltip .gt-term{
+  font-size:0.85rem;font-weight:600;color:var(--green);
+  margin-bottom:0.3rem;
+}
+.glossary-tooltip .gt-def{
+  font-size:0.75rem;color:var(--text-dim);
+  line-height:1.5;
+}
+.glossary-tooltip .gt-subject{
+  font-size:0.6rem;color:var(--text-muted);
+  letter-spacing:0.5px;text-transform:uppercase;
+  margin-top:0.4rem;
+}
+
+@media(max-width:768px){
+  .glossary-term-row{flex-direction:column;gap:0.2rem;}
+  .glossary-term-name{min-width:auto;}
+  .glossary-term-lesson{white-space:normal;}
+  .glossary-controls{flex-direction:column;align-items:stretch;}
+  .glossary-search-wrapper{max-width:100%;}
+}
+
+/* ===== DASHBOARD ===== */
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+  margin-bottom:2rem;
+}
+.dashboard-welcome{
+  grid-column:1/-1;
+  padding:2rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.dashboard-welcome h1{
+  font-size:1.6rem;font-weight:700;letter-spacing:-0.5px;
+}
+.dashboard-welcome p{
+  color:var(--text-dim);font-size:0.9rem;margin-top:0.3rem;
+}
+.dashboard-welcome .streak-fire{
+  position:absolute;top:1.5rem;right:2rem;
+  display:flex;align-items:center;gap:0.5rem;
+  font-size:1.2rem;font-weight:700;
+}
+.dashboard-welcome .streak-fire svg{width:28px;height:28px;}
+.dashboard-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:1.5rem;
+}
+.dashboard-card:hover{border-color:var(--green-dim);}
+.dashboard-card .dc-title{
+  font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;
+  color:var(--text-muted);margin-bottom:0.8rem;
+}
+.dashboard-card .dc-value{
+  font-size:1.8rem;font-weight:700;line-height:1;
+}
+.dashboard-card .dc-value.green{color:var(--green);}
+.dashboard-card .dc-value.teal{color:var(--teal);}
+.dashboard-card .dc-value.purple{color:var(--purple);}
+.dashboard-card .dc-value.amber{color:var(--amber);}
+.dashboard-card .dc-sub{
+  font-size:0.75rem;color:var(--text-dim);margin-top:0.3rem;
+}
+.dashboard-subject-row{
+  display:flex;align-items:center;gap:0.8rem;
+  padding:0.6rem 0;
+  border-bottom:1px solid var(--border);
+}
+.dashboard-subject-row:last-child{border-bottom:none;}
+.dashboard-subject-row .dsr-name{
+  font-size:0.85rem;font-weight:500;width:80px;flex-shrink:0;
+}
+.dashboard-subject-row .dsr-bar{
+  flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;
+}
+.dashboard-subject-row .dsr-fill{
+  height:100%;border-radius:3px;width:0%;
+  transition:width 0.8s cubic-bezier(.22,1,.36,1);
+}
+.dashboard-subject-row .dsr-stat{
+  font-size:0.7rem;color:var(--text-muted);width:60px;text-align:right;
+}
+.dashboard-quiz-row{
+  display:flex;align-items:center;gap:0.8rem;
+  padding:0.5rem 0;
+  border-bottom:1px solid var(--border);
+  font-size:0.85rem;
+}
+.dashboard-quiz-row:last-child{border-bottom:none;}
+.dashboard-quiz-row .dqr-subject{
+  font-size:0.6rem;text-transform:uppercase;letter-spacing:0.5px;
+  color:var(--text-dim);min-width:70px;
+}
+.dashboard-quiz-row .dqr-title{flex:1;color:var(--text);}
+.dashboard-quiz-row .dqr-score{font-weight:600;}
+.dashboard-quiz-row .dqr-score.good{color:var(--green);}
+.dashboard-quiz-row .dqr-score.ok{color:var(--amber);}
+.dashboard-quiz-row .dqr-score.bad{color:var(--rose);}
+
+.dashboard-subject-rings{
+  display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;
+  padding:0.5rem 0;
+}
+.dashboard-ring{text-align:center;}
+.dashboard-ring .dr-ring{
+  width:64px;height:64px;position:relative;
+  margin:0 auto 0.3rem;
+}
+.dashboard-ring .dr-ring svg{transform:rotate(-90deg);}
+.dashboard-ring .dr-ring .dr-bg{fill:none;stroke:var(--border);stroke-width:4;}
+.dashboard-ring .dr-ring .dr-fg{fill:none;stroke-width:4;stroke-linecap:round;
+  stroke-dasharray:169.65;stroke-dashoffset:169.65;
+  transition:stroke-dashoffset 0.8s cubic-bezier(.22,1,.36,1);
+}
+.dashboard-ring .dr-label{
+  font-size:0.7rem;color:var(--text-dim);letter-spacing:0.3px;
+}
+
+@media(max-width:700px){
+  .dashboard-grid{grid-template-columns:1fr;}
+  .dashboard-welcome .streak-fire{position:static;margin-top:0.5rem;}
+}
+
+/* ===== XP & BADGES ===== */
+.xp-bar{
+  display:flex;align-items:center;gap:1rem;
+  padding:0.75rem;margin-bottom:0.5rem;
+  background:var(--surface);border-radius:12px;
+  border:1px solid var(--border);
+}
+.xp-bar-icon{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--amber),var(--rose));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:800;color:#fff;flex-shrink:0;
+}
+.xp-bar-info{flex:1;min-width:0;}
+.xp-bar-level{font-size:0.75rem;color:var(--text-dim);letter-spacing:0.5px;text-transform:uppercase;}
+.xp-bar-level strong{color:var(--text);}
+.xp-bar-total{font-size:1.1rem;font-weight:700;color:var(--amber);}
+.xp-bar-track{
+  width:100%;height:4px;background:var(--border);border-radius:2px;
+  margin-top:0.25rem;overflow:hidden;
+}
+.xp-bar-fill{
+  height:100%;border-radius:2px;background:linear-gradient(90deg,var(--amber),var(--rose));
+  width:0%;transition:width 0.8s cubic-bezier(.22,1,.36,1);
+}
+.badges-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:0.6rem;padding:0.5rem 0;
+}
+.badge-item{
+  text-align:center;padding:0.7rem 0.3rem;
+  background:var(--surface);border-radius:10px;
+  border:1px solid var(--border);
+  transition:border-color 0.2s,opacity 0.2s;
+}
+.badge-item.earned{border-color:var(--amber-dim);}
+.badge-item.locked{opacity:0.35;filter:grayscale(1);}
+.badge-item:hover{border-color:var(--green-dim);}
+.badge-icon{
+  font-size:1.5rem;margin-bottom:0.3rem;line-height:1;
+}
+.badge-name{
+  font-size:0.65rem;font-weight:600;letter-spacing:0.3px;
+  text-transform:uppercase;color:var(--text);
+}
+.badge-desc{
+  font-size:0.6rem;color:var(--text-dim);margin-top:0.15rem;
+  line-height:1.2;
+}
+
+/* ===== FLASHCARD STYLES ===== */
+.flashcard-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,0.85);
+  display:none;align-items:center;justify-content:center;
+  padding:1rem;
+  animation:fadeIn 0.2s ease;
+}
+.flashcard-overlay.open{display:flex;}
+.flashcard-modal{
+  background:var(--surface);
+  border:1px solid var(--purple-dim);
+  max-width:540px;width:100%;
+  padding:2rem;position:relative;
+  animation:appear 0.3s ease;
+}
+.flashcard-close{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:none;color:var(--text-muted);
+  cursor:pointer;padding:4px;transition:color 0.3s;
+  font-size:1.2rem;line-height:1;
+}
+.flashcard-close:hover{color:var(--text);}
+.flashcard-deck-info{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:1.2rem;
+}
+.flashcard-deck-info .fdi-label{
+  font-size:0.65rem;color:var(--text-muted);
+  letter-spacing:1px;text-transform:uppercase;
+}
+.flashcard-deck-info .fdi-count{font-size:0.7rem;color:var(--text-dim);}
+.flip-card{
+  background:transparent;
+  perspective:1000px;
+  height:280px;
+  margin-bottom:1.2rem;
+  cursor:pointer;
+}
+.flip-card-inner{
+  position:relative;
+  width:100%;height:100%;
+  transition:transform 0.5s ease;
+  transform-style:preserve-3d;
+}
+.flip-card.flipped .flip-card-inner{transform:rotateY(180deg);}
+.flip-card-front,.flip-card-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2rem;
+  background:var(--bg);
+  border:1px solid var(--border);
+  text-align:center;
+}
+.flip-card-back{
+  transform:rotateY(180deg);
+  border-color:var(--green-dim);
+}
+.flip-card-front .fcf-label{
+  font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--text-muted);margin-bottom:0.8rem;
+}
+.flip-card-front .fcf-text{
+  font-size:1.1rem;font-weight:600;line-height:1.5;
+  color:var(--text);
+}
+.flip-card-front .fcf-hint{
+  font-size:0.75rem;color:var(--text-dim);margin-top:1rem;
+}
+.flip-card-back .fcb-label{
+  font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--green);margin-bottom:0.8rem;
+}
+.flip-card-back .fcb-text{
+  font-size:1rem;font-weight:500;line-height:1.6;
+  color:var(--text);
+}
+.flashcard-actions{
+  display:flex;gap:0.6rem;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.3s ease;
+}
+.flashcard-actions.show{opacity:1;pointer-events:auto;}
+.fc-btn{
+  padding:10px 20px;font-size:0.72rem;
+  letter-spacing:0.8px;text-transform:uppercase;
+  border:none;cursor:pointer;font-family:inherit;
+  font-weight:600;transition:all var(--transition);
+}
+.fc-btn:hover{transform:translateY(-2px);}
+.fc-btn-again{background:var(--rose);color:#060906;}
+.fc-btn-again:hover{box-shadow:0 4px 16px rgba(212,96,106,0.3);}
+.fc-btn-hard{background:var(--amber);color:#060906;}
+.fc-btn-hard:hover{box-shadow:0 4px 16px rgba(212,160,64,0.3);}
+.fc-btn-easy{background:var(--green);color:#060906;}
+.fc-btn-easy:hover{box-shadow:0 4px 16px rgba(46,168,76,0.3);}
+.flashcard-empty{
+  text-align:center;padding:3rem 1rem;
+}
+.flashcard-empty p{color:var(--text-dim);font-size:0.9rem;margin-bottom:0.5rem;}
+.flashcard-done-icon{
+  width:48px;height:48px;margin:0 auto 1rem;
+  color:var(--green);
+}
+.flashcard-progress{
+  display:flex;align-items:center;gap:0.75rem;
+  margin-bottom:1rem;
+}
+.flashcard-progress-bar{
+  flex:1;height:2px;background:var(--border);
+  position:relative;overflow:hidden;
+}
+.flashcard-progress-bar .fp-fill{
+  height:100%;background:var(--gradient-wide);
+  background-size:200% auto;
+  animation:gradientShift 3s ease infinite;
+  transition:width 0.3s ease;
+}
+.flashcard-progress-text{
+  font-size:0.7rem;color:var(--text-dim);letter-spacing:0.5px;flex-shrink:0;
+}
+.lesson-card .flashcard-due{
+  font-size:0.6rem;color:var(--purple-light);
+  letter-spacing:0.5px;flex-shrink:0;
+}
+
 /* ===== RESPONSIVE ===== */
 
 
@@ -1499,14 +1940,28 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 <!-- ===== TAB NAVIGATION ===== -->
 <div class="container" style="padding-bottom:0;position:relative;">
   <div class="tab-nav">
-    <button class="tab-btn active" data-tab="study" onclick="switchTab('study')">Study Hub</button>
+    <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+    <button class="tab-btn" data-tab="study" onclick="switchTab('study')">Study Hub</button>
     <button class="tab-btn" data-tab="books" onclick="switchTab('books')">Book Library</button>
     <button class="tab-btn" data-tab="mylist" onclick="switchTab('mylist')">My List (<span id="mylistCount">0</span>)</button>
+    <button class="tab-btn" data-tab="glossary" onclick="switchTab('glossary')">Glossary</button>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD TAB ===== -->
+<div class="tab-content active" id="tab-dashboard">
+  <div class="section-label" style="padding-top:2rem;">
+    <h2>Dashboard</h2>
+    <div class="label-line"></div>
+    <div class="label-sub">Your Learning Overview</div>
+  </div>
+  <div class="container" id="dashboard-container" style="scroll-margin-top:52px;">
+    <div id="dashboardContent"></div>
   </div>
 </div>
 
 <!-- ===== STUDY HUB TAB ===== -->
-<div class="tab-content active" id="tab-study">
+<div class="tab-content" id="tab-study">
   <div class="section-label" style="padding-top:2rem;">
     <h2>Study Hub</h2>
     <div class="label-line"></div>
@@ -1583,6 +2038,43 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   </div>
 </div>
 
+<!-- ===== GLOSSARY TAB ===== -->
+<div class="tab-content" id="tab-glossary">
+  <div class="section-label" style="padding-top:2rem;">
+    <h2>Glossary</h2>
+    <div class="label-line"></div>
+    <div class="label-sub">Key Terms Across All Subjects</div>
+  </div>
+  <div class="container" style="scroll-margin-top:52px;">
+    <div class="glossary-controls">
+      <div class="glossary-subject-filters" id="glossarySubjectFilters">
+        <button class="filter-btn active" data-gf="all" onclick="filterGlossary('all')">All</button>
+        <button class="filter-btn" data-gf="economics" onclick="filterGlossary('economics')">Economics</button>
+        <button class="filter-btn" data-gf="business" onclick="filterGlossary('business')">Business Studies</button>
+        <button class="filter-btn" data-gf="ict" onclick="filterGlossary('ict')">ICT</button>
+      </div>
+      <div class="glossary-search-wrapper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="glossary-search" id="glossarySearch" placeholder="Search terms..." aria-label="Search glossary">
+      </div>
+    </div>
+    <div class="glossary-count" id="glossaryCount"></div>
+    <div class="glossary-list" id="glossaryList"></div>
+    <div class="glossary-empty" id="glossaryEmpty" style="display:none;">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:0.5rem;"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+      <p>No terms match your search.</p>
+      <p>Try a different keyword or browse all subjects.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GLOSSARY TOOLTIP ===== -->
+<div class="glossary-tooltip" id="glossaryTooltip">
+  <div class="gt-term" id="gtTerm"></div>
+  <div class="gt-def" id="gtDef"></div>
+  <div class="gt-subject" id="gtSubject"></div>
+</div>
+
 <!-- ===== QUIZ MODAL ===== -->
 <div class="quiz-overlay" id="quizOverlay">
   <div class="quiz-modal">
@@ -1608,6 +2100,74 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
     <div style="clear:both;"></div>
   </div>
 </div>
+
+<!-- ===== FLASHCARD MODAL ===== -->
+<div class="flashcard-overlay" id="flashcardOverlay">
+  <div class="flashcard-modal">
+    <button class="flashcard-close" id="flashcardClose">&times;</button>
+    <div class="flashcard-deck-info">
+      <span class="fdi-label" id="fcDeckLabel">Economics / Lesson 1</span>
+      <span class="fdi-count" id="fcDeckCount">0 / 0</span>
+    </div>
+    <div class="flashcard-progress">
+      <div class="flashcard-progress-bar"><div class="fp-fill" id="fpFill"></div></div>
+      <span class="flashcard-progress-text" id="fpText">0 of 0</span>
+    </div>
+    <div id="flashcardBody">
+      <div class="flip-card" id="flipCard" onclick="flipFlashcard()">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="fcf-label">Question</div>
+            <div class="fcf-text" id="fcFront"></div>
+            <div class="fcf-hint">Tap or click to flip</div>
+          </div>
+          <div class="flip-card-back">
+            <div class="fcb-label">Answer</div>
+            <div class="fcb-text" id="fcBack"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flashcard-actions" id="fcActions">
+        <button class="fc-btn fc-btn-again" onclick="rateFlashcard('again')">Again</button>
+        <button class="fc-btn fc-btn-hard" onclick="rateFlashcard('hard')">Hard</button>
+        <button class="fc-btn fc-btn-easy" onclick="rateFlashcard('easy')">Easy</button>
+      </div>
+    </div>
+    <div class="flashcard-empty" id="fcEmpty" style="display:none;">
+      <svg class="flashcard-done-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <p>All caught up!</p>
+      <p style="font-size:0.8rem;">No flashcards due for this lesson. Come back later.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BADGE NOTIFICATION ===== -->
+<div class="badge-notify" id="badgeNotify">
+  <div class="bn-icon"></div>
+  <div>
+    <div class="bn-title">Badge Unlocked!</div>
+    <div class="bn-name"></div>
+    <div class="bn-desc"></div>
+  </div>
+</div>
+
+<style>
+.badge-notify{
+  position:fixed;bottom:2rem;right:2rem;z-index:2000;
+  display:flex;align-items:center;gap:0.8rem;
+  padding:0.8rem 1.2rem;
+  background:var(--surface);border:1px solid var(--amber-dim);
+  border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  transform:translateY(120%);opacity:0;
+  transition:transform 0.4s cubic-bezier(.22,1,.36,1),opacity 0.4s ease;
+  max-width:320px;
+}
+.badge-notify.show{transform:translateY(0);opacity:1;}
+.badge-notify .bn-icon{font-size:2rem;line-height:1;}
+.badge-notify .bn-title{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--amber);font-weight:600;}
+.badge-notify .bn-name{font-size:0.95rem;font-weight:700;color:var(--text);}
+.badge-notify .bn-desc{font-size:0.75rem;color:var(--text-dim);}
+</style>
 
 <!-- ===== FOOTER ===== -->
 <footer style="scroll-margin-top:52px;">
@@ -1886,6 +2446,160 @@ const QUIZ_DATA = {
 };
 
 // =====================================================================
+// DATA: FLASHCARDS
+// =====================================================================
+const FLASHCARDS_DATA = {
+  economics: {
+    1: [
+      { front:'What is the fundamental economic problem?', back:'Scarcity — unlimited human wants exceed limited resources, forcing choices about allocation.' },
+      { front:'Define opportunity cost.', back:'The value of the next best alternative forgone when a choice is made.' },
+      { front:'What are the four factors of production?', back:'Land, labour, capital, and entrepreneurship.' },
+      { front:'What does a point inside the PPC indicate?', back:'Underutilization of resources — the economy is not producing at its full potential.' },
+      { front:'What is the difference between needs and wants?', back:'Needs are essential for survival (food, water, shelter); wants are non-essential desires.' },
+      { front:'What does a rightward shift of the PPC represent?', back:'Economic growth — an increase in the economy\'s productive capacity.' },
+      { front:'In a market economy, how are resources allocated?', back:'Through the price mechanism — supply and demand forces determine allocation.' },
+      { front:'What three basic questions must every economy answer?', back:'What to produce? How to produce? For whom to produce?' }
+    ],
+    2: [
+      { front:'State the law of demand.', back:'As price increases, quantity demanded decreases (inverse relationship).' },
+      { front:'What is market equilibrium?', back:'The point where quantity demanded equals quantity supplied.' },
+      { front:'What causes a surplus in a market?', back:'Price is above equilibrium — quantity supplied exceeds quantity demanded.' },
+      { front:'What causes a shortage in a market?', back:'Price is below equilibrium — quantity demanded exceeds quantity supplied.' },
+      { front:'What does price elasticity of demand measure?', back:'How responsive quantity demanded is to a change in price.' },
+      { front:'What type of good sees demand increase when consumer income rises?', back:'A normal good.' },
+      { front:'What happens to the demand for a substitute when the price of the other good rises?', back:'Demand for the substitute increases (rightward shift).' }
+    ],
+    3: [
+      { front:'What is a price ceiling?', back:'A government-imposed maximum price below equilibrium, intended to make essential goods affordable.' },
+      { front:'What is a price floor?', back:'A government-imposed minimum price above equilibrium, intended to protect producers.' },
+      { front:'What is the likely result of a binding price ceiling?', back:'A shortage — quantity demanded exceeds quantity supplied at the artificially low price.' },
+      { front:'What is the likely result of a binding price floor?', back:'A surplus — quantity supplied exceeds quantity demanded at the artificially high price.' },
+      { front:'How does a subsidy affect the supply curve?', back:'A subsidy shifts the supply curve to the right (increases supply at every price).' }
+    ],
+    4: [
+      { front:'What is the law of diminishing returns?', back:'As more of a variable input is added to fixed inputs, the marginal product eventually decreases.' },
+      { front:'What are economies of scale?', back:'Cost advantages that firms experience when production increases — average cost falls as output rises.' },
+      { front:'What are the main market structures?', back:'Perfect competition, monopolistic competition, oligopoly, and monopoly.' },
+      { front:'What is a monopoly?', back:'A market structure with a single seller, high barriers to entry, and significant price-setting power.' }
+    ],
+    5: [
+      { front:'What is GDP?', back:'Gross Domestic Product — the total monetary value of all final goods and services produced within a country in a given period.' },
+      { front:'What are the three approaches to measuring GDP?', back:'Production (output) approach, expenditure approach, and income approach.' },
+      { front:'What is the circular flow of income?', back:'A model showing the flow of goods, services, and money between households and firms in an economy.' }
+    ],
+    6: [
+      { front:'What is aggregate demand?', back:'The total spending on goods and services in an economy at a given price level.' },
+      { front:'What is the business cycle?', back:'The fluctuation of economic activity between periods of expansion (boom) and contraction (recession).' },
+      { front:'What are the main types of unemployment?', back:'Frictional, structural, cyclical, and seasonal unemployment.' }
+    ],
+    7: [
+      { front:'What is inflation?', back:'A sustained increase in the general price level of goods and services, reducing purchasing power.' },
+      { front:'What is monetary policy?', back:'Actions by a central bank to control money supply, interest rates, and credit conditions.' },
+      { front:'What are the main functions of money?', back:'Medium of exchange, store of value, unit of account, and standard of deferred payment.' }
+    ],
+    8: [
+      { front:'What are externalities?', back:'Spillover effects of production or consumption that affect third parties not involved in the market transaction.' },
+      { front:'What are public goods?', back:'Goods that are non-rival and non-excludable — one person\'s use does not reduce availability for others.' },
+      { front:'What is fiscal policy?', back:'Government use of taxation and spending to influence the economy.' }
+    ],
+    9: [
+      { front:'What is comparative advantage?', back:'The ability of a country to produce a good at a lower opportunity cost than another country.' },
+      { front:'What is protectionism?', back:'Government policies that restrict international trade to protect domestic industries.' },
+      { front:'Name three trade barriers.', back:'Tariffs (taxes on imports), quotas (limits on quantity), and subsidies to domestic producers.' }
+    ],
+    10: [
+      { front:'What is an exchange rate?', back:'The price of one currency expressed in terms of another currency.' },
+      { front:'What is the balance of payments?', back:'A record of all economic transactions between residents of a country and the rest of the world.' },
+      { front:'What does appreciation of a currency mean?', back:'The currency has become more valuable relative to other currencies.' }
+    ],
+    11: [
+      { front:'What is economic growth?', back:'An increase in an economy\'s productive capacity, measured by real GDP growth.' },
+      { front:'What is the Human Development Index (HDI)?', back:'A composite measure of life expectancy, education, and income per capita.' },
+      { front:'What is labour productivity?', back:'Output per worker or per hour worked — a key determinant of living standards.' }
+    ],
+    12: [
+      { front:'What was the dominant export crop of colonial Ceylon?', back:'Coffee — introduced by the British in the early 19th century, it dominated the economy until a fungal disease (coffee rust) devastated plantations in the 1870s.' },
+      { front:'What replaced coffee as Sri Lanka\'s main export crop?', back:'Tea — after the collapse of coffee, the British shifted to tea cultivation, which became the backbone of the plantation economy.' },
+      { front:'What were the key policies of Sri Lanka\'s post-independence import substitution era?', back:'Protective tariffs, import controls, state-led industrialization, and nationalization of foreign-owned plantations and key industries (1948–1977).' },
+      { front:'What was the 1977 economic liberalization in Sri Lanka?', back:'A shift from import substitution to export-oriented growth — trade liberalization, privatization, FDI promotion, and removal of price controls under the UNP government.' },
+      { front:'What caused the 30-year civil war\'s impact on the Sri Lankan economy?', back:'Reduced tourism and FDI, high military spending (diverted from development), destruction of infrastructure in the North and East, and loss of skilled labor.' },
+      { front:'What is the significance of the Colombo Port for Sri Lanka\'s economy?', back:'A major transshipment hub in South Asia — generates foreign exchange and employment; expansion under Chinese investment (Colombo Port City project) has been both economically beneficial and geopolitically contentious.' },
+      { front:'What are the main sectors of Sri Lanka\'s current economy?', back:'Services (tourism, IT, finance — ~60% of GDP), industry (textiles/apparel, construction — ~25%), and agriculture (tea, rubber, coconut — ~8%).' },
+      { front:'What is the biggest economic challenge facing Sri Lanka today?', back:'The 2022 sovereign debt crisis — foreign exchange shortages, inflation, and IMF bailout conditions requiring fiscal consolidation, tax reform, and restructuring of state-owned enterprises.' }
+    ]
+  },
+  business: {
+    1: [
+      { front:'What is the primary purpose of a business?', back:'To produce goods and services that satisfy human needs and wants.' },
+      { front:'Who are the stakeholders of a business?', back:'Shareholders, employees, customers, suppliers, government, and the community.' },
+      { front:'What does PEST analysis examine?', back:'Political, Economic, Social, and Technological factors affecting a business.' },
+      { front:'What is a sole trader?', back:'A business owned by one person with unlimited liability for debts.' },
+      { front:'What does the secondary sector involve?', back:'Manufacturing and construction — transforming raw materials into finished goods.' },
+      { front:'What is opportunity cost for a business?', back:'The benefit given up from the next best alternative when making a decision.' }
+    ],
+    2: [
+      { front:'What is Corporate Social Responsibility (CSR)?', back:'A business\'s voluntary commitment to operate ethically beyond legal requirements.' },
+      { front:'What is the triple bottom line?', back:'A framework measuring performance across People, Planet, and Profit.' },
+      { front:'What is ethical trading?', back:'Ensuring fair wages, safe working conditions, and human rights throughout the supply chain.' },
+      { front:'What is greenwashing?', back:'Making misleading claims about environmental practices to appear more eco-friendly.' },
+      { front:'Can a business act legally but unethically?', back:'Yes — legal compliance does not equal ethical behavior. CSR goes beyond the law.' }
+    ],
+    3: [
+      { front:'What is consumer protection?', back:'Laws and regulations designed to safeguard consumers from unfair or unsafe business practices.' },
+      { front:'Why do governments regulate business?', back:'To protect consumers, workers, the environment, and maintain fair competition.' },
+      { front:'What is a monopoly regulation?', back:'Laws that prevent anti-competitive behavior and abuse of market power.' }
+    ],
+    4: [
+      { front:'What is a partnership?', back:'A business where two or more individuals share ownership, profits, and liabilities.' },
+      { front:'What is limited liability?', back:'Shareholders are only liable for the company\'s debts up to the value of their shares.' },
+      { front:'What is a corporation?', back:'A legal entity separate from its owners that can raise capital through share issuance.' }
+    ],
+    5: [
+      { front:'What is entrepreneurship?', back:'The process of identifying opportunities, taking risks, and organizing resources to create ventures.' },
+      { front:'What is a business plan?', back:'A document outlining business goals, strategies, market analysis, and financial projections.' },
+      { front:'What is Return on Investment (ROI)?', back:'A measure of profitability — the return relative to the cost of an investment.' }
+    ],
+    6: [
+      { front:'What are the functions of money?', back:'Medium of exchange, store of value, unit of account, standard of deferred payment.' },
+      { front:'What is a financial institution?', back:'An organization that handles financial transactions — banks, insurance companies, investment firms.' },
+      { front:'What is the role of a central bank?', back:'Regulating money supply, controlling inflation, supervising banks, and managing currency.' }
+    ],
+    7: [
+      { front:'What is insurance?', back:'A contract where an insurer provides financial protection against specified risks in exchange for premiums.' },
+      { front:'What is a premium?', back:'The regular payment made by a policyholder to an insurance company for coverage.' },
+      { front:'What is the principle of indemnity?', back:'Insurance should restore the policyholder to their original financial position, not allow profit from a loss.' }
+    ],
+    8: [
+      { front:'What is business communication?', back:'The sharing of information within and outside an organization for commercial benefit.' },
+      { front:'What are the main types of business communication?', back:'Verbal (oral), written, non-verbal, and digital/electronic communication.' },
+      { front:'What is a communication barrier?', back:'Anything that prevents effective understanding — language, noise, cultural differences, or technology issues.' }
+    ]
+  },
+  ict: {
+    1: [
+      { front:'What function displays output in Python?', back:'print()' },
+      { front:'What type does input() always return?', back:'A string — use int() or float() to convert to numeric types.' },
+      { front:'Which symbol is used for comments in Python?', back:'#' },
+      { front:'Name four Python data types.', back:'int, float, str, bool' },
+      { front:'What does the modulo operator (%) do?', back:'Returns the remainder of a division — e.g., 17 % 5 = 2.' },
+      { front:'How do you convert "42" to an integer?', back:'int("42")' },
+      { front:'What is a variable?', back:'A named storage location in memory that holds a value which can change during execution.' },
+      { front:'What is syntax?', back:'The set of rules defining the correct structure of statements in a programming language.' }
+    ],
+    2: [
+      { front:'What keyword starts a conditional in Python?', back:'if' },
+      { front:'How do you check equality in Python?', back:'Using == (double equals). Single = is for assignment.' },
+      { front:'What keyword exits a loop immediately?', back:'break' },
+      { front:'What does range(1, 6) generate?', back:'Numbers 1, 2, 3, 4, 5 (stop value 6 is exclusive).' },
+      { front:'What is the difference between for and while loops?', back:'for loops iterate over a sequence; while loops repeat until a condition becomes false.' },
+      { front:'What does not True evaluate to?', back:'False' },
+      { front:'What is an algorithm?', back:'A step-by-step procedure or set of instructions to solve a specific problem.' },
+      { front:'What is debugging?', back:'The process of identifying and fixing errors in computer programs.' }
+    ]
+  }
+};
+
+// =====================================================================
 // === QUIZ ENGINE ===
 // =====================================================================
 let quizState = {
@@ -2016,8 +2730,15 @@ function showResults() {
     localStorage.setItem(key, score);
   }
 
+  // Award XP for quiz
+  if (pct === 1) addXP(100, 'perfect:' + quizState.subjectId + ':' + quizState.lessonId);
+  else if (pct >= 0.8) addXP(50, 'high:' + quizState.subjectId + ':' + quizState.lessonId);
+  else addXP(25, 'quiz:' + quizState.subjectId + ':' + quizState.lessonId);
+  checkBadges();
+
   // Update lesson card best score display
   renderStudyHub();
+  renderDashboard();
 }
 
 function closeQuiz() {
@@ -2107,6 +2828,10 @@ function renderStudyHub() {
           <svg class="subject-panel-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </div>
       </div>
+      <div class="subject-progress-strip">
+        <div class="subject-progress-track"><div class="subject-progress-fill" style="background:${accent}" data-pct="${pct}"></div></div>
+        <span class="subject-progress-label">${doneCount}/${lessonCount}</span>
+      </div>
       <div class="subject-panel-body">
         <div class="subject-panel-inner"></div>
       </div>
@@ -2135,6 +2860,11 @@ function renderStudyHub() {
         bestHtml = '<span class="lesson-best">Best: ' + best + '/' + totalQ + '</span>';
       }
 
+      // Flashcard due count
+      const fcTotal = (FLASHCARDS_DATA[subject.id] && FLASHCARDS_DATA[subject.id][lesson.id]) ? FLASHCARDS_DATA[subject.id][lesson.id].length : 0;
+      const fcDue = fcTotal > 0 ? getDueFlashcardCount(subject.id, lesson.id) : 0;
+      const fcHtml = fcDue > 0 ? '<span class="flashcard-due">' + fcDue + ' due</span>' : (fcTotal > 0 ? '<span class="flashcard-due" style="color:var(--text-muted)">' + fcDue + ' due</span>' : '');
+
       card.innerHTML = `
         <span class="lesson-num">${String(lesson.id).padStart(2, '0')}</span>
         <div class="lesson-info">
@@ -2142,9 +2872,11 @@ function renderStudyHub() {
           <div class="lesson-desc">${lesson.desc}</div>
         </div>
         ${bestHtml}
+        ${fcHtml}
         <div class="lesson-actions">
           <a class="lesson-action-btn primary" href="${lesson.path}">Start</a>
           <button class="lesson-action-btn quiz" onclick="event.stopPropagation();openQuiz('${subject.id}',${lesson.id})">Quiz</button>
+          ${fcTotal > 0 ? '<button class="lesson-action-btn" style="border-color:var(--purple-dim);color:var(--purple-light);" onclick="event.stopPropagation();openFlashcards(\'' + subject.id + '\',' + lesson.id + ')">Flashcards</button>' : ''}
         </div>
         <span class="lesson-status ${statusClass}" onclick="event.stopPropagation();cycleStatus(this,'${subject.id}',${lesson.id})">${statusLabels[status]}</span>
       `;
@@ -2184,7 +2916,12 @@ function cycleStatus(el, subjectId, lessonId) {
   const next = current === 'not-started' ? 'in-progress' : current === 'in-progress' ? 'done' : 'not-started';
   if (next === 'not-started') localStorage.removeItem(key);
   else localStorage.setItem(key, next);
+  if (next === 'done') {
+    addXP(50, 'lesson:' + subjectId + ':' + lessonId);
+    checkBadges();
+  }
   renderStudyHub();
+  renderDashboard();
   buildSubjectNav();
 }
 
@@ -2231,6 +2968,12 @@ function switchTab(tab) {
   }
   if (tab === 'mylist') {
     renderMyList();
+  }
+  if (tab === 'glossary') {
+    renderGlossary();
+  }
+  if (tab === 'dashboard') {
+    renderDashboard();
   }
 }
 
@@ -2460,6 +3203,115 @@ document.getElementById('studySearch').addEventListener('input', function() {
 document.getElementById('expandAllToggle').addEventListener('click', toggleAllSubjects);
 
 // =====================================================================
+// === GLOSSARY ===
+// =====================================================================
+let glossaryFilter = 'all';
+let glossarySearchQ = '';
+
+function filterGlossary(subject) {
+  glossaryFilter = subject;
+  document.querySelectorAll('#glossarySubjectFilters .filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.gf === subject);
+  });
+  renderGlossary();
+}
+
+function renderGlossary() {
+  const list = document.getElementById('glossaryList');
+  const empty = document.getElementById('glossaryEmpty');
+  const count = document.getElementById('glossaryCount');
+  const q = document.getElementById('glossarySearch').value.trim().toLowerCase();
+
+  let terms = GLOSSARY_DATA;
+  if (glossaryFilter !== 'all') {
+    terms = terms.filter(t => t.subject === glossaryFilter);
+  }
+  if (q) {
+    terms = terms.filter(t =>
+      t.term.toLowerCase().includes(q) ||
+      t.definition.toLowerCase().includes(q)
+    );
+  }
+
+  if (terms.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    count.textContent = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // Group by subject
+  const groups = {};
+  const subjectOrder = ['economics', 'business', 'ict'];
+  const subjectNames = { economics: 'Economics', business: 'Business Studies', ict: 'ICT' };
+  const subjectAccents = { economics: 'var(--teal)', business: 'var(--amber)', ict: 'var(--purple)' };
+
+  terms.forEach(t => {
+    if (!groups[t.subject]) groups[t.subject] = [];
+    groups[t.subject].push(t);
+  });
+
+  // Sort within each group by lesson ref then term
+  Object.keys(groups).forEach(k => {
+    groups[k].sort((a, b) => {
+      if (a.lessonRef !== b.lessonRef) return a.lessonRef.localeCompare(b.lessonRef);
+      return a.term.localeCompare(b.term);
+    });
+  });
+
+  let html = '';
+  subjectOrder.forEach(sid => {
+    if (!groups[sid]) return;
+    const gTerms = groups[sid];
+    const accent = subjectAccents[sid] || 'var(--green)';
+
+    html += '<div class="glossary-subject-group open">' +
+      '<div class="glossary-sg-header" onclick="this.closest(\'.glossary-subject-group\').classList.toggle(\'open\')">' +
+        '<div class="glossary-sg-accent" style="background:' + accent + '"></div>' +
+        '<span class="glossary-sg-title">' + subjectNames[sid] + '</span>' +
+        '<span class="glossary-sg-count">' + gTerms.length + ' terms</span>' +
+        '<svg class="glossary-sg-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+      '</div>' +
+      '<div class="glossary-sg-body"><div class="glossary-sg-inner">';
+
+    gTerms.forEach(t => {
+      const lessonLabel = t.lessonRef ? 'Lesson ' + t.lessonRef.replace('L', '') : '';
+      html += '<div class="glossary-term-row">' +
+        '<span class="glossary-term-name" data-glossary-id="' + t.id + '" onmouseenter="showGlossaryTooltip(event,\'' + t.id + '\')" onmouseleave="hideGlossaryTooltip()">' + escapeHtml(t.term) + '</span>' +
+        '<span class="glossary-term-def">' + escapeHtml(t.definition) + '</span>' +
+        (lessonLabel ? '<span class="glossary-term-lesson">' + lessonLabel + '</span>' : '') +
+      '</div>';
+    });
+
+    html += '</div></div></div>';
+  });
+
+  list.innerHTML = html;
+  count.textContent = terms.length + ' term' + (terms.length !== 1 ? 's' : '');
+}
+
+function showGlossaryTooltip(e, termId) {
+  const term = GLOSSARY_DATA.find(t => t.id === termId);
+  if (!term) return;
+  const tooltip = document.getElementById('glossaryTooltip');
+  document.getElementById('gtTerm').textContent = term.term;
+  document.getElementById('gtDef').textContent = term.definition;
+  document.getElementById('gtSubject').textContent = term.subjectName || '';
+  tooltip.style.left = Math.min(e.clientX + 12, window.innerWidth - 340) + 'px';
+  tooltip.style.top = Math.min(e.clientY + 12, window.innerHeight - 120) + 'px';
+  tooltip.classList.add('show');
+}
+
+function hideGlossaryTooltip() {
+  document.getElementById('glossaryTooltip').classList.remove('show');
+}
+
+document.getElementById('glossarySearch').addEventListener('input', function() {
+  renderGlossary();
+});
+
+// =====================================================================
 // === KEYBOARD SHORTCUTS ===
 // =====================================================================
 document.addEventListener('keydown', function(e) {
@@ -2470,8 +3322,11 @@ document.addEventListener('keydown', function(e) {
     e.preventDefault();
     const studySearch = document.getElementById('studySearch');
     const bookSearch = document.getElementById('search');
+    const glossarySearch = document.getElementById('glossarySearch');
     if (document.getElementById('tab-study').classList.contains('active')) {
       studySearch.focus();
+    } else if (document.getElementById('tab-glossary').classList.contains('active')) {
+      glossarySearch.focus();
     } else {
       bookSearch.focus();
     }
@@ -2479,6 +3334,7 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     const studySearch = document.getElementById('studySearch');
     const bookSearch = document.getElementById('search');
+    const glossarySearch = document.getElementById('glossarySearch');
     if (document.activeElement === studySearch) {
       studySearch.value = '';
       studySearch.blur();
@@ -2488,6 +3344,10 @@ document.addEventListener('keydown', function(e) {
       bookSearch.blur();
       searchQuery = '';
       renderBooks();
+    } else if (document.activeElement === glossarySearch) {
+      glossarySearch.value = '';
+      glossarySearch.blur();
+      renderGlossary();
     }
     return;
   }
@@ -2750,7 +3610,67 @@ function closeMobileMenu() {
 // =====================================================================
 // === GLOBAL SEARCH ===
 // =====================================================================
-const GLOSSARY_DATA = []; // TODO: populate when glossary feature is built
+const GLOSSARY_DATA = [
+  // === Economics ===
+  {id:'econ-01', term:'Scarcity', definition:'The fundamental economic problem — unlimited human wants exceed limited resources, forcing choices about allocation.', subject:'economics', lessonRef:'L1', subjectName:'Economics'},
+  {id:'econ-02', term:'Opportunity Cost', definition:'The value of the next best alternative forgone when a choice is made. It represents the trade-off of every decision.', subject:'economics', lessonRef:'L1', subjectName:'Economics'},
+  {id:'econ-03', term:'Factors of Production', definition:'The resources used to produce goods and services: land, labour, capital, and entrepreneurship.', subject:'economics', lessonRef:'L1', subjectName:'Economics'},
+  {id:'econ-04', term:'Production Possibility Curve (PPC)', definition:'A graph showing the maximum combinations of two goods an economy can produce given full and efficient use of its resources.', subject:'economics', lessonRef:'L1', subjectName:'Economics'},
+  {id:'econ-05', term:'Demand', definition:'The quantity of a good or service that consumers are willing and able to purchase at various prices during a given period.', subject:'economics', lessonRef:'L2', subjectName:'Economics'},
+  {id:'econ-06', term:'Supply', definition:'The quantity of a good or service that producers are willing and able to offer for sale at various prices during a given period.', subject:'economics', lessonRef:'L2', subjectName:'Economics'},
+  {id:'econ-07', term:'Equilibrium Price', definition:'The price at which quantity demanded equals quantity supplied — the market clears with no surplus or shortage.', subject:'economics', lessonRef:'L2', subjectName:'Economics'},
+  {id:'econ-08', term:'Elasticity', definition:'A measure of how responsive quantity demanded or supplied is to changes in price, income, or other factors.', subject:'economics', lessonRef:'L2', subjectName:'Economics'},
+  {id:'econ-09', term:'Price Ceiling', definition:'A government-imposed maximum price below equilibrium, intended to make essential goods affordable, often causing shortages.', subject:'economics', lessonRef:'L3', subjectName:'Economics'},
+  {id:'econ-10', term:'Price Floor', definition:'A government-imposed minimum price above equilibrium, intended to protect producers, often causing surpluses.', subject:'economics', lessonRef:'L3', subjectName:'Economics'},
+  {id:'econ-11', term:'Gross Domestic Product (GDP)', definition:'The total monetary value of all final goods and services produced within a country\'s borders in a given period.', subject:'economics', lessonRef:'L5', subjectName:'Economics'},
+  {id:'econ-12', term:'Inflation', definition:'A sustained increase in the general price level of goods and services, reducing the purchasing power of money.', subject:'economics', lessonRef:'L7', subjectName:'Economics'},
+  {id:'econ-13', term:'Monetary Policy', definition:'Actions by a central bank to control money supply, interest rates, and credit conditions to achieve price stability and economic growth.', subject:'economics', lessonRef:'L7', subjectName:'Economics'},
+  {id:'econ-14', term:'Fiscal Policy', definition:'Government use of taxation and spending to influence the economy — demand management, redistribution, and public investment.', subject:'economics', lessonRef:'L8', subjectName:'Economics'},
+  {id:'econ-15', term:'Externalities', definition:'Spillover effects of production or consumption that affect third parties not directly involved in the market transaction.', subject:'economics', lessonRef:'L8', subjectName:'Economics'},
+  {id:'econ-16', term:'Public Goods', definition:'Goods that are non-rival and non-excludable — one person\'s consumption does not reduce availability, and nobody can be excluded from using them.', subject:'economics', lessonRef:'L8', subjectName:'Economics'},
+  {id:'econ-17', term:'Comparative Advantage', definition:'The ability of a country to produce a good at a lower opportunity cost than another country, forming the basis for beneficial trade.', subject:'economics', lessonRef:'L9', subjectName:'Economics'},
+  {id:'econ-18', term:'Exchange Rate', definition:'The price of one currency in terms of another — determined by supply and demand in foreign exchange markets.', subject:'economics', lessonRef:'L10', subjectName:'Economics'},
+  {id:'econ-19', term:'Balance of Payments', definition:'A record of all economic transactions between residents of a country and the rest of the world over a period.', subject:'economics', lessonRef:'L10', subjectName:'Economics'},
+  {id:'econ-20', term:'Economic Growth', definition:'An increase in an economy\'s productive capacity over time, measured by the growth of real GDP.', subject:'economics', lessonRef:'L11', subjectName:'Economics'},
+
+  // === Business Studies ===
+  {id:'bus-01', term:'Business', definition:'An organization that produces goods or provides services to satisfy human needs and wants, with the goal of generating profit.', subject:'business', lessonRef:'L1', subjectName:'Business Studies'},
+  {id:'bus-02', term:'Stakeholder', definition:'Any individual or group with an interest in a business\'s activities — shareholders, employees, customers, suppliers, government, and the community.', subject:'business', lessonRef:'L1', subjectName:'Business Studies'},
+  {id:'bus-03', term:'Corporate Social Responsibility (CSR)', definition:'A business\'s voluntary commitment to operate ethically and contribute to society beyond its legal obligations.', subject:'business', lessonRef:'L2', subjectName:'Business Studies'},
+  {id:'bus-04', term:'Triple Bottom Line', definition:'A framework measuring business performance across three dimensions: social (People), environmental (Planet), and financial (Profit).', subject:'business', lessonRef:'L2', subjectName:'Business Studies'},
+  {id:'bus-05', term:'PEST Analysis', definition:'A strategic tool examining macro-environmental factors: Political, Economic, Social, and Technological forces affecting a business.', subject:'business', lessonRef:'L1', subjectName:'Business Studies'},
+  {id:'bus-06', term:'Sole Trader', definition:'A business owned and operated by one person who bears unlimited liability for all debts and obligations.', subject:'business', lessonRef:'L4', subjectName:'Business Studies'},
+  {id:'bus-07', term:'Partnership', definition:'A business structure where two or more individuals share ownership, responsibilities, profits, and liabilities.', subject:'business', lessonRef:'L4', subjectName:'Business Studies'},
+  {id:'bus-08', term:'Corporation', definition:'A legal entity separate from its owners (shareholders) that offers limited liability and can raise capital through share issuance.', subject:'business', lessonRef:'L4', subjectName:'Business Studies'},
+  {id:'bus-09', term:'Entrepreneurship', definition:'The process of identifying opportunities, taking risks, and organizing resources to create and grow a business venture.', subject:'business', lessonRef:'L5', subjectName:'Business Studies'},
+  {id:'bus-10', term:'Franchise', definition:'A business model where a franchisor grants a franchisee the right to operate under its brand name and system in exchange for fees.', subject:'business', lessonRef:'L5', subjectName:'Business Studies'},
+  {id:'bus-11', term:'Market Share', definition:'The percentage of total sales in a market captured by a particular company or product.', subject:'business', lessonRef:'L1', subjectName:'Business Studies'},
+  {id:'bus-12', term:'Supply Chain', definition:'The network of organizations, resources, and activities involved in producing and delivering a product from suppliers to customers.', subject:'business', lessonRef:'L1', subjectName:'Business Studies'},
+  {id:'bus-13', term:'Ethical Trading', definition:'Sourcing and trading practices that ensure fair wages, safe working conditions, and human rights throughout the supply chain.', subject:'business', lessonRef:'L2', subjectName:'Business Studies'},
+  {id:'bus-14', term:'Greenwashing', definition:'Misleading claims by a business about its environmental practices to appear more environmentally friendly than it actually is.', subject:'business', lessonRef:'L2', subjectName:'Business Studies'},
+  {id:'bus-15', term:'Break-even Point', definition:'The level of sales at which total revenue equals total costs — the point where a business makes neither profit nor loss.', subject:'business', lessonRef:'L1', subjectName:'Business Studies'},
+  {id:'bus-16', term:'Return on Investment (ROI)', definition:'A performance measure evaluating the profitability of an investment relative to its cost, expressed as a percentage.', subject:'business', lessonRef:'L5', subjectName:'Business Studies'},
+  {id:'bus-17', term:'Consumer Protection', definition:'Laws and regulations designed to safeguard consumers from unfair, deceptive, or unsafe business practices.', subject:'business', lessonRef:'L3', subjectName:'Business Studies'},
+  {id:'bus-18', term:'Insurance Premium', definition:'The regular payment made by a policyholder to an insurance company in exchange for coverage against specified risks.', subject:'business', lessonRef:'L7', subjectName:'Business Studies'},
+
+  // === ICT ===
+  {id:'ict-01', term:'Variable', definition:'A named storage location in memory that holds a value which can change during program execution.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-02', term:'Data Type', definition:'A classification that specifies which type of value a variable can hold — such as integer, float, string, or boolean.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-03', term:'String', definition:'A sequence of characters enclosed in quotes — used to represent text in programming.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-04', term:'Integer', definition:'A whole number data type — positive, negative, or zero — without decimal points.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-05', term:'Float', definition:'A numeric data type that represents numbers with decimal points, also called floating-point numbers.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-06', term:'Boolean', definition:'A data type with only two possible values: True or False — used in logical conditions and decision-making.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-07', term:'Function', definition:'A reusable block of code that performs a specific task, taking inputs (parameters) and optionally returning a result.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-08', term:'Conditional Statement', definition:'A programming construct (if/elif/else) that executes different code blocks based on whether a condition is true or false.', subject:'ict', lessonRef:'L2', subjectName:'ICT'},
+  {id:'ict-09', term:'Loop', definition:'A control structure that repeatedly executes a block of code — for loops iterate a set number of times, while loops repeat until a condition changes.', subject:'ict', lessonRef:'L2', subjectName:'ICT'},
+  {id:'ict-10', term:'Syntax', definition:'The set of rules that defines the correct structure and grammar of statements in a programming language.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-11', term:'Algorithm', definition:'A step-by-step procedure or set of instructions designed to solve a specific problem or accomplish a task.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-12', term:'Debugging', definition:'The process of identifying, analyzing, and fixing errors or bugs in computer programs.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-13', term:'Array', definition:'A data structure that stores a collection of elements, each identified by an index or key, typically of the same data type.', subject:'ict', lessonRef:'L2', subjectName:'ICT'},
+  {id:'ict-14', term:'Parameter', definition:'A variable passed into a function when it is called, providing input data for the function to process.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-15', term:'Pseudocode', definition:'An informal, human-readable description of an algorithm using plain language and basic programming concepts — not actual code.', subject:'ict', lessonRef:'L1', subjectName:'ICT'},
+  {id:'ict-16', term:'Interpreter', definition:'A program that executes code line by line without requiring compilation — Python is an interpreted language.', subject:'ict', lessonRef:'L1', subjectName:'ICT'}
+];
 
 let NEXO_SEARCH_INDEX = [];
 
@@ -3150,14 +4070,542 @@ function openBookmarks() {
 })();
 
 // =====================================================================
+// === XP & BADGES ===
+// =====================================================================
+function getXP() {
+  return parseInt(localStorage.getItem('nexo_xp')) || 0;
+}
+
+function addXP(amount, reason) {
+  const xp = getXP() + amount;
+  localStorage.setItem('nexo_xp', xp);
+  return xp;
+}
+
+function getLevel(xp) {
+  if (xp < 200) return 1;
+  if (xp < 500) return 2;
+  if (xp < 1000) return 3;
+  if (xp < 2000) return 4;
+  if (xp < 3500) return 5;
+  return 6 + Math.floor((xp - 3500) / 2000);
+}
+
+function getLevelXP(xp) {
+  const thresholds = [0, 200, 500, 1000, 2000, 3500];
+  const level = getLevel(xp);
+  if (level <= 6) {
+    const prev = thresholds[level - 1];
+    const next = thresholds[level];
+    return { current: xp - prev, needed: next - prev, pct: ((xp - prev) / (next - prev)) * 100 };
+  }
+  const prev = 3500 + (level - 6) * 2000;
+  return { current: xp - prev, needed: 2000, pct: ((xp - prev) / 2000) * 100 };
+}
+
+function getTotalLessonsDone() {
+  let count = 0;
+  SUBJECTS_DATA.forEach(s => {
+    s.lessons.forEach(l => {
+      if (localStorage.getItem('nexo_lesson_' + s.id + '_' + l.id) === 'done') count++;
+    });
+  });
+  return count;
+}
+
+function countPerfectQuizzes() {
+  let count = 0;
+  SUBJECTS_DATA.forEach(s => {
+    s.lessons.forEach(l => {
+      const key = 'nexo_quiz_' + s.id + '_' + l.id + '_best';
+      const score = parseInt(localStorage.getItem(key)) || 0;
+      const totalQ = (QUIZ_DATA[s.id] && QUIZ_DATA[s.id][l.id]) ? QUIZ_DATA[s.id][l.id].length : 0;
+      if (score > 0 && score === totalQ) count++;
+    });
+  });
+  return count;
+}
+
+function getBadges() {
+  try { return JSON.parse(localStorage.getItem('nexo_badges')) || []; } catch(e) { return []; }
+}
+
+function awardBadge(id) {
+  const badges = getBadges();
+  if (badges.includes(id)) return false;
+  badges.push(id);
+  localStorage.setItem('nexo_badges', JSON.stringify(badges));
+  return true;
+}
+
+const BADGES_DEF = [
+  { id:'first-lesson', name:'First Steps', desc:'Complete your first lesson', icon:'🏁' },
+  { id:'quick-learner', name:'Quick Learner', desc:'Complete 5 lessons', icon:'📚' },
+  { id:'scholar', name:'Scholar', desc:'Complete 10 lessons', icon:'🎓' },
+  { id:'subject-master', name:'Subject Master', desc:'Complete all lessons in a subject', icon:'👑' },
+  { id:'quiz-ace', name:'Quiz Ace', desc:'Get 100% on any quiz', icon:'✅' },
+  { id:'quiz-legend', name:'Quiz Legend', desc:'Get 100% on 3 quizzes', icon:'🏆' },
+  { id:'streak-3', name:'Streak Starter', desc:'3-day streak', icon:'🔥' },
+  { id:'streak-7', name:'Streak Warrior', desc:'7-day streak', icon:'⚡' },
+  { id:'streak-30', name:'Streak Legend', desc:'30-day streak', icon:'💫' },
+  { id:'flashcard-fanatic', name:'Flashcard Fanatic', desc:'Review 20 flashcards', icon:'🃏' },
+  { id:'dedicated', name:'Dedicated', desc:'Complete 20 lessons', icon:'💎' },
+  { id:'all-rounder', name:'All-Rounder', desc:'Study every subject', icon:'🌐' }
+];
+
+function checkBadgeCondition(id) {
+  const totalDone = getTotalLessonsDone();
+  const streak = getStreak();
+  const fcReviewed = parseInt(localStorage.getItem('nexo_fc_reviewed')) || 0;
+  switch (id) {
+    case 'first-lesson': return totalDone >= 1;
+    case 'quick-learner': return totalDone >= 5;
+    case 'scholar': return totalDone >= 10;
+    case 'subject-master': return SUBJECTS_DATA.some(s => { const stats = getSubjectStats(s.id); return stats.total > 0 && stats.done === stats.total; });
+    case 'quiz-ace': return countPerfectQuizzes() >= 1;
+    case 'quiz-legend': return countPerfectQuizzes() >= 3;
+    case 'streak-3': return streak.count >= 3;
+    case 'streak-7': return streak.count >= 7;
+    case 'streak-30': return streak.count >= 30;
+    case 'flashcard-fanatic': return fcReviewed >= 20;
+    case 'dedicated': return totalDone >= 20;
+    case 'all-rounder': return SUBJECTS_DATA.every(s => s.lessons.some(l => localStorage.getItem('nexo_lesson_' + s.id + '_' + l.id) === 'done'));
+    default: return false;
+  }
+}
+
+function checkBadges() {
+  let newBadge = null;
+  BADGES_DEF.forEach(b => {
+    if (checkBadgeCondition(b.id)) {
+      if (awardBadge(b.id)) newBadge = b;
+    }
+  });
+  if (newBadge) notifyBadge(newBadge);
+}
+
+function notifyBadge(badge) {
+  const el = document.getElementById('badgeNotify');
+  if (el) {
+    el.querySelector('.bn-icon').textContent = badge.icon;
+    el.querySelector('.bn-name').textContent = badge.name;
+    el.querySelector('.bn-desc').textContent = badge.desc;
+    el.classList.add('show');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.classList.remove('show'), 4000);
+  }
+}
+
+// =====================================================================
+// === DASHBOARD ===
+// =====================================================================
+function getStreak() {
+  let streak = { count: 0, lastDate: null };
+  try { streak = JSON.parse(localStorage.getItem('nexo_streak')) || { count: 0, lastDate: null }; } catch(e) {}
+  return streak;
+}
+
+function updateStreak() {
+  const today = new Date().toISOString().split('T')[0];
+  let streak = getStreak();
+  if (streak.lastDate === today) return streak;
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  if (streak.lastDate === yesterday) {
+    streak.count++;
+  } else if (streak.lastDate !== today) {
+    streak.count = 1;
+  }
+  streak.lastDate = today;
+  localStorage.setItem('nexo_streak', JSON.stringify(streak));
+  // Award streak XP once per day
+  const streakXpKey = 'nexo_xp_streak_date';
+  if (localStorage.getItem(streakXpKey) !== today) {
+    addXP(25, 'streak:' + streak.count);
+    localStorage.setItem(streakXpKey, today);
+    checkBadges();
+  }
+  return streak;
+}
+
+function getLastLesson() {
+  try { return JSON.parse(localStorage.getItem('nexo_last_lesson')); } catch(e) { return null; }
+}
+
+function setLastLesson(subjectId, lessonId, title) {
+  localStorage.setItem('nexo_last_lesson', JSON.stringify({ subjectId, lessonId, title, time: Date.now() }));
+}
+
+function getSubjectStats(subjectId) {
+  const subject = SUBJECTS_DATA.find(s => s.id === subjectId);
+  if (!subject) return { total: 0, done: 0, pct: 0 };
+  let done = 0;
+  subject.lessons.forEach(l => {
+    if (localStorage.getItem('nexo_lesson_' + subjectId + '_' + l.id) === 'done') done++;
+  });
+  return { total: subject.lessons.length, done, pct: subject.lessons.length > 0 ? (done / subject.lessons.length * 100) : 0 };
+}
+
+function getQuizScores() {
+  const scores = [];
+  SUBJECTS_DATA.forEach(subject => {
+    subject.lessons.forEach(lesson => {
+      const key = 'nexo_quiz_' + subject.id + '_' + lesson.id + '_best';
+      const totalQ = (QUIZ_DATA[subject.id] && QUIZ_DATA[subject.id][lesson.id]) ? QUIZ_DATA[subject.id][lesson.id].length : 0;
+      const best = parseInt(localStorage.getItem(key)) || 0;
+      if (best > 0 && totalQ > 0) {
+        scores.push({ subject: subject.name, subjectId: subject.id, lessonId: lesson.id, title: lesson.title, score: best, total: totalQ, pct: best / totalQ });
+      }
+    });
+  });
+  scores.sort((a, b) => b.pct - a.pct);
+  return scores;
+}
+
+function getRecentActivity() {
+  const activity = [];
+  SUBJECTS_DATA.forEach(subject => {
+    subject.lessons.forEach(lesson => {
+      const sk = 'nexo_lesson_' + subject.id + '_' + lesson.id;
+      const status = localStorage.getItem(sk);
+      if (status === 'done') {
+        activity.push({ type: 'lesson', label: 'Completed: ' + lesson.title, subject: subject.name, icon: 'check' });
+      } else if (status === 'in-progress') {
+        activity.push({ type: 'lesson', label: 'In Progress: ' + lesson.title, subject: subject.name, icon: 'start' });
+      }
+      const bestKey = 'nexo_quiz_' + subject.id + '_' + lesson.id + '_best';
+      const best = parseInt(localStorage.getItem(bestKey)) || 0;
+      const totalQ = (QUIZ_DATA[subject.id] && QUIZ_DATA[subject.id][lesson.id]) ? QUIZ_DATA[subject.id][lesson.id].length : 0;
+      if (best > 0) {
+        activity.push({ type: 'quiz', label: 'Quiz: ' + lesson.title + ' — ' + best + '/' + totalQ, subject: subject.name, icon: 'quiz' });
+      }
+    });
+  });
+  activity.sort((a, b) => 0.5 - Math.random());
+  return activity.slice(0, 5);
+}
+
+function renderDashboard() {
+  const container = document.getElementById('dashboardContent');
+  if (!container) return;
+  const streak = updateStreak();
+  const lastLesson = getLastLesson();
+  const allSubjects = SUBJECTS_DATA.map(s => ({ id: s.id, name: s.name, accent: s.accent, ...getSubjectStats(s.id) }));
+  const totalDone = allSubjects.reduce((sum, s) => sum + s.done, 0);
+  const totalLessons = allSubjects.reduce((sum, s) => sum + s.total, 0);
+  const quizScores = getQuizScores();
+  const recentActivity = getRecentActivity();
+
+  const accentColors = { teal: 'var(--teal)', amber: 'var(--amber)', purple: 'var(--purple)', rose: 'var(--rose)', green: 'var(--green)' };
+
+  // Welcoming message
+  const greetings = ['Ready to learn?', 'Keep going!', 'Nice work!', 'Let\'s study!', 'Back at it!'];
+  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  const userName = 'Learner';
+
+  let html = '';
+
+  // Welcome + Streak
+  html += '<div class="dashboard-welcome">' +
+    '<h1>' + greeting + ' ' + userName + '</h1>' +
+    '<p>' + totalDone + ' of ' + totalLessons + ' lessons completed across ' + allSubjects.length + ' subjects</p>' +
+    '<div class="streak-fire">' +
+      '<svg viewBox="0 0 24 24" fill="var(--amber)" stroke="var(--amber)" stroke-width="1"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' +
+      '<span style="color:var(--amber)">' + streak.count + ' day streak</span>' +
+    '</div>' +
+  '</div>';
+
+  // XP Bar
+  const xp = getXP();
+  const level = getLevel(xp);
+  const lvlXp = getLevelXP(xp);
+  html += '<div class="xp-bar" style="grid-column:1/-1;">' +
+    '<div class="xp-bar-icon">' + level + '</div>' +
+    '<div class="xp-bar-info">' +
+      '<div class="xp-bar-level">Level <strong>' + level + '</strong> &middot; <span class="xp-bar-total">' + xp + ' XP</span></div>' +
+      '<div class="xp-bar-track"><div class="xp-bar-fill" style="width:' + lvlXp.pct + '%"></div></div>' +
+    '</div>' +
+  '</div>';
+
+  // Badges
+  const earnedBadges = getBadges();
+  html += '<div class="dashboard-card" style="grid-column:1/-1;"><div class="dc-title">Badges <span style="font-weight:400;font-size:0.7rem;color:var(--text-dim);">' + earnedBadges.length + ' / ' + BADGES_DEF.length + '</span></div>' +
+    '<div class="badges-grid">';
+  BADGES_DEF.forEach(b => {
+    const earned = earnedBadges.includes(b.id);
+    html += '<div class="badge-item' + (earned ? ' earned' : ' locked') + '">' +
+      '<div class="badge-icon">' + b.icon + '</div>' +
+      '<div class="badge-name">' + b.name + '</div>' +
+      '<div class="badge-desc">' + (earned ? b.desc : '???') + '</div>' +
+    '</div>';
+  });
+  html += '</div></div>';
+
+  // Stat cards
+  const bestAvg = quizScores.length > 0 ? Math.round(quizScores.reduce((s, q) => s + q.pct, 0) / quizScores.length * 100) : 0;
+  html += '<div class="dashboard-card"><div class="dc-title">Lessons Completed</div><div class="dc-value green">' + totalDone + '</div><div class="dc-sub">out of ' + totalLessons + ' total</div></div>';
+  html += '<div class="dashboard-card"><div class="dc-title">Average Quiz Score</div><div class="dc-value teal">' + bestAvg + '%</div><div class="dc-sub">across ' + quizScores.length + ' quizzes</div></div>';
+  if (lastLesson) {
+    html += '<div class="dashboard-card"><div class="dc-title">Last Lesson</div><div class="dc-value purple" style="font-size:1.1rem;font-weight:600;">' + lastLesson.title + '</div><div class="dc-sub">' + (lastLesson.subjectId ? lastLesson.subjectId.charAt(0).toUpperCase() + lastLesson.subjectId.slice(1) : '') + '</div></div>';
+  } else {
+    html += '<div class="dashboard-card"><div class="dc-title">Last Lesson</div><div class="dc-value amber" style="font-size:1rem;">No lessons yet</div><div class="dc-sub">Start studying to see your progress</div></div>';
+  }
+
+  // Subject completion rings
+  html += '<div class="dashboard-card">';
+  html += '<div class="dc-title">Subject Progress</div>';
+  html += '<div class="dashboard-subject-rings">';
+  allSubjects.forEach(s => {
+    const color = accentColors[s.accent] || 'var(--green)';
+    const circ = 169.65;
+    const offset = circ - (s.pct / 100 * circ);
+    html += '<div class="dashboard-ring">' +
+      '<div class="dr-ring">' +
+        '<svg width="64" height="64" viewBox="0 0 64 64">' +
+          '<circle class="dr-bg" cx="32" cy="32" r="27"/>' +
+          '<circle class="dr-fg" cx="32" cy="32" r="27" style="stroke:' + color + ';stroke-dashoffset:' + offset + '"/>' +
+        '</svg>' +
+      '</div>' +
+      '<div class="dr-label">' + s.name + '<br><strong>' + s.done + '/' + s.total + '</strong></div>' +
+    '</div>';
+  });
+  html += '</div></div>';
+
+  container.innerHTML = '<div class="dashboard-grid">' + html + '</div>';
+
+  // Quiz scores section
+  if (quizScores.length > 0) {
+    let quizHtml = '<div class="dashboard-card" style="grid-column:1/-1;"><div class="dc-title">Quiz Scores</div>';
+    quizScores.slice(0, 6).forEach(q => {
+      const pct = q.score / q.total;
+      const cls = pct >= 0.8 ? 'good' : pct >= 0.6 ? 'ok' : 'bad';
+      quizHtml += '<div class="dashboard-quiz-row">' +
+        '<span class="dqr-subject">' + q.subject + '</span>' +
+        '<span class="dqr-title">' + q.title + '</span>' +
+        '<span class="dqr-score ' + cls + '">' + q.score + '/' + q.total + '</span>' +
+      '</div>';
+    });
+    quizHtml += '</div>';
+    container.querySelector('.dashboard-grid').insertAdjacentHTML('beforeend', quizHtml);
+  }
+
+  // Recent activity
+  if (recentActivity.length > 0) {
+    const AS_ICONS = {
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+      start: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>'
+    };
+    const AS_COLORS = { check: 'var(--green)', quiz: 'var(--teal)', start: 'var(--amber)' };
+    let actHtml = '<div class="dashboard-card" style="grid-column:1/-1;"><div class="dc-title">Recent Activity</div>';
+    recentActivity.forEach(a => {
+      const icon = AS_ICONS[a.icon] || AS_ICONS.check;
+      const color = AS_COLORS[a.icon] || 'var(--green)';
+      actHtml += '<div class="dashboard-activity-item">' +
+        '<div class="dai-icon" style="background:' + color + '20;color:' + color + '">' + icon + '</div>' +
+        '<span class="dai-label">' + a.label + '</span>' +
+      '</div>';
+    });
+    actHtml += '</div>';
+    container.querySelector('.dashboard-grid').insertAdjacentHTML('beforeend', actHtml);
+  }
+}
+
+// =====================================================================
+// === FLASHCARD ENGINE ===
+// =====================================================================
+let fcState = {
+  subjectId: null,
+  lessonId: null,
+  cards: [],
+  current: 0,
+  flipped: false,
+  rated: false
+};
+
+function getFlashcardKey(subjectId, lessonId, idx) {
+  return 'nexo_fc_' + subjectId + '_' + lessonId + '_' + idx;
+}
+
+function getDueFlashcardCount(subjectId, lessonId) {
+  const cards = FLASHCARDS_DATA[subjectId] && FLASHCARDS_DATA[subjectId][lessonId];
+  if (!cards) return 0;
+  const now = Date.now();
+  let due = 0;
+  cards.forEach((_, idx) => {
+    const key = getFlashcardKey(subjectId, lessonId, idx);
+    let data = { ease: 0, due: null };
+    try { data = JSON.parse(localStorage.getItem(key)) || data; } catch(e) {}
+    if (!data.due || data.due <= now) due++;
+  });
+  return due;
+}
+
+function openFlashcards(subjectId, lessonId) {
+  const cards = FLASHCARDS_DATA[subjectId] && FLASHCARDS_DATA[subjectId][lessonId];
+  if (!cards || cards.length === 0) return;
+
+  const subject = SUBJECTS_DATA.find(s => s.id === subjectId);
+  const lesson = subject.lessons.find(l => l.id === lessonId);
+  const now = Date.now();
+
+  // Shuffle due cards
+  const dueCards = [];
+  cards.forEach((card, idx) => {
+    const key = getFlashcardKey(subjectId, lessonId, idx);
+    let data = { ease: 0, due: null };
+    try { data = JSON.parse(localStorage.getItem(key)) || data; } catch(e) {}
+    if (!data.due || data.due <= now) {
+      dueCards.push({ idx, front: card.front, back: card.back, ease: data.ease });
+    }
+  });
+
+  if (dueCards.length === 0) {
+    document.getElementById('fcDeckLabel').textContent = subject.name + ' / Lesson ' + lessonId;
+    document.getElementById('flashcardBody').style.display = 'none';
+    document.getElementById('fcEmpty').style.display = 'block';
+    document.getElementById('flashcardOverlay').classList.add('open');
+    return;
+  }
+
+  // Fisher-Yates shuffle
+  for (let i = dueCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [dueCards[i], dueCards[j]] = [dueCards[j], dueCards[i]];
+  }
+
+  fcState.subjectId = subjectId;
+  fcState.lessonId = lessonId;
+  fcState.cards = dueCards;
+  fcState.current = 0;
+  fcState.flipped = false;
+  fcState.rated = false;
+
+  document.getElementById('fcDeckLabel').textContent = subject.name + ' / Lesson ' + lessonId;
+  document.getElementById('fcEmpty').style.display = 'none';
+  document.getElementById('flashcardBody').style.display = 'block';
+  document.getElementById('flashcardOverlay').classList.add('open');
+
+  renderFlashcard();
+}
+
+function renderFlashcard() {
+  const c = fcState.cards[fcState.current];
+  if (!c) {
+    // Deck done
+    document.getElementById('flashcardBody').style.display = 'none';
+    document.getElementById('fcEmpty').style.display = 'block';
+    document.getElementById('fcEmpty').querySelector('p').textContent = 'All done! Great job!';
+    return;
+  }
+
+  fcState.flipped = false;
+  fcState.rated = false;
+
+  document.getElementById('fcFront').textContent = c.front;
+  document.getElementById('fcBack').textContent = c.back;
+  document.getElementById('flipCard').classList.remove('flipped');
+  document.getElementById('fcActions').classList.remove('show');
+
+  const total = fcState.cards.length;
+  document.getElementById('fpFill').style.width = ((fcState.current) / total * 100) + '%';
+  document.getElementById('fpText').textContent = (fcState.current) + ' of ' + total + ' remaining';
+  document.getElementById('fcDeckCount').textContent = (fcState.current) + ' / ' + total;
+}
+
+function flipFlashcard() {
+  if (fcState.rated) return;
+  fcState.flipped = !fcState.flipped;
+  document.getElementById('flipCard').classList.toggle('flipped');
+  if (fcState.flipped) {
+    document.getElementById('fcActions').classList.add('show');
+  }
+}
+
+function rateFlashcard(rating) {
+  if (fcState.rated || !fcState.flipped) return;
+  fcState.rated = true;
+
+  const c = fcState.cards[fcState.current];
+  const key = getFlashcardKey(fcState.subjectId, fcState.lessonId, c.idx);
+  let data = { ease: 0, due: null };
+  try { data = JSON.parse(localStorage.getItem(key)) || data; } catch(e) {}
+
+  const intervals = {
+    again: { ease: 0, delay: 1 * 60 * 1000 },     // 1 minute
+    hard:  { ease: 1, delay: 30 * 60 * 1000 },    // 30 minutes
+    easy:  { ease: 2, delay: 24 * 60 * 60 * 1000 } // 24 hours
+  };
+
+  const choice = intervals[rating] || intervals.again;
+  data.ease = choice.ease;
+  data.due = Date.now() + choice.delay;
+  localStorage.setItem(key, JSON.stringify(data));
+
+  // Track last study session
+  const fcSubject = SUBJECTS_DATA.find(s => s.id === fcState.subjectId);
+  const fcLesson = fcSubject ? fcSubject.lessons.find(l => l.id === fcState.lessonId) : null;
+  setLastLesson(fcState.subjectId, fcState.lessonId, fcLesson ? fcLesson.title : 'Flashcards');
+
+  // Track flashcard reviews for badge
+  const fcReviewedKey = 'nexo_fc_reviewed';
+  const fcReviewed = (parseInt(localStorage.getItem(fcReviewedKey)) || 0) + 1;
+  localStorage.setItem(fcReviewedKey, fcReviewed);
+  // XP once per flashcard session
+  if (!fcState._xpAwarded) {
+    fcState._xpAwarded = true;
+    addXP(15, 'flashcard:' + fcState.subjectId);
+  }
+
+  fcState.current++;
+  setTimeout(() => renderFlashcard(), 300);
+  document.getElementById('fcActions').classList.remove('show');
+}
+
+document.getElementById('flashcardClose').addEventListener('click', function() {
+  document.getElementById('flashcardOverlay').classList.remove('open');
+  renderStudyHub();
+});
+
+document.addEventListener('keydown', function(e) {
+  const fcOpen = document.getElementById('flashcardOverlay').classList.contains('open');
+  if (!fcOpen) return;
+  if (e.key === 'Escape') {
+    document.getElementById('flashcardOverlay').classList.remove('open');
+    renderStudyHub();
+    return;
+  }
+  if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    flipFlashcard();
+    return;
+  }
+  if (fcState.flipped && !fcState.rated) {
+    if (e.key === '1') rateFlashcard('again');
+    if (e.key === '2') rateFlashcard('hard');
+    if (e.key === '3') rateFlashcard('easy');
+  }
+});
+
+// =====================================================================
 // === INIT ===
 // =====================================================================
 renderStudyHub();
+renderDashboard();
+// Animate subject progress bars after render
+setTimeout(() => {
+  document.querySelectorAll('.subject-progress-fill').forEach(el => {
+    el.style.width = el.dataset.pct + '%';
+  });
+}, 200);
 buildSubjectNav();
 updateMyListCount();
 updateNavBmDot();
 buildSearchIndex();
-document.getElementById('subjectNav').classList.add('show');
+if (document.getElementById('tab-study').classList.contains('active')) {
+  document.getElementById('subjectNav').classList.add('show');
+} else {
+  document.getElementById('subjectNav').classList.remove('show');
+}
 
 // =====================================================================
 // === ACCOUNT SIDEBAR ===
@@ -3322,6 +4770,18 @@ document.addEventListener('keydown', function(e) {
     if (twp && twp.classList.contains('open')) {
       twp.classList.remove('open');
     }
+    const gtooltip = document.getElementById('glossaryTooltip');
+    if (gtooltip && gtooltip.classList.contains('show')) {
+      gtooltip.classList.remove('show');
+    }
+  }
+});
+
+// Close glossary tooltip on click outside
+document.addEventListener('click', function(e) {
+  const tooltip = document.getElementById('glossaryTooltip');
+  if (tooltip && tooltip.classList.contains('show') && !tooltip.contains(e.target) && !e.target.classList.contains('glossary-term-name')) {
+    tooltip.classList.remove('show');
   }
 });
 

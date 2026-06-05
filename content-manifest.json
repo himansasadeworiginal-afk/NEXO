@@ -1,0 +1,58 @@
+{
+  "books": [
+    {"dir":"48 Laws of power","files":["index.html","48_Laws_of_Power_Summary.txt","The 48 Laws of Power (Robert Greene) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"atomic habbits","files":["index.html","Atomic_Habits_Summary.txt","Atomic Habbits.pdf"]},
+    {"dir":"Book of Wisdom","files":["index.html","Book of Wisdom (revival of wisdom, Harry B. Joseph) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"Building a second brain","files":["index.html","summary.txt","Building a Second Brain_ A Proven Method to Organize Your Digital Life and Unlock Your Creative Potential - Tiago Forte.pdf"]},
+    {"dir":"Daily Robert Greene","files":["index.html","Daily Robert Greene 366 Meditations on Power, Seduction, Mastery, Strategy and Human Nature (Robert Greene) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"Deep Work Rules for Focused Success in a Distracted World (Cal Newport)","files":["index.html","Deep Work Summary.txt","Deep Work Rules for Focused Success in a Distracted World (Cal Newport).pdf","Deep Work Rules for Focused Success in a Distracted World (Cal Newport) (z-library.sk, 1lib.sk, z-lib.sk).epub"]},
+    {"dir":"Ego Is the Enemy (Ryan Holiday)","files":["index.html","Ego_Is_the_Enemy_Summary.txt","Ego Is the Enemy (Ryan Holiday).pdf","Ego Is the Enemy (Ryan Holiday) (z-library.sk, 1lib.sk, z-lib.sk).epub"]},
+    {"dir":"Hyperfocus","files":["index.html","Hyperfocus_Summary.txt","Hyperfocus - Bailey, Chris.pdf"]},
+    {"dir":"Mastery","files":["index.html","Mastery (Greene, Robert) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"Money Unlocked (John Lee)","files":["index.html","Money Unlocked Summary.txt","Money Unlocked (John Lee).pdf","Money Unlocked (John Lee) (z-library.sk, 1lib.sk, z-lib.sk).epub"]},
+    {"dir":"Power of Now","files":["index.html","summary.txt"]},
+    {"dir":"Psycho-Cybernetics (Maxwell Maltz)","files":["index.html","Psycho-Cybernetics Summary.txt","Psycho-Cybernetics (Maxwell Maltz).pdf","Psycho-Cybernetics (Maxwell Maltz) (z-library.sk, 1lib.sk, z-lib.sk).epub"]},
+    {"dir":"Read People Like a Book","files":["index.html","Read People Like a Book (Patrick King) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"Rich Dad Poor Dad","files":["index.html","Rich Dad Poor Dad What the Rich Teach Their Kids About MoneyThat the Poor and Middle Class Do Not (Robert T. Kiyosaki) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"Surrounded by Idiots","files":["index.html","Surrounded by Idiots The Four Types of Human Behavior and How to Effectively Communicate with Each in Business (and in Life) (Thomas Erikson) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"Surrounded By Psychopaths","files":["index.html","Surrounded By Psychopaths (Thomas Erikson) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"The Art of Seduction","files":["index.html","The Art of Seduction (Greene Robert) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"The Changing World Order Why Nations Succeed and Fail (Ray Dalio)","files":["index.html","The_Changing_World_Order_Summary.txt","The Changing World Order Why Nations Succeed and Fail (Ray Dalio).pdf","The Changing World Order Why Nations Succeed and Fail (Ray Dalio) (z-library.sk, 1lib.sk, z-lib.sk).epub"]},
+    {"dir":"The Concise Laws of Human Nature","files":["index.html","The Concise Laws of Human Nature (Robert Greene) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"The Laws of Human Nature","files":["index.html","The Laws of Human Nature (Robert Greene) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"The Millionaire Master Plan","files":["index.html","The Millionaire Master Plan Your Personalized Path to Financial Success (Roger James Hamilton) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"The Prince","files":["index.html","the prince (Author Unknown) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"The Psychology of Money","files":["index.html","The Psychology of Money Timeless Lessons on Wealth, Greed, and Happiness (Morgan Housel) (z-library.sk, 1lib.sk, z-lib.sk).pdf"]},
+    {"dir":"What Every BODY Is Saying","files":["index.html","summary.txt"]}
+  ],
+  "studyNotes": {
+    "economics": [
+      {"lesson":1,"title":"Introduction to Economics","files":["index.html","1.pdf"]},
+      {"lesson":2,"title":"Demand, Supply & Market Equilibrium","files":["index.html","2.pdf"]},
+      {"lesson":3,"title":"Government Intervention in Markets","files":["index.html","3.pdf"]},
+      {"lesson":4,"title":"Production, Cost & Market Structures","files":["index.html","4.pdf"]},
+      {"lesson":5,"title":"National Accounting","files":["index.html","5.pdf"]},
+      {"lesson":6,"title":"Macroeconomic Concepts","files":["index.html","6.pdf"]},
+      {"lesson":7,"title":"Price, Inflation, Money & Financial System","files":["index.html","7.pdf"]},
+      {"lesson":8,"title":"Market Failure, Government & Public Finance","files":["index.html","8.pdf"]},
+      {"lesson":9,"title":"Protectionism & Foreign Investments","files":["index.html","9.pdf"]},
+      {"lesson":10,"title":"Foreign Exchange & Balance of Payments","files":["index.html","10.pdf"]},
+      {"lesson":11,"title":"Economic Growth, Development & Labour","files":["index.html","11.pdf"]},
+      {"lesson":12,"title":"Sri Lankan Economy Post-Independence","files":["index.html","12.pdf"]}
+    ],
+    "business": [
+      {"lesson":1,"title":"Basis of Business & Environment","files":["index.html","1.pdf"]},
+      {"lesson":2,"title":"Social Responsibility & Business Ethics","files":["index.html","2.pdf"]},
+      {"lesson":3,"title":"Business-Government Relations & Consumer Protection","files":["index.html","3.pdf"]},
+      {"lesson":4,"title":"Business Organizations","files":["lesson4.html","4.pdf"]},
+      {"lesson":5,"title":"Entrepreneurship","files":["lesson5.html","5.pdf"]},
+      {"lesson":6,"title":"Money and Financial Institutions","files":["lesson6.html","6.pdf"]},
+      {"lesson":7,"title":"Insurance","files":["lesson7.html","7.pdf"]},
+      {"lesson":8,"title":"Communication","files":["lesson8.html","8.pdf"]}
+    ],
+    "ict": [
+      {"lesson":1,"title":"Introduction to Python","files":["index.html"]},
+      {"lesson":2,"title":"Control Flow: Conditionals & Loops","files":["index.html"]}
+    ]
+  }
+}
