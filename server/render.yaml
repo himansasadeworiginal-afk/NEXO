@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: nexo-api
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://himansasadeworiginal-afk.github.io
+      - key: STRIPE_SECRET_KEY
+        value: sk_test_placeholder

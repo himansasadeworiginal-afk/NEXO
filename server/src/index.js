@@ -19,7 +19,7 @@ import premiumRoutes from './routes/premium.js';
 const app = express();
 const server = http.createServer(app);
 
-const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5500,http://127.0.0.1:5500').split(',');
+const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5500,http://127.0.0.1:5500,https://himansasadeworiginal-afk.github.io').split(',');
 
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
