@@ -1,63 +1,47 @@
 # NEXO — Agent Instructions
 
-## Token-Saving Rules
+## Repo Map
 
-1. **DO NOT read book directories or Study Notes content unless the task explicitly requires editing them.** These are content files (book summaries, PDFs, lesson HTML pages). The app logic lives in `index.html`.
+```
+nexo/                        # Web app (single-file HTML, GitHub Pages)
+├── index.html               # All CSS/JS inline (~4600 lines)
+├── account.html → account/  # Profile page
+├── content-manifest.json    # Book & lesson paths
+├── economics/ business/ ict/ books/  # Lesson/book content
+│
+└── nexo-mobile/             # Expo React Native app (mobile port)
+    ├── App.js → AppNavigator.js  # Entry → bottom tabs + native stack
+    ├── src/constants/nexoData.js # All subjects, quizzes, flashcards, books
+    ├── src/constants/nexoHtmlData.js # Generated HTML for WebView (run scripts/generateHtmlData.js)
+    ├── src/context/AppContext.js    # State: AsyncStorage-backed, no API
+    ├── src/utils/nativeGuard.js    # AsyncStorage + haptics cross-platform wrapper
+    └── scripts/generateHtmlData.js # Codegen: extracts web HTML into nexoHtmlData.js
+```
 
-2. **Always read `index.html` first** — it's a single-file app containing all HTML, CSS, and JS inline (~4600 lines). This is the only file that matters for most tasks.
+## Web App (root)
 
-3. **`account.html`** is a separate profile page (~1330 lines). Skip unless the task involves account/profile features.
+- **Single-file**: `index.html` has all HTML/CSS/JS inline. Read this for most tasks.
+- **Data constants**: `SUBJECTS_DATA`, `QUIZ_DATA`, `FLASHCARDS_DATA`, `BOOKS_DATA`, `NEXO_MOCK_USER`
+- **localStorage keys**: all `nexo_*` prefix — lesson status, quiz scores, flashcard SRS, streak, XP, badges, theme, bookmarks
+- **No build step**. Open in browser. Deploy: `git push origin main` → GitHub Pages (`.nojekyll` at root)
+- **Don't read** book directories or lesson HTML pages unless the task requires editing them (`content-manifest.json` lists everything)
 
-4. **`content-manifest.json`** lists every book and lesson with its paths and file types. Read this instead of globbing content directories.
+## Mobile App (`nexo-mobile/`)
 
-## Key Code Locations in `index.html`
+- Expo SDK 54, React Navigation (bottom tabs: Home/Search/Settings + native stack for detail screens)
+- **All data is embedded** in `nexoData.js` — no API, no backend. Change data there for any content update.
+- Lesson/book content renders in **WebView** using `nexoHtmlData.js` (generated inline HTML strings, not live URLs)
+- **Regenerate HTML** after editing web lesson/book content: `node scripts/generateHtmlData.js` (outputs `nexoHtmlData.js`)
+- **xState**: React Context (`AppContext.js`) persisted via AsyncStorage. Keys match the web app's `nexo_*` localStorage keys.
+- **Cross-platform**: `nativeGuard.js` wraps AsyncStorage with localStorage fallback for web, and wraps expo-haptics/LinearGradient with graceful fallbacks.
 
-| What | Lines (approx) |
-|------|----------------|
-| CSS (styles) | top of file before `<script>` |
-| `SUBJECTS_DATA` | ~2138 |
-| `QUIZ_DATA` | ~2189 |
-| `FLASHCARDS_DATA` | ~2373 |
-| Quiz engine | ~2517 |
-| Study Hub render | ~2684 |
-| Dashboard render | ~4000 |
-| Flashcard engine | ~4165 |
-| Account sidebar | ~4352 |
-| Keyboard shortcuts | ~2660 (quiz), ~4311 (flashcards) |
-| Theme/font settings | ~4570 |
-| XP & Badges system | ~4084 (before Dashboard) |
-| Init block | ~4334 |
+### Dev Commands (run from `nexo-mobile/`)
 
-## Data Constants
+| Command | Purpose |
+|---------|---------|
+| `npm start` or `npx expo start` | Start dev server (LAN QR code) |
+| `npx expo start --tunnel` | Start with ngrok tunnel (works over internet) |
+| `npm run android` / `npm run ios` | Build native binary |
 
-- `SUBJECTS_DATA` — subjects, lessons, paths, accents
-- `QUIZ_DATA` — per-lesson quiz questions
-- `FLASHCARDS_DATA` — per-lesson flashcard front/back pairs
-- `BOOKS_DATA` — book metadata (in `index.html`)
-- `NEXO_MOCK_USER` — mock profile data for account sidebar
-
-## localStorage Keys (`nexo_*` prefix)
-
-- `nexo_lesson_{subject}_{id}` → `"not-started"|"in-progress"|"done"`
-- `nexo_quiz_{subject}_{id}_best` → integer best score
-- `nexo_fc_{subject}_{id}_{idx}` → `{ease, due}` flashcard SRS data
-- `nexo_streak` → `{count, lastDate}`
-- `nexo_last_lesson` → `{subjectId, lessonId, title, time}`
-- `nexo_xp` → total XP earned
-- `nexo_badges` → JSON array of earned badge IDs
-- `nexo_fc_reviewed` → total flashcard reviews
-- `nexo_xp_streak_date` → last date streak XP was awarded
-- `nexo_theme` → saved theme preferences
-
-## CSS Conventions
-
-- Dark theme using CSS variables (`--bg`, `--surface`, `--text`, `--teal`, `--amber`, `--purple`, etc.)
-- Glass/frosted effect via `backdrop-filter: blur()`
-- Subject accent colors: teal (Economics), amber (Business), purple (ICT)
-- Dashboard CSS class prefix: `dashboard-`
-- Flashcard CSS class prefix: `flashcard-`, `fc-`, `flip-`
-
-## Build / Commands
-
-- No build step. Open `index.html` in a browser.
-- Git repo at root. Deploy: `git push origin main` → GitHub Pages.
+- Requires **Expo Go** app on phone. Same network for LAN mode.
+- `@expo/ngrok` dev dependency enables tunnel mode.

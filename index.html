@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXO 2.0 - Interactive Learning Platform</title>
+<script src="nexo-api.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -1749,7 +1750,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   .quiz-modal .quiz-question{font-size:0.9rem;}
   .quiz-modal .quiz-option{padding:10px 12px;font-size:0.85rem;}
   .account-sidebar{width:100%;}
-
+  .sections-grid .section-card:hover{background:var(--surface-hover)!important;transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.4);}
 }
 </style>
 </head>
@@ -1766,7 +1767,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
     <button class="navbar-link" data-section="library" onclick="closeMobileMenu();switchTab('books');document.querySelector('#tab-books .container').scrollIntoView({behavior:'smooth'})">Library</button>
     <button class="navbar-link" data-section="books" onclick="closeMobileMenu();switchTab('books');document.getElementById('search').focus()">Books</button>
     <button class="navbar-link" data-section="about" onclick="closeMobileMenu();document.querySelector('footer').scrollIntoView({behavior:'smooth'})">About</button>
-    <a class="navbar-link" href="account.html">Account</a>
+    <a class="navbar-link" href="account/index.html">Account</a>
   </div>
   <div class="navbar-actions">
     <button class="navbar-action-btn search-btn" onclick="openSearchOverlay()" aria-label="Search" title="Search (Cmd+K)">
@@ -1795,7 +1796,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   <button class="mobile-menu-link" data-section="library" onclick="closeMobileMenu();switchTab('books');document.querySelector('#tab-books .container').scrollIntoView({behavior:'smooth'})">Library</button>
   <button class="mobile-menu-link" data-section="books" onclick="closeMobileMenu();switchTab('books');document.getElementById('search').focus()">Books</button>
   <button class="mobile-menu-link" data-section="about" onclick="closeMobileMenu();document.querySelector('footer').scrollIntoView({behavior:'smooth'})">About</button>
-  <a class="mobile-menu-link" href="account.html">Account</a>
+  <a class="mobile-menu-link" href="account/index.html">Account</a>
 </div>
 
 <!-- === GLOBAL SEARCH OVERLAY === -->
@@ -1836,7 +1837,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
   </div>
   <div class="as-body" id="asBody"></div>
   <div class="as-footer">
-    <a class="as-footer-btn" href="account.html">View full profile &rarr;</a>
+    <a class="as-footer-btn" href="account/index.html">View full profile &rarr;</a>
     <button class="as-footer-btn muted" id="asLogout">Log out</button>
   </div>
 </aside>
@@ -2102,6 +2103,47 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 .badge-notify .bn-desc{font-size:0.75rem;color:var(--text-dim);}
 </style>
 
+<!-- ===== EXPLORE SECTIONS ===== -->
+<div class="section-label" style="padding-top:2rem;">
+  <h2>Explore Sections</h2>
+  <div class="label-line"></div>
+  <div class="label-sub">Jump directly into a subject or the book library.</div>
+</div>
+<div class="container" style="padding-top:0;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem;" class="sections-grid">
+    <a class="section-card" href="economics/index.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;padding:1.5rem 1rem;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:inherit;transition:all var(--transition);text-align:center;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2aaf8f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      <strong style="font-size:0.9rem;">Economics</strong>
+      <span style="font-size:0.68rem;color:var(--text-muted);">12 lessons &middot; Macro &amp; Micro</span>
+      <span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--teal);">Explore &rarr;</span>
+    </a>
+    <a class="section-card" href="business/index.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;padding:1.5rem 1rem;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:inherit;transition:all var(--transition);text-align:center;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d4a040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <strong style="font-size:0.9rem;">Business Studies</strong>
+      <span style="font-size:0.68rem;color:var(--text-muted);">8 lessons &middot; Core concepts</span>
+      <span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--amber);">Explore &rarr;</span>
+    </a>
+    <a class="section-card" href="ict/index.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;padding:1.5rem 1rem;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:inherit;transition:all var(--transition);text-align:center;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a5abe" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <strong style="font-size:0.9rem;">ICT</strong>
+      <span style="font-size:0.68rem;color:var(--text-muted);">12 lessons &middot; Programming &amp; systems</span>
+      <span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--purple);">Explore &rarr;</span>
+    </a>
+    <a class="section-card" href="books/index.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;padding:1.5rem 1rem;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:inherit;transition:all var(--transition);text-align:center;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d4a040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><book><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></book></svg>
+      <strong style="font-size:0.9rem;">Books</strong>
+      <span style="font-size:0.68rem;color:var(--text-muted);">24 books &middot; Summaries &amp; insights</span>
+      <span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--amber);">Explore &rarr;</span>
+    </a>
+    <a class="section-card" href="account/index.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;padding:1.5rem 1rem;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:inherit;transition:all var(--transition);text-align:center;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a5abe" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <strong style="font-size:0.9rem;">Account</strong>
+      <span style="font-size:0.68rem;color:var(--text-muted);">Your profile &amp; progress</span>
+      <span style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--purple);">Explore &rarr;</span>
+    </a>
+  </div>
+</div>
+
 <!-- ===== FOOTER ===== -->
 <footer style="scroll-margin-top:52px;">
   <div class="footer-inner">
@@ -2117,30 +2159,30 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 // DATA: BOOKS (preserved from NEXO 1.0)
 // =====================================================================
 const BOOKS_DATA = [
-  {id:"01", title:"The 48 Laws of Power", author:"Robert Greene", path:"48 Laws of power/index.html", desc:"The essential guide to the mechanics of power — how to acquire it, defend it, and wield it without falling victim to those who play the game better than you.", filter:"power"},
-  {id:"02", title:"Atomic Habits", author:"James Clear", path:"atomic habbits/index.html", desc:"Tiny changes, remarkable results. The science of building good habits, breaking bad ones, and mastering the tiny behaviors that lead to remarkable outcomes.", filter:"productivity"},
-  {id:"03", title:"Building a Second Brain", author:"Tiago Forte", path:"Building a second brain/index.html", desc:"A proven method to organize your digital life and unlock your creative potential using the CODE framework and PARA system.", filter:"productivity"},
-  {id:"04", title:"Deep Work", author:"Cal Newport", path:"Deep Work Rules for Focused Success in a Distracted World (Cal Newport)/index.html", desc:"Rules for focused success in a distracted world. Why deep concentration is becoming the superpower of the 21st century.", filter:"productivity"},
-  {id:"05", title:"Ego Is the Enemy", author:"Ryan Holiday", path:"Ego Is the Enemy (Ryan Holiday)/index.html", desc:"The battle against ego — in ambition, success, and failure. Why humility is the ultimate strategy and ego the greatest obstacle.", filter:"philosophy"},
-  {id:"06", title:"Hyperfocus", author:"Chris Bailey", path:"Hyperfocus/index.html", desc:"How to manage your attention in a world of distraction and be more productive by understanding the two modes of focus.", filter:"productivity"},
-  {id:"07", title:"Money Unlocked", author:"John Lee", path:"Money Unlocked (John Lee)/index.html", desc:"Break free from limiting beliefs about money and unlock your financial potential through mindset shifts and practical strategies.", filter:"finance"},
-  {id:"08", title:"The Power of Now", author:"Eckhart Tolle", path:"Power of Now/index.html", desc:"The ultimate guide to spiritual enlightenment through living in the present moment and freeing yourself from pain and suffering.", filter:"philosophy"},
-  {id:"09", title:"Psycho-Cybernetics", author:"Maxwell Maltz", path:"Psycho-Cybernetics (Maxwell Maltz)/index.html", desc:"Your self-image determines your success. The classic guide to rewiring your brain for achievement through cybernetic principles.", filter:"psychology"},
-  {id:"10", title:"The Changing World Order", author:"Ray Dalio", path:"The Changing World Order Why Nations Succeed and Fail (Ray Dalio)/index.html", desc:"Why nations succeed and fail — the big cycles in history that explain the past, present, and future of global power.", filter:"finance"},
-  {id:"11", title:"What Every BODY Is Saying", author:"Joe Navarro", path:"What Every BODY Is Saying/index.html", desc:"An ex-FBI agent's guide to speed-reading people through nonverbal communication and understanding the hidden messages in body language.", filter:"psychology"},
-  {id:"12", title:"Book of Wisdom", author:"Harry B. Joseph", path:"Book of Wisdom/index.html", desc:"A revival of ancient wisdom for modern living — timeless philosophical insights and practical principles for navigating life with clarity, purpose, and understanding.", filter:"philosophy"},
-  {id:"13", title:"Daily Robert Greene", author:"Robert Greene", path:"Daily Robert Greene/index.html", desc:"366 meditations on power, seduction, mastery, strategy, and human nature — a year of daily wisdom drawn from Greene's life's work.", filter:"power"},
-  {id:"14", title:"Mastery", author:"Robert Greene", path:"Mastery/index.html", desc:"The lifelong journey of mastering a craft — following your passion, undergoing apprenticeship, and achieving creative excellence through deliberate practice and perseverance.", filter:"productivity"},
-  {id:"15", title:"Read People Like a Book", author:"Patrick King", path:"Read People Like a Book/index.html", desc:"How to analyze, understand, and predict people's emotions, thoughts, intentions, and behaviors — decoding the hidden meanings behind what people say and do.", filter:"psychology"},
-  {id:"16", title:"Rich Dad Poor Dad", author:"Robert Kiyosaki", path:"Rich Dad Poor Dad/index.html", desc:"What the rich teach their kids about money that the poor and middle class do not — the timeless lessons of financial literacy, assets vs liabilities, and escaping the rat race.", filter:"finance"},
-  {id:"17", title:"Surrounded by Idiots", author:"Thomas Erikson", path:"Surrounded by Idiots/index.html", desc:"The four types of human behavior and how to effectively communicate with each in business and in life using the DISC personality framework.", filter:"psychology"},
-  {id:"18", title:"Surrounded By Psychopaths", author:"Thomas Erikson", path:"Surrounded By Psychopaths/index.html", desc:"How to identify, understand, and protect yourself from psychopathic behavior using the DISC model and recognizing the dark triad of personality traits.", filter:"psychology"},
-  {id:"19", title:"The Art of Seduction", author:"Robert Greene", path:"The Art of Seduction/index.html", desc:"The 9 types of seducers and the timeless strategies of attraction — mastering the seductive process through psychological insight and social intelligence.", filter:"power"},
-  {id:"20", title:"The Concise Laws of Human Nature", author:"Robert Greene", path:"The Concise Laws of Human Nature/index.html", desc:"A condensed guide to the 18 laws of human nature — understanding why people behave the way they do and mastering the dynamics of social behavior.", filter:"psychology"},
-  {id:"21", title:"The Laws of Human Nature", author:"Robert Greene", path:"The Laws of Human Nature/index.html", desc:"The definitive guide to understanding human behavior — 18 deep psychological laws with historical examples and strategies for mastering social dynamics.", filter:"psychology"},
-  {id:"22", title:"The Millionaire Master Plan", author:"Roger James Hamilton", path:"The Millionaire Master Plan/index.html", desc:"Your personalized path to financial success — discovering your wealth personality type and following a tailored plan to build lasting prosperity.", filter:"finance"},
-  {id:"23", title:"The Prince", author:"Niccolò Machiavelli", path:"The Prince/index.html", desc:"The classic Renaissance treatise on power, leadership, and statecraft — the timeless principles of how a ruler should acquire, maintain, and wield power.", filter:"power"},
-  {id:"24", title:"The Psychology of Money", author:"Morgan Housel", path:"The Psychology of Money/index.html", desc:"Timeless lessons on wealth, greed, and happiness — how our emotional and psychological relationship with money shapes our financial decisions more than math ever does.", filter:"finance"}
+  {id:"01", title:"The 48 Laws of Power", author:"Robert Greene", path:"books/48-laws-of-power/index.html", desc:"The essential guide to the mechanics of power — how to acquire it, defend it, and wield it without falling victim to those who play the game better than you.", filter:"power"},
+  {id:"02", title:"Atomic Habits", author:"James Clear", path:"books/atomic-habits/index.html", desc:"Tiny changes, remarkable results. The science of building good habits, breaking bad ones, and mastering the tiny behaviors that lead to remarkable outcomes.", filter:"productivity"},
+  {id:"03", title:"Building a Second Brain", author:"Tiago Forte", path:"books/building-a-second-brain/index.html", desc:"A proven method to organize your digital life and unlock your creative potential using the CODE framework and PARA system.", filter:"productivity"},
+  {id:"04", title:"Deep Work", author:"Cal Newport", path:"books/deep-work/index.html", desc:"Rules for focused success in a distracted world. Why deep concentration is becoming the superpower of the 21st century.", filter:"productivity"},
+  {id:"05", title:"Ego Is the Enemy", author:"Ryan Holiday", path:"books/ego-is-the-enemy/index.html", desc:"The battle against ego — in ambition, success, and failure. Why humility is the ultimate strategy and ego the greatest obstacle.", filter:"philosophy"},
+  {id:"06", title:"Hyperfocus", author:"Chris Bailey", path:"books/hyperfocus/index.html", desc:"How to manage your attention in a world of distraction and be more productive by understanding the two modes of focus.", filter:"productivity"},
+  {id:"07", title:"Money Unlocked", author:"John Lee", path:"books/money-unlocked/index.html", desc:"Break free from limiting beliefs about money and unlock your financial potential through mindset shifts and practical strategies.", filter:"finance"},
+  {id:"08", title:"The Power of Now", author:"Eckhart Tolle", path:"books/power-of-now/index.html", desc:"The ultimate guide to spiritual enlightenment through living in the present moment and freeing yourself from pain and suffering.", filter:"philosophy"},
+  {id:"09", title:"Psycho-Cybernetics", author:"Maxwell Maltz", path:"books/psycho-cybernetics/index.html", desc:"Your self-image determines your success. The classic guide to rewiring your brain for achievement through cybernetic principles.", filter:"psychology"},
+  {id:"10", title:"The Changing World Order", author:"Ray Dalio", path:"books/the-changing-world-order/index.html", desc:"Why nations succeed and fail — the big cycles in history that explain the past, present, and future of global power.", filter:"finance"},
+  {id:"11", title:"What Every BODY Is Saying", author:"Joe Navarro", path:"books/what-every-body-is-saying/index.html", desc:"An ex-FBI agent's guide to speed-reading people through nonverbal communication and understanding the hidden messages in body language.", filter:"psychology"},
+  {id:"12", title:"Book of Wisdom", author:"Harry B. Joseph", path:"books/book-of-wisdom/index.html", desc:"A revival of ancient wisdom for modern living — timeless philosophical insights and practical principles for navigating life with clarity, purpose, and understanding.", filter:"philosophy"},
+  {id:"13", title:"Daily Robert Greene", author:"Robert Greene", path:"books/daily-robert-greene/index.html", desc:"366 meditations on power, seduction, mastery, strategy, and human nature — a year of daily wisdom drawn from Greene's life's work.", filter:"power"},
+  {id:"14", title:"Mastery", author:"Robert Greene", path:"books/mastery/index.html", desc:"The lifelong journey of mastering a craft — following your passion, undergoing apprenticeship, and achieving creative excellence through deliberate practice and perseverance.", filter:"productivity"},
+  {id:"15", title:"Read People Like a Book", author:"Patrick King", path:"books/read-people-like-a-book/index.html", desc:"How to analyze, understand, and predict people's emotions, thoughts, intentions, and behaviors — decoding the hidden meanings behind what people say and do.", filter:"psychology"},
+  {id:"16", title:"Rich Dad Poor Dad", author:"Robert Kiyosaki", path:"books/rich-dad-poor-dad/index.html", desc:"What the rich teach their kids about money that the poor and middle class do not — the timeless lessons of financial literacy, assets vs liabilities, and escaping the rat race.", filter:"finance"},
+  {id:"17", title:"Surrounded by Idiots", author:"Thomas Erikson", path:"books/surrounded-by-idiots/index.html", desc:"The four types of human behavior and how to effectively communicate with each in business and in life using the DISC personality framework.", filter:"psychology"},
+  {id:"18", title:"Surrounded By Psychopaths", author:"Thomas Erikson", path:"books/surrounded-by-psychopaths/index.html", desc:"How to identify, understand, and protect yourself from psychopathic behavior using the DISC model and recognizing the dark triad of personality traits.", filter:"psychology"},
+  {id:"19", title:"The Art of Seduction", author:"Robert Greene", path:"books/the-art-of-seduction/index.html", desc:"The 9 types of seducers and the timeless strategies of attraction — mastering the seductive process through psychological insight and social intelligence.", filter:"power"},
+  {id:"20", title:"The Concise Laws of Human Nature", author:"Robert Greene", path:"books/the-concise-laws/index.html", desc:"A condensed guide to the 18 laws of human nature — understanding why people behave the way they do and mastering the dynamics of social behavior.", filter:"psychology"},
+  {id:"21", title:"The Laws of Human Nature", author:"Robert Greene", path:"books/the-laws-of-human-nature/index.html", desc:"The definitive guide to understanding human behavior — 18 deep psychological laws with historical examples and strategies for mastering social dynamics.", filter:"psychology"},
+  {id:"22", title:"The Millionaire Master Plan", author:"Roger James Hamilton", path:"books/the-millionaire-master-plan/index.html", desc:"Your personalized path to financial success — discovering your wealth personality type and following a tailored plan to build lasting prosperity.", filter:"finance"},
+  {id:"23", title:"The Prince", author:"Niccolò Machiavelli", path:"books/the-prince/index.html", desc:"The classic Renaissance treatise on power, leadership, and statecraft — the timeless principles of how a ruler should acquire, maintain, and wield power.", filter:"power"},
+  {id:"24", title:"The Psychology of Money", author:"Morgan Housel", path:"books/the-psychology-of-money/index.html", desc:"Timeless lessons on wealth, greed, and happiness — how our emotional and psychological relationship with money shapes our financial decisions more than math ever does.", filter:"finance"}
 ];
 
 // =====================================================================
@@ -2152,18 +2194,18 @@ const SUBJECTS_DATA = [
     name: 'Economics',
     accent: 'teal',
     lessons: [
-      {id:1, title:'Introduction to Economics', desc:'Fundamental concepts — scarcity, choice, opportunity cost, PPC, and basic economic questions.', path:'Study Notes/Econ/1/index.html'},
-      {id:2, title:'Demand, Supply & Market Equilibrium', desc:'Laws of demand and supply, equilibrium, elasticity, and price determination in markets.', path:'Study Notes/Econ/2/index.html'},
-      {id:3, title:'Government Intervention in Markets', desc:'Price controls, taxes, subsidies, and effects of government intervention on market outcomes.', path:'Study Notes/Econ/3/index.html'},
-      {id:4, title:'Production, Cost & Market Structures', desc:'Production functions, costs, economies of scale, and market structures from competition to monopoly.', path:'Study Notes/Econ/4/index.html'},
-      {id:5, title:'National Accounting', desc:'GDP measurement, national income accounting, circular flow of income, and its limitations.', path:'Study Notes/Econ/5/index.html'},
-      {id:6, title:'Macroeconomic Concepts', desc:'Aggregate demand/supply, business cycles, unemployment, and macroeconomic policy framework.', path:'Study Notes/Econ/6/index.html'},
-      {id:7, title:'Price, Inflation, Money & Financial System', desc:'Price indices, inflation, money, financial intermediation, and monetary policy tools.', path:'Study Notes/Econ/7/index.html'},
-      {id:8, title:'Market Failure, Government & Public Finance', desc:'Externalities, public goods, taxation, government spending, and fiscal policy.', path:'Study Notes/Econ/8/index.html'},
-      {id:9, title:'Protectionism & Foreign Investments', desc:'Trade barriers, protectionism, FDI, multinational corporations, and global trade dynamics.', path:'Study Notes/Econ/9/index.html'},
-      {id:10, title:'Foreign Exchange & Balance of Payments', desc:'Exchange rates, balance of payments, currency markets, and international capital flows.', path:'Study Notes/Econ/10/index.html'},
-      {id:11, title:'Economic Growth, Development & Labour', desc:'Growth sources, development indicators, labor markets, and human capital theory.', path:'Study Notes/Econ/11/index.html'},
-      {id:12, title:'Sri Lankan Economy Post-Independence', desc:'Evolution of Sri Lanka\'s economy from independence to present — policy shifts and challenges.', path:'Study Notes/Econ/12/index.html'}
+      {id:1, title:'Introduction to Economics', desc:'Fundamental concepts — scarcity, choice, opportunity cost, PPC, and basic economic questions.', path:'economics/lessons/1/index.html'},
+      {id:2, title:'Demand, Supply & Market Equilibrium', desc:'Laws of demand and supply, equilibrium, elasticity, and price determination in markets.', path:'economics/lessons/2/index.html'},
+      {id:3, title:'Government Intervention in Markets', desc:'Price controls, taxes, subsidies, and effects of government intervention on market outcomes.', path:'economics/lessons/3/index.html'},
+      {id:4, title:'Production, Cost & Market Structures', desc:'Production functions, costs, economies of scale, and market structures from competition to monopoly.', path:'economics/lessons/4/index.html'},
+      {id:5, title:'National Accounting', desc:'GDP measurement, national income accounting, circular flow of income, and its limitations.', path:'economics/lessons/5/index.html'},
+      {id:6, title:'Macroeconomic Concepts', desc:'Aggregate demand/supply, business cycles, unemployment, and macroeconomic policy framework.', path:'economics/lessons/6/index.html'},
+      {id:7, title:'Price, Inflation, Money & Financial System', desc:'Price indices, inflation, money, financial intermediation, and monetary policy tools.', path:'economics/lessons/7/index.html'},
+      {id:8, title:'Market Failure, Government & Public Finance', desc:'Externalities, public goods, taxation, government spending, and fiscal policy.', path:'economics/lessons/8/index.html'},
+      {id:9, title:'Protectionism & Foreign Investments', desc:'Trade barriers, protectionism, FDI, multinational corporations, and global trade dynamics.', path:'economics/lessons/9/index.html'},
+      {id:10, title:'Foreign Exchange & Balance of Payments', desc:'Exchange rates, balance of payments, currency markets, and international capital flows.', path:'economics/lessons/10/index.html'},
+      {id:11, title:'Economic Growth, Development & Labour', desc:'Growth sources, development indicators, labor markets, and human capital theory.', path:'economics/lessons/11/index.html'},
+      {id:12, title:'Sri Lankan Economy Post-Independence', desc:'Evolution of Sri Lanka\'s economy from independence to present — policy shifts and challenges.', path:'economics/lessons/12/index.html'}
     ]
   },
   {
@@ -2171,14 +2213,14 @@ const SUBJECTS_DATA = [
     name: 'Business Studies',
     accent: 'amber',
     lessons: [
-      {id:1, title:'Basis of Business & Environment', desc:'Business definition, types of activity, objectives, stakeholders, and PEST factors.', path:'Study Notes/Business/1/index.html'},
-      {id:2, title:'Social Responsibility & Business Ethics', desc:'CSR, ethical vs legal, stakeholder impact, triple bottom line, and ethical trading.', path:'Study Notes/Business/2/index.html'},
-      {id:3, title:'Business-Government Relations & Consumer Protection', desc:'Business-government relations, regulations, consumer rights, and protection mechanisms.', path:'Study Notes/Business/3/index.html'},
-      {id:4, title:'Business Organizations', desc:'Sole proprietorships, partnerships, corporations, cooperatives, and their characteristics.', path:'Study Notes/Business/4/lesson4.html'},
-      {id:5, title:'Entrepreneurship', desc:'Entrepreneurial process, innovation, business planning, venture creation, and economic role.', path:'Study Notes/Business/5/lesson5.html'},
-      {id:6, title:'Money and Financial Institutions', desc:'Nature of money, financial systems, banking institutions, and monetary policy fundamentals.', path:'Study Notes/Business/6/lesson6.html'},
-      {id:7, title:'Insurance', desc:'Insurance principles, policy types, risk management, and the insurance industry\'s role.', path:'Study Notes/Business/7/lesson7.html'},
-      {id:8, title:'Communication', desc:'Business communication methods, written and oral, technology, and presentation skills.', path:'Study Notes/Business/8/lesson8.html'}
+      {id:1, title:'Basis of Business & Environment', desc:'Business definition, types of activity, objectives, stakeholders, and PEST factors.', path:'business/lessons/1/index.html'},
+      {id:2, title:'Social Responsibility & Business Ethics', desc:'CSR, ethical vs legal, stakeholder impact, triple bottom line, and ethical trading.', path:'business/lessons/2/index.html'},
+      {id:3, title:'Business-Government Relations & Consumer Protection', desc:'Business-government relations, regulations, consumer rights, and protection mechanisms.', path:'business/lessons/3/index.html'},
+      {id:4, title:'Business Organizations', desc:'Sole proprietorships, partnerships, corporations, cooperatives, and their characteristics.', path:'business/lessons/4/index.html'},
+      {id:5, title:'Entrepreneurship', desc:'Entrepreneurial process, innovation, business planning, venture creation, and economic role.', path:'business/lessons/5/index.html'},
+      {id:6, title:'Money and Financial Institutions', desc:'Nature of money, financial systems, banking institutions, and monetary policy fundamentals.', path:'business/lessons/6/index.html'},
+      {id:7, title:'Insurance', desc:'Insurance principles, policy types, risk management, and the insurance industry\'s role.', path:'business/lessons/7/index.html'},
+      {id:8, title:'Communication', desc:'Business communication methods, written and oral, technology, and presentation skills.', path:'business/lessons/8/index.html'}
     ]
   },
   {
@@ -2186,8 +2228,8 @@ const SUBJECTS_DATA = [
     name: 'ICT',
     accent: 'purple',
     lessons: [
-      {id:1, title:'Introduction to Python Programming', desc:'Fundamentals of Python — variables, data types, input/output, and your first programs.', path:'Study Notes/ICT/1/index.html'},
-      {id:2, title:'Control Flow: Conditionals & Loops', desc:'Decision-making with if/else and repetition with for/while loops in Python.', path:'Study Notes/ICT/2/index.html'}
+      {id:1, title:'Introduction to Python Programming', desc:'Fundamentals of Python — variables, data types, input/output, and your first programs.', path:'ict/lessons/1/index.html'},
+      {id:2, title:'Control Flow: Conditionals & Loops', desc:'Decision-making with if/else and repetition with for/while loops in Python.', path:'ict/lessons/2/index.html'}
     ]
   }
   // == TODO: Add future subjects here ==
@@ -4458,34 +4500,111 @@ if (document.getElementById('tab-study').classList.contains('active')) {
 // =====================================================================
 // === ACCOUNT SIDEBAR ===
 // =====================================================================
-// BACKEND: replace with authenticated user object from your auth provider
-const NEXO_MOCK_USER = {
-  name: "Aiden Silva",
-  username: "aidensilva",
-  email: "aiden@example.com",
-  avatarInitials: "AS",
-  avatarColor: "#2ea84c",
-  joinDate: "January 2025",
-  plan: "free",
-  streak: 7,
-  totalLessonsCompleted: 14,
-  totalQuizzesTaken: 9,
-  totalBooksBookmarked: 5,
-  avgQuizScore: 78,
-  subjects: [
-    { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 7, avgScore: 82 },
-    { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 5, avgScore: 74 },
-    { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 2, avgScore: 91 }
-  ],
-  recentActivity: [
-    { type: "lesson", label: "Completed: Demand, Supply & Equilibrium", subject: "Economics", time: "2 hours ago", icon: "check" },
-    { type: "quiz",   label: "Quiz passed: Business Organizations — 7/8", subject: "Business Studies", time: "Yesterday", icon: "quiz" },
-    { type: "lesson", label: "Started: Python — Basics", subject: "ICT", time: "2 days ago", icon: "start" },
-    { type: "book",   label: "Bookmarked: Atomic Habits", subject: "Books", time: "3 days ago", icon: "bookmark" },
-    { type: "quiz",   label: "Quiz passed: Introduction to Economics — 6/8", subject: "Economics", time: "4 days ago", icon: "quiz" }
-  ],
-  premium: { status: "not_subscribed", features: [], price: "$4.99 / month" }
-};
+// AUTH — try API, fall back to localStorage mock
+const NEXO_MOCK_USER = (() => {
+  if (NEXO_API && NEXO_API.isAuthenticated()) {
+    const cached = localStorage.getItem('nexo_user_cache');
+    if (cached) { try { return JSON.parse(cached); } catch {} }
+  }
+  return {
+    name: "Aiden Silva",
+    username: "aidensilva",
+    email: "aiden@example.com",
+    avatarInitials: "AS",
+    avatarColor: "#2ea84c",
+    joinDate: "January 2025",
+    plan: "free",
+    streak: 7,
+    totalLessonsCompleted: 14,
+    totalQuizzesTaken: 9,
+    totalBooksBookmarked: 5,
+    avgQuizScore: 78,
+    subjects: [
+      { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 7, avgScore: 82 },
+      { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 5, avgScore: 74 },
+      { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 2, avgScore: 91 }
+    ],
+    recentActivity: [
+      { type: "lesson", label: "Completed: Demand, Supply & Equilibrium", subject: "Economics", time: "2 hours ago", icon: "check" },
+      { type: "quiz",   label: "Quiz passed: Business Organizations — 7/8", subject: "Business Studies", time: "Yesterday", icon: "quiz" },
+      { type: "lesson", label: "Started: Python — Basics", subject: "ICT", time: "2 days ago", icon: "start" },
+      { type: "book",   label: "Bookmarked: Atomic Habits", subject: "Books", time: "3 days ago", icon: "bookmark" },
+      { type: "quiz",   label: "Quiz passed: Introduction to Economics — 6/8", subject: "Economics", time: "4 days ago", icon: "quiz" }
+    ],
+    premium: { status: "not_subscribed", features: [], price: "$4.99 / month" }
+  };
+})();
+
+async function fetchUserFromAPI() {
+  if (!NEXO_API || !NEXO_API.isAuthenticated()) return;
+  try {
+    const data = await NEXO_API.me();
+    const profile = await NEXO_API.getProfile();
+    const built = buildMockFromApi(data, profile);
+    localStorage.setItem('nexo_user_cache', JSON.stringify(built));
+    Object.assign(NEXO_MOCK_USER, built);
+    renderAccountSidebar();
+  } catch (e) {
+    console.log('API unavailable, using cached/mock user');
+  }
+}
+
+function buildMockFromApi(me, profile) {
+  const p = profile || {};
+  const u = me || p.user || {};
+  const subjects = (SUBJECTS_DATA || []).map(s => {
+    const subProg = (p.progress || []).filter(pr => pr.subject_id === s.id);
+    const done = subProg.filter(pr => pr.status === 'done').length;
+    const quizScores = (p.quizScores || []).filter(q => q.subject_id === s.id);
+    const avg = quizScores.length > 0
+      ? Math.round(quizScores.reduce((a, q) => a + (q.score / q.total * 100), 0) / quizScores.length)
+      : 0;
+    return {
+      id: s.id, name: s.name, color: s.color,
+      totalLessons: s.lessons?.length || s.totalLessons || 0,
+      completedLessons: done,
+      avgScore: avg,
+    };
+  });
+
+  return {
+    name: u.name || NEXO_MOCK_USER.name,
+    username: u.username || NEXO_MOCK_USER.username,
+    email: u.email || NEXO_MOCK_USER.email,
+    avatarInitials: u.avatar_initials || NEXO_MOCK_USER.avatarInitials,
+    avatarColor: u.avatar_color || NEXO_MOCK_USER.avatarColor,
+    joinDate: u.join_date ? new Date(u.join_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : NEXO_MOCK_USER.joinDate,
+    plan: u.plan || NEXO_MOCK_USER.plan,
+    streak: u.streak_count || NEXO_MOCK_USER.streak,
+    totalLessonsCompleted: subjects.reduce((a, s) => a + s.completedLessons, 0),
+    totalQuizzesTaken: (p.quizScores || NEXO_MOCK_USER.quizHistory || []).length,
+    totalBooksBookmarked: (p.bookmarks || []).filter(b => b.content_type === 'book').length,
+    avgQuizScore: subjects.length > 0 ? Math.round(subjects.reduce((a, s) => a + s.avgScore, 0) / subjects.length) : NEXO_MOCK_USER.avgQuizScore,
+    subjects,
+    recentActivity: (p.recentActivity || NEXO_MOCK_USER.recentActivity || []).slice(0, 5).map(a => ({
+      type: a.activity_type || a.type,
+      label: a.label,
+      subject: a.subject,
+      time: a.created_at ? timeAgo(new Date(a.created_at)) : a.time,
+      icon: a.icon,
+    })),
+    premium: { status: u.plan === 'premium' ? 'subscribed' : 'not_subscribed', features: [], price: '$4.99 / month' },
+  };
+}
+
+function timeAgo(date) {
+  const sec = Math.floor((Date.now() - date) / 1000);
+  if (sec < 60) return 'Just now';
+  if (sec < 3600) return Math.floor(sec / 60) + ' min ago';
+  if (sec < 86400) return Math.floor(sec / 3600) + ' hours ago';
+  if (sec < 172800) return 'Yesterday';
+  return Math.floor(sec / 86400) + ' days ago';
+}
+
+if (NEXO_API && NEXO_API.isAuthenticated()) {
+  NEXO_API.connectSocket();
+  fetchUserFromAPI();
+}
 
 const AS_ICONS = {
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
@@ -4556,9 +4675,9 @@ function renderAccountSidebar() {
     '</div>' +
     '<div class="as-section-title" style="margin-top:0.8rem;">Quick Links</div>' +
     '<div class="as-quick-links">' +
-      '<a class="as-quick-link" href="account.html#quizzes" aria-label="Quiz History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></a>' +
-      '<a class="as-quick-link" href="account.html#bookmarks" aria-label="Bookmarks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></a>' +
-      '<a class="as-quick-link" href="account.html#premium" aria-label="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></a>' +
+      '<a class="as-quick-link" href="account/index.html#quizzes" aria-label="Quiz History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></a>' +
+      '<a class="as-quick-link" href="account/index.html#bookmarks" aria-label="Bookmarks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></a>' +
+      '<a class="as-quick-link" href="account/index.html#premium" aria-label="Premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></a>' +
     '</div>';
 
   // Animate progress bars
@@ -4593,9 +4712,14 @@ function closeAccountSidebar() {
 }
 
 // Logout confirm
-document.getElementById('asLogout').addEventListener('click', function() {
+document.getElementById('asLogout').addEventListener('click', async function() {
   if (confirm('Are you sure you want to log out?')) {
-    // BACKEND: connect to auth signOut()
+    if (NEXO_API && NEXO_API.isAuthenticated()) {
+      try { await NEXO_API.request('POST', '/auth/logout', {}); } catch {}
+    }
+    NEXO_API.logout();
+    localStorage.removeItem('nexo_user_cache');
+    window.location.reload();
   }
 });
 

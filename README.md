@@ -6,14 +6,14 @@ Master any subject — lessons, quizzes, and book summaries in one page.
   <a href="https://himansasadeworiginal-afk.github.io/NEXO/">
     <img src="https://img.shields.io/badge/Live-GitHub%20Pages-2ea84c?style=for-the-badge" alt="Live on GitHub Pages">
   </a>
-  <a href="https://himansasadeworiginal-afk.github.io/NEXO/account.html">
-    <img src="https://img.shields.io/badge/Account-Profile%20Page-2aaf8f?style=for-the-badge" alt="Account Page">
+  <a href="https://himansasadeworiginal-afk.github.io/NEXO/account/index.html">
+    <img src="https://img.shields.io/badge/Account-Profile-2aaf8f?style=for-the-badge" alt="Account Page">
   </a>
 </p>
 
 ## Overview
 
-Self-contained single-file HTML platform. Open `index.html` in any browser — no frameworks, no CDN, no server. [Live site](https://himansasadeworiginal-afk.github.io/NEXO/).
+Self-contained HTML learning platform. Open `index.html` in any browser — no frameworks, no CDN, no server. [Live site](https://himansasadeworiginal-afk.github.io/NEXO/).
 
 5 tabs: **Dashboard** (XP, badges, streak, rings, quiz summary), **Study Hub** (lessons, quizzes, flashcards), **Library** (24 book summaries), **Bookmarks** (saved items), **Glossary** (key terms across subjects).
 
@@ -23,30 +23,46 @@ Self-contained single-file HTML platform. Open `index.html` in any browser — n
 
 ```
 nexo/
-├── index.html                    # Main app (all HTML+CSS+JS inline)
-├── account.html                  # Full account page (Dashboard, Progress, Quizzes, Bookmarks, Activity, Premium)
-├── AGENTS.md                     # AI agent instructions
+├── index.html                     # Main app (all HTML+CSS+JS inline)
+├── account.html                   # Redirects → account/index.html
+├── AGENTS.md                      # AI agent instructions
 ├── README.md
-├── content-manifest.json         # Books & lessons listed compactly
-├── components/
-│   ├── nexo-terminal.html        # Standalone iframe terminal
-│   └── nexo-terminal-embed.js    # Embeddable terminal via <script>
-├── Study Notes/
-│   ├── Business/<n>/             # 8 lessons
-│   ├── Econ/<n>/                 # 12 lessons
-│   └── ICT/<n>/                  # 2 lessons
-├── <Book Title>/index.html       # 24 interactive book summaries
+├── content-manifest.json          # Books & lessons listed compactly
+│
+├── economics/
+│   ├── index.html                 # Section hub — 12 lessons, progress, search
+│   └── lessons/{n}/index.html     # Lesson content pages
+│
+├── business/
+│   ├── index.html                 # Section hub — 8 lessons, progress, search
+│   └── lessons/{n}/index.html     # Lesson content pages
+│
+├── ict/
+│   ├── index.html                 # Section hub — 12 lessons, terminal badges
+│   ├── lessons/{n}/index.html     # Lesson content pages
+│   └── components/
+│       ├── nexo-terminal.html     # Standalone terminal
+│       └── nexo-terminal-embed.js # Embeddable terminal via <script>
+│
+├── books/
+│   ├── index.html                 # Section hub — 24 books, filters, search
+│   └── {slug}/index.html          # 24 interactive book summaries (kebab-case)
+│
+├── account/
+│   └── index.html                 # Full account page (Dashboard, Progress, Quizzes, etc.)
+│
+└── shared/                        # Reserved for future shared assets
 ```
 
 ## Subjects
 
-| Subject | Lessons | Accent | Quiz | Flashcards |
+| Subject | Lessons | Hub Accent | Quiz | Flashcards |
 |---------|---------|--------|------|------------|
 | Economics | 12 | Teal | 8 real (L1–2), placeholder (L3–12) | 8 cards/lesson |
 | Business Studies | 8 | Amber | 8 real (L1–2), placeholder (L3–8) | 3–6 cards/lesson |
-| ICT | 2 | Purple | 8 real (L1–2) | 8 cards/lesson |
+| ICT | 12 (2 built) | Purple | 8 real (L1–2) | 8 cards/lesson |
 
-Add subjects via `SUBJECTS_DATA` in `index.html`.
+Each subject has a dedicated section hub (`economics/`, `business/`, `ict/`) with progress tracking, search, and quiz score badges. Add subjects via `SUBJECTS_DATA` in `index.html`.
 
 ## Books Library
 
@@ -57,15 +73,18 @@ Add subjects via `SUBJECTS_DATA` in `index.html`.
 - **Power** — The 48 Laws of Power, Daily Robert Greene, The Art of Seduction, The Prince
 - **Finance** — Money Unlocked, The Changing World Order, Rich Dad Poor Dad, The Millionaire Master Plan, The Psychology of Money
 
-## Study Notes
+## Lessons Per Subject
+
+Lessons live in `{subject}/lessons/{n}/index.html`. Each lesson page is self-contained with its own styling.
 
 - **Business Studies** (8): Basis of Business & Environment, Social Responsibility & Business Ethics, Business-Government Relations & Consumer Protection, Business Organizations, Entrepreneurship, Money and Financial Institutions, Insurance, Communication
 - **Economics** (12): Introduction to Economics, Demand Supply & Market Equilibrium, Government Intervention in Markets, Production Cost & Market Structures, National Accounting, Macroeconomic Concepts, Price Inflation Money & Financial System, Market Failure Government & Public Finance, Protectionism & Foreign Investments, Foreign Exchange & Balance of Payments, Economic Growth Development & Labour, Sri Lankan Economy Post-Independence
-- **ICT** (2): Introduction to Python Programming, Control Flow: Conditionals & Loops
+- **ICT** (2 built, 12 planned): Introduction to Python Programming, Control Flow: Conditionals & Loops
 
 ## Usage
 
-- **Dark/Light Mode** — Moon/sun icon in navbar toggles background. Saved to `nexo_bg_mode` in localStorage. Shared between index and account pages.
+- **Section Hubs** — Each subject (`economics/`, `business/`, `ict/`) and the book library (`books/`) have dedicated hub pages with progress bars, search, and quick access to all content.
+- **Dark/Light Mode** — Moon/sun icon in navbar toggles background. Saved to `nexo_bg_mode` in localStorage. Shared across all hub pages.
 - **Dashboard** — XP level, badges, streak, last lesson, completion rings, quiz scores (auto-updates on progress/quiz events)
 - **Study Hub** — Expand subject panels, Start to open lesson, Quiz to test, Flashcards for SRS review
 - **Library** — Filter by category (Productivity, Philosophy, Psychology, Power, Finance), search by title, grid/list toggle
@@ -116,7 +135,7 @@ Presets: `py-hello-world`, `py-variables`, `py-input`, `py-if-else`, `py-for-loo
 
 ## Account Page
 
-`account.html` — 6 sections in a sidebar layout:
+`account/index.html` — 6 sections in a sidebar layout:
 - **Dashboard** — Quick stats, subject progress, recent activity
 - **Progress** — Per-subject lesson dots, progress bars, overall completion ring
 - **Quizzes** — Best score card, full history table with score bars

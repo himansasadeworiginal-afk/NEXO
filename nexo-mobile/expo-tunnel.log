@@ -1,0 +1,10 @@
+Starting project at /home/wolf/Projects/nexo/nexo-mobile
+Starting Metro Bundler
+Tunnel connected.
+Tunnel ready.
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Android ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Android Bundled 2349ms index.js (1048 modules)
+ WARN  setLayoutAnimationEnabledExperimental is currently a no-op in the New Architecture.
+ ERROR  [ReferenceError: Property 'BookDetailScreen' doesn't exist]

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Lesson 2 - Control Flow</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #2ea84c; --accent: #8a5abe; --accent2: #2aaf8f; --accent3: #d4a040;
+  --bg: #060906; --card: #0c110c; --text: #d8e8d8; --text-muted: #607a60; --text-dim: #a0b8a0;
+  --border: #182218; --gradient: linear-gradient(135deg, #8a5abe, #2aaf8f, #2ea84c);
+}
+body { font-family: -apple-system,'Segoe UI',system-ui,sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+.hero { position: relative; z-index: 1; min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+.hero-badge { display: inline-block; padding: 0.4rem 1.2rem; background: rgba(138,90,190,0.15); border: 1px solid rgba(138,90,190,0.3); border-radius: 50px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); margin-bottom: 1.5rem; }
+.hero h1 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; margin-bottom: 1rem; }
+.hero p { font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: var(--text-muted); max-width: 600px; }
+.container { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+.section { background: var(--card); border-radius: 8px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; border: 1px solid var(--border); transition: all 0.4s ease; opacity: 0; transform: translateY(20px); }
+.section.visible { opacity: 1; transform: translateY(0); }
+.section:hover { border-color: rgba(138,90,190,0.3); }
+.section h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--text); display: flex; align-items: center; gap: 0.75rem; }
+.section h2 .underline { flex: 1; height: 1px; background: var(--gradient); opacity: 0.3; }
+.section h3 { font-size: 1rem; font-weight: 600; color: var(--accent); margin: 1rem 0 0.5rem; }
+.section p { margin-bottom: 0.6rem; color: var(--text-dim); }
+.section ul, .section ol { padding-left: 1.5rem; }
+.section li { margin-bottom: 0.3rem; color: var(--text-dim); }
+code { background: rgba(138,90,190,0.12); padding: 0.1rem 0.4rem; border-radius: 3px; color: var(--accent2); font-size: 0.85rem; font-family: 'Courier New', monospace; }
+pre.code-block { background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 1rem; margin: 0.8rem 0; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--text-dim); overflow-x: auto; line-height: 1.5; }
+.info-card { background: rgba(138,90,190,0.05); border: 1px solid rgba(138,90,190,0.1); border-radius: 6px; padding: 1rem; margin: 0.8rem 0; text-align: center; }
+.info-card .label { font-weight: 600; color: var(--accent); }
+.info-card .desc { font-size: 0.85rem; color: var(--text-muted); }
+.back-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; margin-bottom: 1rem; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; border: 1px solid var(--border); transition: all 0.3s; }
+.back-link:hover { border-color: var(--accent-dim); color: var(--accent); }
+.progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 2px; z-index: 100; }
+.progress-bar { height: 100%; width: 0%; transition: width 0.3s; background: var(--gradient); }
+@media (max-width: 600px) { .section { padding: 1rem; } .hero { min-height: 40vh; } }
+</style>
+</head>
+<body>
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="hero">
+  <div class="hero-badge">ICT &middot; Lesson 2</div>
+  <h1>Control Flow:<br>Conditionals &amp; Loops</h1>
+  <p>Make decisions in your code with if/else and repeat actions with for/while loops.</p>
+</section>
+<div class="container">
+  <a class="back-link" href="../../../index.html">&larr; Back to Study Hub</a>
+
+  <div class="section" data-section>
+    <h2>If / Elif / Else <span class="underline"></span></h2>
+    <p>Conditionals let your program make decisions based on conditions:</p>
+    <pre class="code-block">age = int(input("Enter your age: "))
+
+if age >= 18:
+    print("You are an adult.")
+elif age >= 13:
+    print("You are a teenager.")
+else:
+    print("You are a child.")</pre>
+    <p>Key rules:
+    <ul>
+      <li>The <code>if</code> condition is checked first</li>
+      <li><code>elif</code> checks additional conditions (any number)</li>
+      <li><code>else</code> runs if nothing above was True</li>
+      <li>Indentation (4 spaces) is mandatory in Python</li>
+    </ul>
+  </div>
+
+  <div class="section" data-section>
+    <h2>Comparison Operators <span class="underline"></span></h2>
+    <pre class="code-block">==    Equal to
+!=    Not equal to
+&lt;     Less than
+&gt;     Greater than
+&lt;=    Less than or equal
+&gt;=    Greater than or equal</pre>
+    <p>Combine conditions with <code>and</code>, <code>or</code>, <code>not</code>:</p>
+    <pre class="code-block">if age >= 13 and age <= 19:
+    print("Teenager")
+
+if not is_raining:
+    print("Let's go outside!")</pre>
+  </div>
+
+  <div class="section" data-section>
+    <h2>For Loops <span class="underline"></span></h2>
+    <p>For loops iterate over a sequence. Use <code>range()</code> to repeat a number of times:</p>
+    <pre class="code-block"># Print numbers 1 to 5
+for i in range(1, 6):
+    print(i)
+
+# Iterate over a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)</pre>
+    <p><code>range(start, stop, step)</code> — note that <code>stop</code> is exclusive (not included).</p>
+  </div>
+
+  <div class="section" data-section>
+    <h2>While Loops <span class="underline"></span></h2>
+    <p>While loops repeat <strong>as long as</strong> a condition is True:</p>
+    <pre class="code-block">count = 1
+while count <= 5:
+    print(count)
+    count += 1   # Don't forget to update!
+
+# Password loop
+password = ""
+while password != "nexo123":
+    password = input("Enter password: ")
+print("Access granted!")</pre>
+    <p class="info-card" style="margin-top:0.8rem;"><span class="label">Warning!</span> <span class="desc">Always ensure your loop condition will eventually become False, or you'll create an <strong>infinite loop</strong>.</span></p>
+  </div>
+
+  <div class="section" data-section>
+    <h2>Try It Yourself <span class="underline"></span></h2>
+    <p>Practice writing conditionals and loops in the terminal below.</p>
+  </div>
+</div>
+
+<script>
+  window.NEXO_TERMINAL_CONFIG = {
+    lang: 'python',
+    lesson: {
+      title: 'Conditionals & Loops Practice',
+      challenge: 'Write a Python program that:\n1. Asks the user for a number\n2. Prints "Positive", "Negative", or "Zero" based on the number\n3. Then prints all numbers from 1 up to that number using a loop\n\nBonus: Ask for a password and keep asking until they enter "python123".',
+      expectedOutput: 'Enter a number: 5\nPositive\n1\n2\n3\n4\n5',
+      hint: 'Use if/elif/else for the sign check. Use for i in range(1, num+1) for the loop. For the bonus, use a while loop.',
+      starterCode: { python: '', pseudocode: '', javascript: '' }
+    }
+  };
+</script>
+<script src="https://skulpt.org/js/skulpt.min.js"></script>
+<script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+<div id="nexo-terminal-mount"></div>
+<script src="../../components/nexo-terminal-embed.js"></script>
+
+<script>
+  const sections = document.querySelectorAll('[data-section]');
+  function revealSections() { sections.forEach(s => { if(s.getBoundingClientRect().top < window.innerHeight - 80) s.classList.add('visible'); }); }
+  window.addEventListener('scroll', revealSections); revealSections();
+  window.addEventListener('scroll', () => { const p = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100; document.getElementById('progressBar').style.width = p + '%'; });
+</script>
+</body>
+</html>

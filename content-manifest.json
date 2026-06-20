@@ -51,8 +51,18 @@
       {"lesson":8,"title":"Communication","files":["lesson8.html","8.pdf"]}
     ],
     "ict": [
-      {"lesson":1,"title":"Introduction to Python","files":["index.html"]},
-      {"lesson":2,"title":"Control Flow: Conditionals & Loops","files":["index.html"]}
+      {"lesson":1,"title":"Data Representation","files":["index.html"]},
+      {"lesson":2,"title":"Data Transmission","files":["index.html"]},
+      {"lesson":3,"title":"Hardware","files":["index.html"]},
+      {"lesson":4,"title":"Software","files":["index.html"]},
+      {"lesson":5,"title":"Networks","files":["index.html"]},
+      {"lesson":6,"title":"Security and Ethics","files":["index.html"]},
+      {"lesson":7,"title":"Databases","files":["index.html"]},
+      {"lesson":8,"title":"Algorithms and Pseudocode","files":["index.html"]},
+      {"lesson":9,"title":"Programming Concepts","files":["index.html"]},
+      {"lesson":10,"title":"Python — Basics","files":["index.html"]},
+      {"lesson":11,"title":"Python — Functions and Files","files":["index.html"]},
+      {"lesson":12,"title":"Web Technologies","files":["index.html"]}
     ]
   }
 }

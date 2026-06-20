@@ -1,0 +1,2 @@
+Stripe not configured — premium features in demo mode
+NEXO API running on http://localhost:4000
