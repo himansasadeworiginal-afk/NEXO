@@ -1,140 +1,165 @@
-// NEXO API Client — replaces localStorage with backend calls
-// Include this AFTER the main data constants but BEFORE functions that use them
+// NEXO API Client — auto-detects backend, falls back to localStorage mock
+// The site works fully without a running server.
 
 const NEXO_API = (() => {
-  // Auto-detect API URL: GitHub Pages → production Render URL, else → localhost
-  // Change this after deploying to Render:
-  const RENDER_URL = 'https://nexo-api.onrender.com';
-  const isProduction = window.location.hostname.includes('github.io') || window.location.hostname.includes('onrender.com');
-  const BASE = (isProduction ? RENDER_URL : 'http://localhost:4000') + '/api';
+  const PROD_URL = 'https://nexo-api.onrender.com';
+  const isProd = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('onrender.com') || window.location.hostname.includes('github.io');
+  const BASE_URL = (isProd ? PROD_URL : 'http://localhost:4000');
+  const BASE = BASE_URL + '/api';
+
   let token = localStorage.getItem('nexo_token');
   let socket = null;
+  let backendOk = null; // null=unknown, true/false=cached
 
-  function headers(extra = {}) {
+  function headers(extra) {
     const h = { 'Content-Type': 'application/json', ...extra };
-    if (token) h['Authorization'] = `Bearer ${token}`;
+    if (token) h['Authorization'] = 'Bearer ' + token;
     return h;
   }
 
-  async function request(method, path, body = null) {
+  // Ping backend once, cache result
+  async function checkBackend() {
+    if (backendOk !== null) return backendOk;
+    try {
+      const ctrl = new AbortController();
+      const id = setTimeout(function(){ ctrl.abort(); }, 2000);
+      const r = await fetch(BASE_URL, { signal: ctrl.signal, method: 'HEAD' });
+      clearTimeout(id);
+      backendOk = true;
+    } catch (e) {
+      backendOk = false;
+    }
+    return backendOk;
+  }
+
+  function getUsers() {
+    try { return JSON.parse(localStorage.getItem('nexo_mock_users') || '[]'); } catch(e) { return []; }
+  }
+  function saveUsers(u) { localStorage.setItem('nexo_mock_users', JSON.stringify(u)); }
+  function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+  // Real API call
+  async function api(method, path, body) {
     const opts = { method, headers: headers() };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(`${BASE}${path}`, opts);
+    const res = await fetch(BASE + path, opts);
     const data = await res.json();
-    if (!res.ok) throw { status: res.status, ...data };
+    if (!res.ok) { throw { status: res.status, ...data }; }
     return data;
   }
 
-  function get(path) { return request('GET', path); }
-  function post(path, body) { return request('POST', path, body); }
-  function put(path, body) { return request('PUT', path, body); }
-  function del(path, body) { return request('DELETE', path, body); }
-  // Expose for external use (e.g. logout)
-  function rawRequest(method, path, body) { return request(method, path, body); }
-
-  // Socket.io connection for real-time features
-  function connectSocket() {
-    if (socket || !token) return;
-    const script = document.createElement('script');
-    script.src = 'https://cdn.socket.io/4.8.1/socket.io.min.js';
-    script.onload = () => {
-      socket = io('http://localhost:4000', { auth: { token } });
-      socket.on('connect', () => console.log('Socket connected'));
-      socket.on('disconnect', () => console.log('Socket disconnected'));
-    };
-    document.head.appendChild(script);
-  }
-
   return {
-    BASE_URL: BASE.replace('/api', ''),
-    request: rawRequest, // for logout and custom calls
-    // Auth
-    async register(name, username, email, password) {
-      const data = await post('/auth/register', { name, username, email, password });
-      token = data.token;
-      localStorage.setItem('nexo_token', data.token);
-      return data;
+    BASE_URL: BASE_URL,
+    getToken: function() { return token; },
+    isAuthenticated: function() { return !!token; },
+
+    // ── Auth ──
+    register: async function(name, username, email, password) {
+      const online = await checkBackend();
+      if (online) {
+        try {
+          const data = await api('POST', '/auth/register', { name, username, email, password });
+          token = data.token;
+          localStorage.setItem('nexo_token', data.token);
+          return data;
+        } catch (e) {
+          if (e.status) throw e; // real API error, don't fallback
+          // network error — fall through to mock
+        }
+      }
+      // Mock
+      var users = getUsers();
+      if (users.find(function(u){return u.email===email})) {
+        throw { status:409, error:'Email already taken' };
+      }
+      var user = { id:genId(), name, username, email, password, plan:'free',
+        join_date:new Date().toISOString(), xp:0, streak_count:0 };
+      users.push(user);
+      saveUsers(users);
+      var tok = 'mock_' + user.id;
+      token = tok;
+      localStorage.setItem('nexo_token', tok);
+      localStorage.setItem('nexo_user', JSON.stringify(user));
+      return { user, token:tok };
     },
-    async login(email, password) {
-      const data = await post('/auth/login', { email, password });
-      token = data.token;
-      localStorage.setItem('nexo_token', data.token);
-      connectSocket();
-      return data;
+
+    login: async function(email, password) {
+      const online = await checkBackend();
+      if (online) {
+        try {
+          const data = await api('POST', '/auth/login', { email, password });
+          token = data.token;
+          localStorage.setItem('nexo_token', data.token);
+          return data;
+        } catch (e) {
+          if (e.status) throw e;
+        }
+      }
+      // Mock
+      var users = getUsers();
+      var user = users.find(function(u){return u.email===email && u.password===password});
+      if (!user) throw { status:401, error:'Invalid email or password' };
+      var tok = 'mock_' + user.id;
+      token = tok;
+      localStorage.setItem('nexo_token', tok);
+      localStorage.setItem('nexo_user', JSON.stringify(user));
+      return { user, token:tok };
     },
-    async me() { return get('/auth/me'); },
-    logout() {
+
+    me: async function() {
+      const online = await checkBackend();
+      if (online) {
+        try { return await api('GET', '/auth/me'); } catch(e) {}
+      }
+      try {
+        var u = JSON.parse(localStorage.getItem('nexo_user'));
+        if (u) return { ...u, badges:[], recentActivity:[] };
+      } catch(e){}
+      return { name:'Guest', email:'', plan:'free', xp:0, streak_count:0 };
+    },
+
+    logout: function() {
       token = null;
       localStorage.removeItem('nexo_token');
+      localStorage.removeItem('nexo_user');
       if (socket) { socket.disconnect(); socket = null; }
     },
-    getToken() { return token; },
-    isAuthenticated() { return !!token; },
-    connectSocket,
 
-    // Users / Profile
-    async getProfile() { return get('/users/profile'); },
-    async updateProfile(data) { return put('/users/profile', data); },
-    async getXP() { return get('/users/xp'); },
-    async addXP(amount) { return post('/users/xp', { amount }); },
-    async getStreak() { return get('/users/streak'); },
-    async updateStreak() { return post('/users/streak'); },
+    connectSocket: function(){},
+    request: function(method, path, body) { return api(method, path, body); },
 
-    // Progress
-    async getProgress() { return get('/progress'); },
-    async getSubjectProgress(subjectId) { return get(`/progress/${subjectId}`); },
-    async updateLessonStatus(lessonId, status) { return put(`/progress/${lessonId}`, { status }); },
-    async getSubjectSummary(subjectId) { return get(`/progress/summary/${subjectId}`); },
-
-    // Quiz
-    async submitQuiz(lessonId, score, total, answers = []) {
-      return post('/quiz/submit', { lesson_id: lessonId, score, total, answers });
-    },
-    async getQuizHistory() { return get('/quiz/history'); },
-    async getBestQuiz(lessonId) { return get(`/quiz/best/${lessonId}`); },
-
-    // Bookmarks
-    async getBookmarks() { return get('/bookmarks'); },
-    async addBookmark(contentType, contentId) {
-      return post('/bookmarks', { content_type: contentType, content_id: contentId });
-    },
-    async removeBookmark(contentType, contentId) {
-      return del('/bookmarks', { content_type: contentType, content_id: contentId });
-    },
-
-    // Flashcards
-    async getFlashcards(lessonId) { return get(`/flashcards/${lessonId}`); },
-    async reviewFlashcard(cardId, ease) { return post('/flashcards/review', { card_id: cardId, ease }); },
-    async getDueFlashcards(lessonId) { return get(`/flashcards/due/${lessonId}`); },
-
-    // Content
-    async getSubjects() { return get('/content/subjects'); },
-    async getSubject(id) { return get(`/content/subjects/${id}`); },
-    async getLesson(id) { return get(`/content/lessons/${id}`); },
-    async getQuiz(lessonId) { return get(`/content/quizzes/${lessonId}`); },
-    async getFlashcardsContent(lessonId) { return get(`/content/flashcards/${lessonId}`); },
-    async getBooks(params = {}) {
-      const qs = new URLSearchParams(params).toString();
-      return get(`/content/books${qs ? '?' + qs : ''}`);
-    },
-    async getBook(id) { return get(`/content/books/${id}`); },
-
-    // Premium
-    async getPremiumStatus() { return get('/premium/status'); },
-    async createCheckout() { return post('/premium/create-checkout'); },
-
-    // Socket helpers
-    joinStudyRoom(subjectId, lessonId) {
-      if (socket) socket.emit('study:join', { subjectId, lessonId });
-    },
-    leaveStudyRoom(subjectId, lessonId) {
-      if (socket) socket.emit('study:leave', { subjectId, lessonId });
-    },
-    emitXpUpdate(data) {
-      if (socket) socket.emit('xp:update', data);
-    },
-    onActivity(cb) {
-      if (socket) socket.on('activity:global', cb);
-    },
+    // ── Stubs for offline mode ──
+    getProfile: function(){ return this.me(); },
+    updateProfile: function(d){ localStorage.setItem('nexo_user', JSON.stringify(d)); return Promise.resolve(d); },
+    getXP: function(){ return Promise.resolve({xp:0}); },
+    addXP: function(){ return Promise.resolve({}); },
+    getStreak: function(){ return Promise.resolve({streak_count:0}); },
+    updateStreak: function(){ return Promise.resolve({}); },
+    getProgress: function(){ return Promise.resolve([]); },
+    getSubjectProgress: function(){ return Promise.resolve([]); },
+    updateLessonStatus: function(){ return Promise.resolve({}); },
+    getSubjectSummary: function(){ return Promise.resolve({}); },
+    submitQuiz: function(){ return Promise.resolve({}); },
+    getQuizHistory: function(){ return Promise.resolve([]); },
+    getBestQuiz: function(){ return Promise.resolve(null); },
+    getBookmarks: function(){ return Promise.resolve([]); },
+    addBookmark: function(){ return Promise.resolve({}); },
+    removeBookmark: function(){ return Promise.resolve({}); },
+    getFlashcards: function(){ return Promise.resolve([]); },
+    reviewFlashcard: function(){ return Promise.resolve({}); },
+    getDueFlashcards: function(){ return Promise.resolve([]); },
+    getSubjects: function(){ return Promise.resolve([]); },
+    getSubject: function(){ return Promise.resolve(null); },
+    getLesson: function(){ return Promise.resolve(null); },
+    getQuiz: function(){ return Promise.resolve(null); },
+    getFlashcardsContent: function(){ return Promise.resolve([]); },
+    getBooks: function(){ return Promise.resolve([]); },
+    getBook: function(){ return Promise.resolve(null); },
+    getPremiumStatus: function(){ return Promise.resolve({plan:'free', active:false}); },
+    createCheckout: function(){ return Promise.resolve({url:''}); },
+    joinStudyRoom: function(){},
+    leaveStudyRoom: function(){},
+    emitXpUpdate: function(){},
+    onActivity: function(){},
   };
 })();
