@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXO — Sign In</title>
+<script src="nexo-api.js"></script>
 <script>
 (function(){try{var m=localStorage.getItem('nexo_bg_mode');if(m==='light')document.documentElement.classList.add('light-mode')}catch(e){}})();
 </script>
@@ -1028,17 +1029,31 @@ document.getElementById('emailForm').addEventListener('submit', function(e){
 
   if (!valid) return;
 
-  // BACKEND: replace this success simulation with a real auth call
-  // e.g. POST /api/auth/login { email, password } -> JWT token
   const btn = document.getElementById('emailSubmitBtn');
   btn.disabled = true;
   btn.innerHTML = '<span>Signing in...</span>';
 
-  setTimeout(function(){
-    document.getElementById('emailForm').style.display = 'none';
-    document.getElementById('emailSuccess').classList.add('show');
-    document.getElementById('ariaLive').textContent = 'Signed in successfully';
-  }, 1200);
+  NEXO_API.login(email, pass)
+    .then(function(data){
+      document.getElementById('emailForm').style.display = 'none';
+      document.getElementById('emailSuccess').classList.add('show');
+      document.getElementById('ariaLive').textContent = 'Signed in successfully';
+    })
+    .catch(function(err){
+      btn.disabled = false;
+      btn.innerHTML = '<span>Sign In</span>';
+      if (err.status === 401) {
+        passErr.textContent = 'Invalid email or password';
+        passErr.classList.add('show');
+        document.getElementById('loginPassword').classList.add('input-error');
+      } else if (err.error) {
+        passErr.textContent = err.error;
+        passErr.classList.add('show');
+      } else {
+        passErr.textContent = 'Connection failed. Is the server running?';
+        passErr.classList.add('show');
+      }
+    });
 });
 
 // =====================================================================
@@ -1066,8 +1081,8 @@ document.getElementById('phoneForm').addEventListener('submit', function(e){
     return;
   }
 
-  // BACKEND: replace this with a real SMS code send
-  // e.g. POST /api/auth/send-code { phone }
+  // BACKEND: phone SMS send — no endpoint exists yet, add POST /api/auth/send-code
+  // NEXO_API.post('/auth/send-code', { phone }).then(...).catch(...)
   document.getElementById('otpPhoneDisplay').textContent = '+' + phone;
   document.getElementById('phoneEntry').style.display = 'none';
   document.getElementById('phoneOtp').style.display = 'block';
@@ -1090,8 +1105,8 @@ function handleOtpVerify() {
     return;
   }
 
-  // BACKEND: replace this with a real OTP verify call
-  // e.g. POST /api/auth/verify-otp { phone, code } -> JWT token
+  // BACKEND: phone OTP verify — no endpoint exists yet, add POST /api/auth/verify-otp
+  // NEXO_API.post('/auth/verify-otp', { phone, code }).then(showSuccess).catch(showError)
   const btn = document.getElementById('otpVerifyBtn');
   btn.disabled = true;
   btn.innerHTML = '<span>Verifying...</span>';
@@ -1111,10 +1126,9 @@ document.getElementById('otpVerifyBtn').addEventListener('click', handleOtpVerif
 // === GOOGLE SIGN-IN ===
 // =====================================================================
 document.getElementById('googleLoginBtn').addEventListener('click', function(){
-  // BACKEND: replace this with a real Google OAuth flow
-  // e.g. window.location.href = '/api/auth/google';
+  // BACKEND: Google OAuth — no endpoint exists yet, add GET /api/auth/google
+  // window.location.href = NEXO_API.BASE_URL + '/auth/google';
   document.getElementById('ariaLive').textContent = 'Google sign-in initiated';
-  this.disabled = true;
   this.disabled = true;
   this.querySelector('span').textContent = 'Connecting...';
   setTimeout(function(){

@@ -2,7 +2,11 @@
 // Include this AFTER the main data constants but BEFORE functions that use them
 
 const NEXO_API = (() => {
-  const BASE = 'http://localhost:4000/api';
+  // Auto-detect API URL: GitHub Pages → production Render URL, else → localhost
+  // Change this after deploying to Render:
+  const RENDER_URL = 'https://nexo-api.onrender.com';
+  const isProduction = window.location.hostname.includes('github.io') || window.location.hostname.includes('render');
+  const BASE = (isProduction ? RENDER_URL : 'http://localhost:4000') + '/api';
   let token = localStorage.getItem('nexo_token');
   let socket = null;
 
@@ -42,6 +46,7 @@ const NEXO_API = (() => {
   }
 
   return {
+    BASE_URL: BASE.replace('/api', ''),
     request: rawRequest, // for logout and custom calls
     // Auth
     async register(name, username, email, password) {

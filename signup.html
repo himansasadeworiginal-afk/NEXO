@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXO — Create Account</title>
+<script src="nexo-api.js"></script>
 <script>
 (function(){try{var m=localStorage.getItem('nexo_bg_mode');if(m==='light')document.documentElement.classList.add('light-mode')}catch(e){}})();
 </script>
@@ -1080,17 +1081,38 @@ document.getElementById('emailForm').addEventListener('submit', function(e){
 
   if (!valid) return;
 
-  // BACKEND: replace this success simulation with a real auth call
-  // e.g. POST /api/auth/register { name, email, password } -> JWT token
   const btn = document.getElementById('emailSubmitBtn');
   btn.disabled = true;
   btn.innerHTML = '<span>Creating account...</span>';
 
-  setTimeout(function(){
-    document.getElementById('emailForm').style.display = 'none';
-    document.getElementById('emailSuccess').classList.add('show');
-    document.getElementById('ariaLive').textContent = 'Account created successfully';
-  }, 1200);
+  // generate a safe username from the name
+  var username = name.toLowerCase().replace(/[^a-z0-9_]/g, '_').substring(0, 50) + '_' + Date.now().toString(36);
+
+  NEXO_API.register(name, username, email, pass)
+    .then(function(data){
+      document.getElementById('emailForm').style.display = 'none';
+      document.getElementById('emailSuccess').classList.add('show');
+      document.getElementById('ariaLive').textContent = 'Account created successfully';
+    })
+    .catch(function(err){
+      btn.disabled = false;
+      btn.innerHTML = '<span>Create Account</span>';
+      if (err.status === 409) {
+        emailErr.textContent = 'Email already taken';
+        emailErr.classList.add('show');
+        emailInput.classList.add('input-error');
+      } else if (err.status === 400 && err.details) {
+        var msgs = err.details.map(function(d){ return d.message; }).join(', ');
+        passErr.textContent = msgs;
+        passErr.classList.add('show');
+      } else if (err.error) {
+        passErr.textContent = err.error;
+        passErr.classList.add('show');
+      } else {
+        passErr.textContent = 'Connection failed. Is the server running?';
+        passErr.classList.add('show');
+      }
+    });
 });
 
 // =====================================================================
@@ -1131,8 +1153,8 @@ document.getElementById('phoneForm').addEventListener('submit', function(e){
 
   if (!valid) return;
 
-  // BACKEND: replace this with a real SMS code send
-  // e.g. POST /api/auth/send-code { name, phone }
+  // BACKEND: phone SMS send — no endpoint exists yet, add POST /api/auth/send-code
+  // NEXO_API.post('/auth/send-code', { name, phone }).then(...).catch(...)
   document.getElementById('otpPhoneDisplay').textContent = '+' + phone;
   document.getElementById('phoneEntry').style.display = 'none';
   document.getElementById('phoneOtp').style.display = 'block';
@@ -1155,8 +1177,8 @@ function handleOtpVerify() {
     return;
   }
 
-  // BACKEND: replace this with a real OTP verify call
-  // e.g. POST /api/auth/verify-otp { name, phone, code } -> JWT token
+  // BACKEND: phone OTP verify — no endpoint exists yet, add POST /api/auth/verify-otp
+  // NEXO_API.post('/auth/verify-otp', { name, phone, code }).then(showSuccess).catch(showError)
   const btn = document.getElementById('otpVerifyBtn');
   btn.disabled = true;
   btn.innerHTML = '<span>Verifying...</span>';
@@ -1176,8 +1198,8 @@ document.getElementById('otpVerifyBtn').addEventListener('click', handleOtpVerif
 // === GOOGLE SIGN-UP ===
 // =====================================================================
 document.getElementById('googleSignupBtn').addEventListener('click', function(){
-  // BACKEND: replace this with a real Google OAuth flow
-  // e.g. window.location.href = '/api/auth/google';
+  // BACKEND: Google OAuth — no endpoint exists yet, add GET /api/auth/google
+  // window.location.href = NEXO_API.BASE_URL + '/auth/google';
   document.getElementById('ariaLive').textContent = 'Google sign-up initiated';
   this.disabled = true;
   this.querySelector('span').textContent = 'Connecting...';
