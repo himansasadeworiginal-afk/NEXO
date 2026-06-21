@@ -11,6 +11,18 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGIN
-        value: https://himansasadeworiginal-afk.github.io
+        value: https://nexo-frontend.onrender.com
       - key: STRIPE_SECRET_KEY
         value: sk_test_placeholder
+
+  - type: web
+    name: nexo-frontend
+    env: static
+    rootDir: .
+    buildCommand: ""
+    staticPublishPath: .
+    domains:
+      - nexo-frontend.onrender.com
+    envVars:
+      - key: NODE_VERSION
+        value: 22

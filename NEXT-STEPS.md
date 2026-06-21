@@ -1,38 +1,37 @@
-# Next Steps — After Break
+# Next Steps — Deploy to Render
 
-## 1. Deploy Backend to Render
+GitHub Pages won't work on your network (ESET blocks it). Use Render instead — it hosts both the frontend AND backend.
+
+## One-Click Deploy via Blueprint
 
 1. Go to https://render.com → Sign up with GitHub
 2. Click **New +** → **Blueprint** → select `himansasadeworiginal-afk/NEXO`
-3. Render auto-detects `server/render.yaml` — just confirm
-4. After deploy, go to Dashboard → `nexo-api` → Environment
-5. Set `JWT_SECRET` to a strong random string
-6. Copy your Render URL (looks like `https://nexo-api.onrender.com`)
+3. Render auto-detects `server/render.yaml` — it will create:
+   - **`nexo-frontend`** — the static site (index.html, login.html, etc.) at `https://nexo-frontend.onrender.com`
+   - **`nexo-api`** — the Node.js backend at `https://nexo-api.onrender.com`
+4. Confirm and deploy
 
-## 2. Update Render URL in nexo-api.js
+## After Deploy
 
-Open `nexo-api.js` and change the `RENDER_URL` constant at the top to your actual Render URL:
+Update `nexo-api.js` with your actual Render URLs if they differ:
 
 ```js
-const RENDER_URL = 'https://nexo-api.onrender.com'; // ← change this
+const RENDER_URL = 'https://nexo-api.onrender.com';
 ```
 
-## 3. Backend Endpoints Still Needed
-
-Phone/OTP and Google OAuth are still simulated (no server routes). You'll need to add:
+## Endpoints Still Needed (Phone/OTP/Google)
 
 - `POST /api/auth/send-code` — send SMS code to phone
 - `POST /api/auth/verify-otp` — verify OTP code, return JWT
-- `GET /api/auth/google` — Google OAuth redirect/flow
+- `GET /api/auth/google` — Google OAuth flow
 
-These are marked with `// BACKEND:` comments in `login.html` and `signup.html`.
+Marked with `// BACKEND:` in `login.html` and `signup.html`.
 
-## 4. Demo Credentials
+## Demo Credentials
 
 - Email: `demo@nexo.app` / Password: `demo1234`
-- API health check: `GET <render-url>/api/health`
+- Health check: `GET https://nexo-api.onrender.com/api/health`
 
-## 5. Optional
+## Optional
 
-- Set up Stripe keys in Render env for premium features
-- Update `CORS_ORIGIN` on Render if cross-origin errors appear
+- Set Stripe keys in Render env for premium features
