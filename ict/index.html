@@ -167,7 +167,7 @@ body::before{
 <div class="container">
   <div class="progress-section" id="progressSection">
     <div class="progress-header">
-      <span class="progress-label" id="progressLabel">0 / 12 lessons completed</span>
+      <span class="progress-label" id="progressLabel">0 / 2 lessons completed</span>
       <span class="progress-label" id="progressPct">0%</span>
     </div>
     <div class="progress-track">
@@ -186,20 +186,10 @@ body::before{
 <script>
 const LESSONS = [
   {id:1, title:'Data Representation', desc:'Binary, hexadecimal, number systems, and how data is represented in computer systems.'},
-  {id:2, title:'Data Transmission', desc:'Methods of data transmission, protocols, error detection, and network communication basics.'},
-  {id:3, title:'Hardware', desc:'Computer hardware components, peripherals, and the internal architecture of computing systems.'},
-  {id:4, title:'Software', desc:'Operating systems, application software, utilities, and the role of software in computing.'},
-  {id:5, title:'Networks', desc:'Network topologies, types (LAN/WAN), IP addressing, and the fundamentals of computer networking.'},
-  {id:6, title:'Security and Ethics', desc:'Cybersecurity threats, encryption, authentication, and ethical considerations in ICT.'},
-  {id:7, title:'Databases', desc:'Relational databases, SQL, data modeling, and the principles of data management.'},
-  {id:8, title:'Algorithms and Pseudocode', desc:'Algorithm design, flowcharts, pseudocode, sorting and searching algorithms — with interactive terminal.'},
-  {id:9, title:'Programming Concepts', desc:'Variables, data types, operators, and the fundamentals of programming logic and structures.'},
-  {id:10, title:'Python — Basics', desc:'Python syntax, variables, data types, input/output, conditionals, and loops — with interactive terminal.'},
-  {id:11, title:'Python — Functions and Files', desc:'Functions, parameters, return values, file handling, modules, and code organization in Python.'},
-  {id:12, title:'Web Technologies', desc:'HTML, CSS, JavaScript fundamentals, web architecture, and how the internet works.'}
+  {id:2, title:'Data Transmission', desc:'Methods of data transmission, protocols, error detection, and network communication basics.'}
 ];
 const SUBJECT_PREFIX = 'ict';
-const TERMINAL_LESSONS = [8, 10];
+const TERMINAL_LESSONS = [];
 
 function loadLessonStatus(id) {
   try { return localStorage.getItem('nexo_lesson_' + SUBJECT_PREFIX + '-' + id) || 'not-started'; } catch(e) { return 'not-started'; }
