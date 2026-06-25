@@ -639,9 +639,9 @@ body::before{
   <!-- ===== SIDEBAR (desktop) ===== -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
-      <div class="sidebar-avatar" id="sidebarAvatar" style="background:#2ea84c">AS</div>
-      <div class="sidebar-name" id="sidebarName">Aiden Silva</div>
-      <div class="sidebar-username" id="sidebarUsername">@aidensilva</div>
+      <div class="sidebar-avatar" id="sidebarAvatar" style="background:#2ea84c">G</div>
+      <div class="sidebar-name" id="sidebarName">Guest</div>
+      <div class="sidebar-username" id="sidebarUsername">@guest</div>
       <div class="sidebar-plan free" id="sidebarPlan">Free Plan</div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav">
@@ -688,10 +688,10 @@ body::before{
 
   <!-- ===== MOBILE HEADER ===== -->
   <div class="mobile-header" id="mobileHeader">
-    <div class="mh-avatar" id="mhAvatar" style="background:#2ea84c">AS</div>
+    <div class="mh-avatar" id="mhAvatar" style="background:#2ea84c">G</div>
     <div class="mh-info">
-      <div class="mh-name" id="mhName">Aiden Silva</div>
-      <div class="mh-username" id="mhUsername">@aidensilva</div>
+      <div class="mh-name" id="mhName">Guest</div>
+      <div class="mh-username" id="mhUsername">@guest</div>
     </div>
     <div class="mh-plan" id="mhPlan">Free Plan</div>
   </div>
@@ -711,7 +711,7 @@ body::before{
 
     <!-- SECTION: Overview -->
     <div class="section active" id="section-overview">
-      <h1 class="page-heading" id="ovHeading">Welcome back, Aiden Silva</h1>
+      <h1 class="page-heading" id="ovHeading">Welcome back, Guest</h1>
       <p class="page-subheading">Your learning dashboard at a glance.</p>
 
       <div class="stats-grid" id="ovStats"></div>
@@ -849,46 +849,27 @@ const NEXO_MOCK_USER = (() => {
     }
   }
   return {
-    name: "Aiden Silva",
-    username: "aidensilva",
-    email: "aiden@example.com",
-    avatarInitials: "AS",
+    name: "Guest",
+    username: "guest",
+    email: "",
+    avatarInitials: "G",
     avatarColor: "#2ea84c",
-    joinDate: "January 2025",
+    joinDate: "",
     plan: "free",
-    streak: 7,
-    totalLessonsCompleted: 14,
-    totalQuizzesTaken: 9,
-    totalBooksBookmarked: 5,
-    avgQuizScore: 78,
+    streak: 0,
+    totalLessonsCompleted: 0,
+    totalQuizzesTaken: 0,
+    totalBooksBookmarked: 0,
+    avgQuizScore: 0,
     subjects: [
-      { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 7, avgScore: 82 },
-      { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 5, avgScore: 74 },
-      { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 2, avgScore: 91 }
+      { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 0, avgScore: 0 },
+      { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 0, avgScore: 0 },
+      { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 0, avgScore: 0 }
     ],
-    recentActivity: [
-      { type: "lesson", label: "Completed: Demand, Supply & Equilibrium", subject: "Economics", time: "2 hours ago", icon: "check" },
-      { type: "quiz",   label: "Quiz passed: Business Organizations — 7/8", subject: "Business Studies", time: "Yesterday", icon: "quiz" },
-      { type: "lesson", label: "Started: Python — Basics", subject: "ICT", time: "2 days ago", icon: "start" },
-      { type: "book",   label: "Bookmarked: Atomic Habits", subject: "Books", time: "3 days ago", icon: "bookmark" },
-      { type: "quiz",   label: "Quiz passed: Introduction to Economics — 6/8", subject: "Economics", time: "4 days ago", icon: "quiz" }
-    ],
-    quizHistory: [
-      { lesson: "Intro to Economics",           subject: "Economics",        score: 6, total: 8, date: "4 days ago" },
-      { lesson: "Demand, Supply & Equilibrium", subject: "Economics",        score: 8, total: 8, date: "Yesterday" },
-      { lesson: "Business Organizations",       subject: "Business Studies", score: 7, total: 8, date: "Yesterday" },
-      { lesson: "Entrepreneurship",             subject: "Business Studies", score: 5, total: 8, date: "5 days ago" },
-      { lesson: "Python — Basics",              subject: "ICT",              score: 4, total: 4, date: "2 days ago" }
-    ],
-    bookmarkedBooks: [
-      { title: "Atomic Habits", author: "James Clear", category: "productivity" },
-      { title: "The Psychology of Money", author: "Morgan Housel", category: "finance" },
-      { title: "Deep Work", author: "Cal Newport", category: "productivity" }
-    ],
-    bookmarkedLessons: [
-      { title: "Introduction to Economics", subject: "Economics", status: "done" },
-      { title: "Python — Control Flow", subject: "ICT", status: "in-progress" }
-    ],
+    recentActivity: [],
+    quizHistory: [],
+    bookmarkedBooks: [],
+    bookmarkedLessons: [],
     premium: {
       status: "not_subscribed",
       features: [

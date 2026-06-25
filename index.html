@@ -1783,7 +1783,7 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       <span class="navbar-bm-dot" id="navbarBmDot"></span>
     </button>
-    <button class="navbar-avatar" id="navAvatarBtn" style="background:#2ea84c;color:#060906;" onclick="toggleAccountSidebar()" aria-label="Account">AS</button>
+    <button class="navbar-avatar" id="navAvatarBtn" style="background:#2ea84c;color:#060906;" onclick="toggleAccountSidebar()" aria-label="Account">G</button>
     <button class="navbar-hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -1828,10 +1828,10 @@ footer .footer-info span{margin:0 0.5rem;color:var(--border);}
 <aside class="account-sidebar" id="accountSidebar">
   <div class="as-header">
     <div class="as-header-left">
-      <div class="as-avatar" id="asAvatar" style="background:#2ea84c">AS</div>
-      <div class="as-user-info">
-        <div class="as-name" id="asName">Aiden Silva</div>
-        <div class="as-username" id="asUsername">@aidensilva</div>
+      <div class="as-avatar" id="asAvatar" style="background:#2ea84c">G</div>
+      <div class="as-profile"> 
+        <div class="as-name" id="asName">Guest</div>
+        <div class="as-username" id="asUsername">@guest</div>
         <div class="as-plan" id="asPlan">Free Plan</div>
       </div>
     </div>
@@ -4536,30 +4536,24 @@ const NEXO_MOCK_USER = (() => {
     }
   }
   return {
-    name: "Aiden Silva",
-    username: "aidensilva",
-    email: "aiden@example.com",
-    avatarInitials: "AS",
+    name: "Guest",
+    username: "guest",
+    email: "",
+    avatarInitials: "G",
     avatarColor: "#2ea84c",
-    joinDate: "January 2025",
+    joinDate: "",
     plan: "free",
-    streak: 7,
-    totalLessonsCompleted: 14,
-    totalQuizzesTaken: 9,
-    totalBooksBookmarked: 5,
-    avgQuizScore: 78,
+    streak: 0,
+    totalLessonsCompleted: 0,
+    totalQuizzesTaken: 0,
+    totalBooksBookmarked: 0,
+    avgQuizScore: 0,
     subjects: [
-      { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 7, avgScore: 82 },
-      { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 5, avgScore: 74 },
-      { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 2, avgScore: 91 }
+      { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 0, avgScore: 0 },
+      { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 0, avgScore: 0 },
+      { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 0, avgScore: 0 }
     ],
-    recentActivity: [
-      { type: "lesson", label: "Completed: Demand, Supply & Equilibrium", subject: "Economics", time: "2 hours ago", icon: "check" },
-      { type: "quiz",   label: "Quiz passed: Business Organizations — 7/8", subject: "Business Studies", time: "Yesterday", icon: "quiz" },
-      { type: "lesson", label: "Started: Python — Basics", subject: "ICT", time: "2 days ago", icon: "start" },
-      { type: "book",   label: "Bookmarked: Atomic Habits", subject: "Books", time: "3 days ago", icon: "bookmark" },
-      { type: "quiz",   label: "Quiz passed: Introduction to Economics — 6/8", subject: "Economics", time: "4 days ago", icon: "quiz" }
-    ],
+    recentActivity: [],
     premium: { status: "not_subscribed", features: [], price: "$4.99 / month" }
   };
 })();
