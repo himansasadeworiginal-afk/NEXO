@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXO — Admin</title>
+<script src="nexo-api.js"></script>
+<script>
+(function(){try{var m=localStorage.getItem('nexo_bg_mode');if(m==='light')document.documentElement.classList.add('light-mode')}catch(e){}})();
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060906;--surface:#0c110c;--surface-hover:#141c14;
+  --text:#d8e8d8;--text-dim:#607a60;--text-muted:#3a4f3a;
+  --green:#2ea84c;--green-light:#4cd96b;--green-dim:#1a5c2a;
+  --teal:#2aaf8f;--amber:#d4a040;--purple:#8a5abe;--rose:#d4606a;
+  --border:#182218;--transition:0.3s ease;
+}
+.light-mode{--bg:#f0f5f0;--surface:#e8efe8;--surface-hover:#dce6dc;--text:#0a1a0a;--text-dim:#507a50;--text-muted:#8aaa8a;--border:#c8d8c8;--green:#1a8a3a;--green-light:#2ea84c;--teal:#1a8a70;--amber:#b88a30;--purple:#7a4aaa;--rose:#c0404a}
+body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+a{color:var(--green);text-decoration:none;}
+input,select,textarea,button{font-family:inherit;}
+.admin-wrap{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+/* Sidebar */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:1.25rem;display:flex;flex-direction:column;}
+.sidebar-brand{font-size:1.2rem;font-weight:800;margin-bottom:1.5rem;color:var(--green);}
+.sidebar-nav{display:flex;flex-direction:column;gap:0.25rem;flex:1;}
+.sidebar-nav a{padding:0.5rem 0.75rem;border-radius:6px;font-size:0.85rem;color:var(--text-dim);transition:all var(--transition);}
+.sidebar-nav a:hover,.sidebar-nav a.active{background:var(--surface-hover);color:var(--text);}
+.sidebar-nav a.active{color:var(--green);font-weight:600;}
+.sidebar-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border);}
+.sidebar-footer a{font-size:0.8rem;color:var(--text-muted);display:block;padding:0.3rem 0;}
+.sidebar-footer a:hover{color:var(--text-dim);}
+/* Main */
+.main{padding:1.5rem 2rem;}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+.page-header h1{font-size:1.4rem;font-weight:700;}
+.page-header .sub{font-size:0.8rem;color:var(--text-dim);}
+/* Cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat-card{padding:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+.stat-card .num{font-size:1.8rem;font-weight:800;color:var(--green);}
+.stat-card .label{font-size:0.75rem;color:var(--text-dim);margin-top:0.25rem;text-transform:uppercase;letter-spacing:0.5px;}
+/* Tables */
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+th,td{padding:0.65rem 0.85rem;text-align:left;border-bottom:1px solid var(--border);}
+th{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);font-weight:600;}
+td{color:var(--text);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--surface-hover);}
+/* Forms */
+.form-group{margin-bottom:0.85rem;}
+.form-group label{display:block;font-size:0.75rem;font-weight:600;color:var(--text-dim);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.5px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.55rem 0.75rem;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.85rem;outline:none;transition:border-color var(--transition);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);}
+.form-group textarea{min-height:80px;resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;}
+/* Buttons */
+.btn{padding:0.45rem 1rem;border-radius:6px;border:none;font-size:0.8rem;font-weight:600;cursor:pointer;transition:opacity var(--transition);display:inline-flex;align-items:center;gap:0.4rem;}
+.btn-primary{background:var(--green);color:var(--bg);}
+.btn-primary:hover{opacity:0.85;}
+.btn-danger{background:var(--rose);color:var(--bg);}
+.btn-danger:hover{opacity:0.85;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-dim);}
+.btn-ghost:hover{background:var(--surface-hover);color:var(--text);}
+.btn-sm{padding:0.3rem 0.6rem;font-size:0.75rem;}
+.actions{display:flex;gap:0.4rem;justify-content:flex-end;}
+/* Sections */
+.section{display:none;}
+.section.active{display:block;}
+.badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:20px;font-size:0.65rem;font-weight:600;}
+.badge-green{background:var(--green-dim);color:var(--text);}
+.badge-amber{background:var(--amber-dim);color:var(--text);}
+.badge-rose{background:var(--rose);color:var(--bg);}
+.empty-state{padding:2rem;text-align:center;color:var(--text-muted);font-size:0.9rem;}
+.modal{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;}
+.modal.show{display:flex;}
+.modal-content{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;}
+.modal-content h2{font-size:1.1rem;margin-bottom:1rem;}
+.modal-footer{display:flex;justify-content:flex-end;gap:0.5rem;margin-top:1rem;}
+/* Login overlay */
+.login-overlay{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;max-width:380px;width:100%;}
+.login-box h1{font-size:1.3rem;margin-bottom:0.5rem;}
+.login-box p{color:var(--text-dim);font-size:0.85rem;margin-bottom:1.5rem;}
+.hidden{display:none;}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;}
+@media(max-width:768px){
+  .admin-wrap{grid-template-columns:1fr;}
+  .sidebar{position:fixed;bottom:0;left:0;right:0;z-index:50;flex-direction:row;padding:0.5rem;border-right:none;border-top:1px solid var(--border);overflow-x:auto;}
+  .sidebar-brand,.sidebar-footer{display:none;}
+  .sidebar-nav{flex-direction:row;gap:0;}
+  .sidebar-nav a{white-space:nowrap;padding:0.4rem 0.7rem;font-size:0.75rem;}
+  .main{padding:1rem;padding-bottom:4rem;}
+  .form-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body id="appRoot">
+<div id="loginScreen" class="login-overlay">
+  <div class="login-box">
+    <h1>Admin Login</h1>
+    <p>Enter your admin credentials to manage NEXO.</p>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="adminEmail" value="admin@nexo.app" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="adminPassword" placeholder="Enter admin password" autocomplete="current-password">
+    </div>
+    <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;" id="loginHint">Default: admin@nexo.app / admin123</div>
+    <button class="btn btn-primary" id="adminLoginBtn" style="width:100%;justify-content:center;padding:0.6rem;">Sign In as Admin</button>
+    <div style="margin-top:0.75rem;text-align:center;font-size:0.8rem;"><a href="index.html">&larr; Back to site</a></div>
+  </div>
+</div>
+
+<div id="adminApp" class="admin-wrap hidden">
+  <nav class="sidebar">
+    <div class="sidebar-brand">NEXO /admin</div>
+    <div class="sidebar-nav">
+      <a href="#" data-section="dashboard" class="active">Dashboard</a>
+      <a href="#" data-section="users">Users</a>
+      <a href="#" data-section="subjects">Subjects</a>
+      <a href="#" data-section="lessons">Lessons</a>
+      <a href="#" data-section="quizzes">Quizzes</a>
+      <a href="#" data-section="flashcards">Flashcards</a>
+      <a href="#" data-section="books">Books</a>
+      <a href="#" data-section="settings">Settings</a>
+    </div>
+    <div class="sidebar-footer">
+      <a href="index.html">&larr; Back to site</a>
+      <a href="#" id="adminLogout">Sign out</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="section active" id="sec-dashboard">
+      <div class="page-header"><h1>Dashboard</h1><span class="sub" id="dashTime"></span></div>
+      <div class="stats-grid" id="statsGrid"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="stat-card"><div class="label">Recent Registrations</div><div id="recentUsers" style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-dim);"></div></div>
+        <div class="stat-card"><div class="label">Quiz Activity</div><div id="quizActivity" style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-dim);"></div></div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-users">
+      <div class="page-header"><h1>Users</h1><span class="sub" id="userCount"></span></div>
+      <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>XP</th><th>Joined</th><th></th></tr></thead><tbody id="usersTable"></tbody></table></div>
+    </div>
+
+    <div class="section" id="sec-subjects">
+      <div class="page-header"><h1>Subjects</h1><button class="btn btn-primary btn-sm" onclick="openSubjectModal()">+ Add Subject</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Name</th><th>Color</th><th>Icon</th><th>Lessons</th><th></th></tr></thead><tbody id="subjectsTable"></tbody></table></div>
+    </div>
+
+    <div class="section" id="sec-lessons">
+      <div class="page-header">
+        <h1>Lessons</h1>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <select id="lessonSubjectFilter" style="padding:0.35rem 0.6rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:0.8rem;"></select>
+          <button class="btn btn-primary btn-sm" onclick="openLessonModal()">+ Add Lesson</button>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Title</th><th>Subject</th><th>Path</th><th></th></tr></thead><tbody id="lessonsTable"></tbody></table></div>
+    </div>
+
+    <div class="section" id="sec-quizzes">
+      <div class="page-header">
+        <h1>Quizzes</h1>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <select id="quizSubjectFilter" style="padding:0.35rem 0.6rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:0.8rem;"></select>
+          <button class="btn btn-primary btn-sm" onclick="openQuizModal()">+ Add Quiz</button>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Lesson</th><th>Questions</th><th></th></tr></thead><tbody id="quizzesTable"></tbody></table></div>
+    </div>
+
+    <div class="section" id="sec-flashcards">
+      <div class="page-header">
+        <h1>Flashcards</h1>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <select id="fcSubjectFilter" style="padding:0.35rem 0.6rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:0.8rem;"></select>
+          <button class="btn btn-primary btn-sm" onclick="openFlashcardModal()">+ Add Flashcard</button>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Front</th><th>Back</th><th>Lesson</th><th></th></tr></thead><tbody id="flashcardsTable"></tbody></table></div>
+    </div>
+
+    <div class="section" id="sec-books">
+      <div class="page-header"><h1>Books</h1><button class="btn btn-primary btn-sm" onclick="openBookModal()">+ Add Book</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Title</th><th>Author</th><th>Category</th><th></th></tr></thead><tbody id="booksTable"></tbody></table></div>
+    </div>
+
+    <div class="section" id="sec-settings">
+      <div class="page-header"><h1>Settings</h1></div>
+      <div class="stat-card" style="max-width:500px;">
+        <div class="form-group">
+          <label>Admin email</label>
+          <input type="email" id="setAdminEmail" value="admin@nexo.app">
+        </div>
+        <div class="form-group">
+          <label>Admin password</label>
+          <input type="text" id="setAdminPass" value="admin123">
+        </div>
+        <div class="form-group">
+          <label>Site name</label>
+          <input type="text" id="setSiteName" value="NEXO">
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="subjectModal"><div class="modal-content">
+  <h2 id="subjectModalTitle">Add Subject</h2>
+  <div class="form-group"><label>ID</label><input id="subjId" placeholder="e.g. science"></div>
+  <div class="form-group"><label>Name</label><input id="subjName" placeholder="e.g. Science"></div>
+  <div class="form-row">
+    <div class="form-group"><label>Color</label><input id="subjColor" placeholder="#hex"></div>
+    <div class="form-group"><label>Accent</label><input id="subjAccent" placeholder="e.g. teal"></div>
+  </div>
+  <div class="form-group"><label>Icon</label><input id="subjIcon" placeholder="e.g. chart"></div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeModal('subjectModal')">Cancel</button>
+    <button class="btn btn-primary" id="subjectSaveBtn" onclick="saveSubject()">Save</button>
+  </div>
+</div></div>
+
+<div class="modal" id="lessonModal"><div class="modal-content">
+  <h2 id="lessonModalTitle">Add Lesson</h2>
+  <div class="form-group"><label>Subject</label><select id="lessonSubject"></select></div>
+  <div class="form-group"><label>Lesson #</label><input type="number" id="lessonNum" min="1"></div>
+  <div class="form-group"><label>Title</label><input id="lessonTitle" placeholder="e.g. Introduction to Economics"></div>
+  <div class="form-group"><label>Path</label><input id="lessonPath" placeholder="e.g. /economics/1/index.html"></div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeModal('lessonModal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveLesson()">Save</button>
+  </div>
+</div></div>
+
+<div class="modal" id="quizModal"><div class="modal-content">
+  <h2>Add Quiz</h2>
+  <div class="form-group"><label>Lesson</label><select id="quizLesson"></select></div>
+  <div class="form-group"><label>Questions (JSON array)</label><textarea id="quizQuestions" placeholder='[{"q":"What is...","options":["A","B","C","D"],"answer":0,"explain":"..."}]' style="min-height:120px;"></textarea></div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeModal('quizModal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveQuiz()">Save</button>
+  </div>
+</div></div>
+
+<div class="modal" id="flashcardModal"><div class="modal-content">
+  <h2>Add Flashcard</h2>
+  <div class="form-group"><label>Lesson</label><select id="fcLesson"></select></div>
+  <div class="form-group"><label>Front</label><textarea id="fcFront" placeholder="Question/term" style="min-height:60px;"></textarea></div>
+  <div class="form-group"><label>Back</label><textarea id="fcBack" placeholder="Answer/definition" style="min-height:60px;"></textarea></div>
+  <div class="form-group"><label>Hint</label><input id="fcHint" placeholder="Optional hint"></div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeModal('flashcardModal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveFlashcard()">Save</button>
+  </div>
+</div></div>
+
+<div class="modal" id="bookModal"><div class="modal-content">
+  <h2>Add Book</h2>
+  <div class="form-group"><label>Title</label><input id="bookTitle" placeholder="Book title"></div>
+  <div class="form-group"><label>Author</label><input id="bookAuthor" placeholder="Author name"></div>
+  <div class="form-group"><label>Category</label><input id="bookCategory" placeholder="e.g. productivity, finance"></div>
+  <div class="form-group"><label>Path</label><input id="bookPath" placeholder="e.g. /books/my-book/index.html"></div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeModal('bookModal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveBook()">Save</button>
+  </div>
+</div></div>
+
+<script>
+// =====================================================================
+// CONFIG
+// =====================================================================
+let ADMIN_CONFIG = (function(){
+  try { return JSON.parse(localStorage.getItem('nexo_admin_config')) || {}; } catch(e) { return {}; }
+})();
+function getAdminEmail() { return ADMIN_CONFIG.email || 'admin@nexo.app'; }
+function getAdminPass() { return ADMIN_CONFIG.password || 'admin123'; }
+
+// =====================================================================
+// DATA LAYER — localStorage-backed CRUD
+// =====================================================================
+function loadTable(key, fallback) {
+  try { var d = JSON.parse(localStorage.getItem('nexo_admin_' + key)); if (Array.isArray(d)) return d; } catch(e) {}
+  return fallback || [];
+}
+function saveTable(key, data) {
+  localStorage.setItem('nexo_admin_' + key, JSON.stringify(data));
+}
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+let subjects = loadTable('subjects', defaultSubjects());
+let lessons = loadTable('lessons', defaultLessons());
+let quizzes = loadTable('quizzes', []);
+let flashcards = loadTable('flashcards', []);
+let books = loadTable('books', []);
+
+function defaultSubjects() {
+  return [
+    {id:'economics',name:'Economics',color:'#2aaf8f',accent:'teal',icon:'chart'},
+    {id:'business',name:'Business Studies',color:'#d4a040',accent:'amber',icon:'briefcase'},
+    {id:'ict',name:'ICT',color:'#8a5abe',accent:'purple',icon:'code'}
+  ];
+}
+function defaultLessons() {
+  return [
+    {id:'econ-L1',subject_id:'economics',title:'Introduction to Economics',lesson_num:1,path:'/economics/1/index.html'},
+    {id:'econ-L2',subject_id:'economics',title:'Demand, Supply & Market Equilibrium',lesson_num:2,path:'/economics/2/index.html'},
+    {id:'econ-L3',subject_id:'economics',title:'Government Intervention in Markets',lesson_num:3,path:'/economics/3/index.html'},
+    {id:'econ-L4',subject_id:'economics',title:'Production, Cost & Market Structures',lesson_num:4,path:'/economics/4/index.html'},
+    {id:'econ-L5',subject_id:'economics',title:'National Accounting',lesson_num:5,path:'/economics/5/index.html'},
+    {id:'econ-L6',subject_id:'economics',title:'Macroeconomic Concepts',lesson_num:6,path:'/economics/6/index.html'},
+    {id:'econ-L7',subject_id:'economics',title:'Price, Inflation, Money & Financial System',lesson_num:7,path:'/economics/7/index.html'},
+    {id:'econ-L8',subject_id:'economics',title:'Market Failure, Government & Public Finance',lesson_num:8,path:'/economics/8/index.html'},
+    {id:'econ-L9',subject_id:'economics',title:'Protectionism & Foreign Investments',lesson_num:9,path:'/economics/9/index.html'},
+    {id:'econ-L10',subject_id:'economics',title:'Foreign Exchange & Balance of Payments',lesson_num:10,path:'/economics/10/index.html'},
+    {id:'econ-L11',subject_id:'economics',title:'Economic Growth, Development & Labour',lesson_num:11,path:'/economics/11/index.html'},
+    {id:'econ-L12',subject_id:'economics',title:'Sri Lankan Economy Post-Independence',lesson_num:12,path:'/economics/12/index.html'},
+    {id:'bus-L1',subject_id:'business',title:'Basis of Business & Environment',lesson_num:1,path:'/business/1/index.html'},
+    {id:'bus-L2',subject_id:'business',title:'Social Responsibility & Business Ethics',lesson_num:2,path:'/business/2/index.html'},
+    {id:'bus-L3',subject_id:'business',title:'Business Ownership & Management',lesson_num:3,path:'/business/3/index.html'},
+    {id:'bus-L4',subject_id:'business',title:'Production & Operations Management',lesson_num:4,path:'/business/4/index.html'},
+    {id:'bus-L5',subject_id:'business',title:'Human Resource Management',lesson_num:5,path:'/business/5/index.html'},
+    {id:'bus-L6',subject_id:'business',title:'Marketing & Financial Management',lesson_num:6,path:'/business/6/index.html'},
+    {id:'bus-L7',subject_id:'business',title:'Financial Management',lesson_num:7,path:'/business/7/index.html'},
+    {id:'bus-L8',subject_id:'business',title:'Risk & Insurance',lesson_num:8,path:'/business/8/index.html'},
+    {id:'ict-L1',subject_id:'ict',title:'Data Representation',lesson_num:1,path:'/ict/1/index.html'},
+    {id:'ict-L2',subject_id:'ict',title:'Data Transmission',lesson_num:2,path:'/ict/2/index.html'}
+  ];
+}
+
+function persistAll() {
+  saveTable('subjects', subjects);
+  saveTable('lessons', lessons);
+  saveTable('quizzes', quizzes);
+  saveTable('flashcards', flashcards);
+  saveTable('books', books);
+}
+
+// =====================================================================
+// AUTH GUARD
+// =====================================================================
+let adminAuthed = false;
+
+function checkAdmin() {
+  if (adminAuthed) return true;
+  var u = null;
+  try { u = JSON.parse(localStorage.getItem('nexo_user')); } catch(e) {}
+  var email = u ? u.email : '';
+  var pass = u ? u.password : '';
+  if (email === getAdminEmail() && pass === getAdminPass()) {
+    adminAuthed = true;
+    return true;
+  }
+  return false;
+}
+
+document.getElementById('adminLoginBtn').addEventListener('click', function(){
+  var email = document.getElementById('adminEmail').value.trim();
+  var pass = document.getElementById('adminPassword').value;
+  if (email === getAdminEmail() && pass === getAdminPass()) {
+    adminAuthed = true;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminApp').classList.remove('hidden');
+    initAdmin();
+  } else {
+    document.getElementById('loginHint').textContent = 'Invalid credentials. Try admin@nexo.app / admin123';
+    document.getElementById('loginHint').style.color = 'var(--rose)';
+  }
+});
+
+document.getElementById('adminPassword').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
+});
+
+// Auto-login if already authed
+if (checkAdmin()) {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('adminApp').classList.remove('hidden');
+  initAdmin();
+}
+
+document.getElementById('adminLogout').addEventListener('click', function(e){
+  e.preventDefault();
+  adminAuthed = false;
+  document.getElementById('adminApp').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('adminPassword').value = '';
+});
+
+// =====================================================================
+// NAVIGATION
+// =====================================================================
+document.querySelectorAll('.sidebar-nav a').forEach(function(link){
+  link.addEventListener('click', function(e){
+    e.preventDefault();
+    document.querySelectorAll('.sidebar-nav a').forEach(function(a){ a.classList.remove('active'); });
+    this.classList.add('active');
+    document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('sec-' + this.dataset.section).classList.add('active');
+  });
+});
+
+// =====================================================================
+// DASHBOARD
+// =====================================================================
+function renderDashboard() {
+  var users = getUsers();
+  var totalUsers = users.length;
+  var premium = users.filter(function(u){ return u.plan === 'premium' || localStorage.getItem('nexo_plan_' + u.id) === 'premium'; }).length;
+  var totalLessons = lessons.length;
+  var totalQuizzes = quizzes.length;
+  var totalFlashcards = flashcards.length;
+
+  document.getElementById('statsGrid').innerHTML =
+    '<div class="stat-card"><div class="num">' + totalUsers + '</div><div class="label">Registered Users</div></div>' +
+    '<div class="stat-card"><div class="num">' + premium + '</div><div class="label">Premium Users</div></div>' +
+    '<div class="stat-card"><div class="num">' + subjects.length + '</div><div class="label">Subjects</div></div>' +
+    '<div class="stat-card"><div class="num">' + totalLessons + '</div><div class="label">Lessons</div></div>' +
+    '<div class="stat-card"><div class="num">' + totalQuizzes + '</div><div class="label">Quizzes</div></div>' +
+    '<div class="stat-card"><div class="num">' + totalFlashcards + '</div><div class="label">Flashcards</div></div>';
+
+  var recent = users.slice(-5).reverse().map(function(u){ return '<div style="padding:0.2rem 0;">' + escapeHtml(u.name) + ' <span style="color:var(--text-muted)">(' + escapeHtml(u.email) + ')</span></div>'; }).join('') || '<div style="color:var(--text-muted)">No users yet</div>';
+  document.getElementById('recentUsers').innerHTML = recent;
+  document.getElementById('quizActivity').innerHTML = '<div style="color:var(--text-muted)">' + totalQuizzes + ' quizzes across ' + subjects.length + ' subjects</div>';
+  document.getElementById('dashTime').textContent = new Date().toLocaleString();
+}
+
+// =====================================================================
+// USERS
+// =====================================================================
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem('nexo_mock_users') || '[]'); } catch(e) { return []; }
+}
+function saveUsers(u) { localStorage.setItem('nexo_mock_users', JSON.stringify(u)); }
+
+function escapeHtml(s) {
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(s || ''));
+  return d.innerHTML;
+}
+
+function renderUsers() {
+  var users = getUsers();
+  document.getElementById('userCount').textContent = users.length + ' total';
+  document.getElementById('usersTable').innerHTML = users.length === 0
+    ? '<tr><td colspan="6"><div class="empty-state">No registered users</div></td></tr>'
+    : users.map(function(u){
+        var plan = localStorage.getItem('nexo_plan_' + u.id) || u.plan || 'free';
+        return '<tr><td>' + escapeHtml(u.name) + '</td><td>' + escapeHtml(u.email) + '</td><td><span class="badge ' + (plan === 'premium' ? 'badge-green' : 'badge-amber') + '">' + plan + '</span></td><td>' + (u.xp || 0) + '</td><td>' + (u.join_date ? new Date(u.join_date).toLocaleDateString() : '-') + '</td><td class="actions"><button class="btn btn-danger btn-sm" onclick="deleteUser(\'' + u.id + '\')">Delete</button></td></tr>';
+      }).join('');
+}
+
+function deleteUser(id) {
+  if (!confirm('Delete this user? This cannot be undone.')) return;
+  var users = getUsers().filter(function(u){ return u.id !== id; });
+  saveUsers(users);
+  renderUsers();
+  renderDashboard();
+}
+
+// =====================================================================
+// SUBJECTS
+// =====================================================================
+var editingSubject = null;
+
+function renderSubjects() {
+  document.getElementById('subjectsTable').innerHTML = subjects.length === 0
+    ? '<tr><td colspan="5"><div class="empty-state">No subjects</div></td></tr>'
+    : subjects.map(function(s){
+        var count = lessons.filter(function(l){ return l.subject_id === s.id; }).length;
+        return '<tr><td><strong>' + escapeHtml(s.name) + '</strong></td><td><span style="display:inline-block;width:16px;height:16px;border-radius:4px;background:' + s.color + ';vertical-align:middle;"></span> ' + s.color + '</td><td>' + escapeHtml(s.icon) + '</td><td>' + count + '</td><td class="actions"><button class="btn btn-ghost btn-sm" onclick="editSubject(\'' + s.id + '\')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteSubject(\'' + s.id + '\')">Delete</button></td></tr>';
+      }).join('');
+}
+
+function openSubjectModal(data) {
+  editingSubject = data || null;
+  document.getElementById('subjectModalTitle').textContent = data ? 'Edit Subject' : 'Add Subject';
+  document.getElementById('subjId').value = data ? data.id : '';
+  document.getElementById('subjId').disabled = !!data;
+  document.getElementById('subjName').value = data ? data.name : '';
+  document.getElementById('subjColor').value = data ? data.color : '#2ea84c';
+  document.getElementById('subjAccent').value = data ? data.accent : 'green';
+  document.getElementById('subjIcon').value = data ? data.icon : '';
+  document.getElementById('subjectModal').classList.add('show');
+}
+
+function editSubject(id) {
+  var s = subjects.find(function(x){ return x.id === id; });
+  if (s) openSubjectModal(s);
+}
+
+function saveSubject() {
+  var id = document.getElementById('subjId').value.trim();
+  var name = document.getElementById('subjName').value.trim();
+  if (!id || !name) { alert('ID and Name are required'); return; }
+  if (!editingSubject) {
+    if (subjects.find(function(s){ return s.id === id; })) { alert('Subject ID already exists'); return; }
+    subjects.push({ id:id, name:name, color:document.getElementById('subjColor').value || '#2ea84c', accent:document.getElementById('subjAccent').value || 'green', icon:document.getElementById('subjIcon').value || '' });
+  } else {
+    var s = subjects.find(function(x){ return x.id === editingSubject.id; });
+    if (s) { s.name = name; s.color = document.getElementById('subjColor').value || '#2ea84c'; s.accent = document.getElementById('subjAccent').value || 'green'; s.icon = document.getElementById('subjIcon').value || ''; }
+  }
+  persistAll();
+  closeModal('subjectModal');
+  renderSubjects();
+  renderDashboard();
+  fillSubjectFilters();
+}
+
+function deleteSubject(id) {
+  if (!confirm('Delete subject "' + id + '" and all its lessons?')) return;
+  subjects = subjects.filter(function(s){ return s.id !== id; });
+  lessons = lessons.filter(function(l){ return l.subject_id !== id; });
+  persistAll();
+  renderSubjects();
+  renderLessons();
+  renderDashboard();
+  fillSubjectFilters();
+}
+
+// =====================================================================
+// LESSONS
+// =====================================================================
+var editingLesson = null;
+
+function fillSubjectFilters() {
+  var selects = ['lessonSubjectFilter','quizSubjectFilter','fcSubjectFilter','lessonSubject','quizLesson','fcLesson'];
+  selects.forEach(function(sid){
+    var el = document.getElementById(sid);
+    if (!el) return;
+    el.innerHTML = subjects.map(function(s){ return '<option value="' + s.id + '">' + escapeHtml(s.name) + '</option>'; }).join('');
+  });
+}
+
+function renderLessons() {
+  var filter = document.getElementById('lessonSubjectFilter').value;
+  var filtered = filter ? lessons.filter(function(l){ return l.subject_id === filter; }) : lessons;
+  document.getElementById('lessonsTable').innerHTML = filtered.length === 0
+    ? '<tr><td colspan="5"><div class="empty-state">No lessons</div></td></tr>'
+    : filtered.sort(function(a,b){ return a.lesson_num - b.lesson_num; }).map(function(l){
+        var subj = subjects.find(function(s){ return s.id === l.subject_id; });
+        return '<tr><td>' + l.lesson_num + '</td><td>' + escapeHtml(l.title) + '</td><td>' + (subj ? escapeHtml(subj.name) : l.subject_id) + '</td><td style="font-size:0.75rem;color:var(--text-muted)">' + escapeHtml(l.path) + '</td><td class="actions"><button class="btn btn-ghost btn-sm" onclick="editLesson(\'' + l.id + '\')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteLesson(\'' + l.id + '\')">Delete</button></td></tr>';
+      }).join('');
+}
+
+document.getElementById('lessonSubjectFilter').addEventListener('change', renderLessons);
+
+function openLessonModal(data) {
+  editingLesson = data || null;
+  document.getElementById('lessonModalTitle').textContent = data ? 'Edit Lesson' : 'Add Lesson';
+  var subjSelect = document.getElementById('lessonSubject');
+  subjSelect.innerHTML = subjects.map(function(s){ return '<option value="' + s.id + '" ' + (data && data.subject_id === s.id ? 'selected' : '') + '>' + escapeHtml(s.name) + '</option>'; }).join('');
+  document.getElementById('lessonNum').value = data ? data.lesson_num : '';
+  document.getElementById('lessonTitle').value = data ? data.title : '';
+  document.getElementById('lessonPath').value = data ? data.path : '';
+  document.getElementById('lessonModal').classList.add('show');
+}
+
+function editLesson(id) {
+  var l = lessons.find(function(x){ return x.id === id; });
+  if (l) openLessonModal(l);
+}
+
+function saveLesson() {
+  var subject = document.getElementById('lessonSubject').value;
+  var num = parseInt(document.getElementById('lessonNum').value);
+  var title = document.getElementById('lessonTitle').value.trim();
+  var path = document.getElementById('lessonPath').value.trim();
+  if (!subject || !num || !title) { alert('Subject, number, and title are required'); return; }
+  if (!editingLesson) {
+    var id = subject.slice(0,4) + '-L' + num;
+    lessons.push({ id:id, subject_id:subject, title:title, lesson_num:num, path:path });
+  } else {
+    var l = lessons.find(function(x){ return x.id === editingLesson.id; });
+    if (l) { l.subject_id = subject; l.title = title; l.lesson_num = num; l.path = path; }
+  }
+  persistAll();
+  closeModal('lessonModal');
+  renderLessons();
+  renderDashboard();
+}
+
+function deleteLesson(id) {
+  if (!confirm('Delete this lesson?')) return;
+  lessons = lessons.filter(function(l){ return l.id !== id; });
+  quizzes = quizzes.filter(function(q){ return q.lesson_id !== id; });
+  flashcards = flashcards.filter(function(f){ return f.lesson_id !== id; });
+  persistAll();
+  renderLessons();
+  renderDashboard();
+}
+
+// =====================================================================
+// QUIZZES
+// =====================================================================
+function renderQuizzes() {
+  var filter = document.getElementById('quizSubjectFilter').value;
+  var filtered = filter ? quizzes.filter(function(q){ return lessons.find(function(l){ return l.id === q.lesson_id && l.subject_id === filter; }); }) : quizzes;
+  document.getElementById('quizzesTable').innerHTML = filtered.length === 0
+    ? '<tr><td colspan="3"><div class="empty-state">No quizzes</div></td></tr>'
+    : filtered.map(function(q){
+        var lesson = lessons.find(function(l){ return l.id === q.lesson_id; });
+        var qCount = 0;
+        try { qCount = JSON.parse(q.questions || '[]').length; } catch(e) {}
+        return '<tr><td>' + (lesson ? escapeHtml(lesson.title) : q.lesson_id) + '</td><td>' + qCount + ' questions</td><td class="actions"><button class="btn btn-danger btn-sm" onclick="deleteQuiz(\'' + q.id + '\')">Delete</button></td></tr>';
+      }).join('');
+}
+
+document.getElementById('quizSubjectFilter').addEventListener('change', renderQuizzes);
+
+function openQuizModal() {
+  var ls = document.getElementById('quizLesson');
+  ls.innerHTML = lessons.map(function(l){
+    var s = subjects.find(function(x){ return x.id === l.subject_id; });
+    return '<option value="' + l.id + '">' + (s ? escapeHtml(s.name) + ' — ' : '') + 'L' + l.lesson_num + ': ' + escapeHtml(l.title) + '</option>';
+  }).join('');
+  document.getElementById('quizQuestions').value = '';
+  document.getElementById('quizModal').classList.add('show');
+}
+
+function saveQuiz() {
+  var lessonId = document.getElementById('quizLesson').value;
+  var questions = document.getElementById('quizQuestions').value.trim();
+  if (!lessonId || !questions) { alert('Lesson and questions are required'); return; }
+  var questionsParsed;
+  try { questionsParsed = JSON.parse(questions); if (!Array.isArray(questionsParsed)) throw 'not array'; } catch(e) { alert('Questions must be a valid JSON array'); return; }
+  quizzes.push({ id:genId(), lesson_id:lessonId, questions:JSON.stringify(questionsParsed) });
+  persistAll();
+  closeModal('quizModal');
+  renderQuizzes();
+  renderDashboard();
+}
+
+function deleteQuiz(id) {
+  if (!confirm('Delete this quiz?')) return;
+  quizzes = quizzes.filter(function(q){ return q.id !== id; });
+  persistAll();
+  renderQuizzes();
+  renderDashboard();
+}
+
+// =====================================================================
+// FLASHCARDS
+// =====================================================================
+function renderFlashcards() {
+  var filter = document.getElementById('fcSubjectFilter').value;
+  var filtered = filter ? flashcards.filter(function(f){ return lessons.find(function(l){ return l.id === f.lesson_id && l.subject_id === filter; }); }) : flashcards;
+  document.getElementById('flashcardsTable').innerHTML = filtered.length === 0
+    ? '<tr><td colspan="4"><div class="empty-state">No flashcards</div></td></tr>'
+    : filtered.map(function(f){
+        var lesson = lessons.find(function(l){ return l.id === f.lesson_id; });
+        return '<tr><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">' + escapeHtml(f.front) + '</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">' + escapeHtml(f.back) + '</td><td>' + (lesson ? 'L' + lesson.lesson_num : '-') + '</td><td class="actions"><button class="btn btn-danger btn-sm" onclick="deleteFlashcard(\'' + f.id + '\')">Delete</button></td></tr>';
+      }).join('');
+}
+
+document.getElementById('fcSubjectFilter').addEventListener('change', renderFlashcards);
+
+function openFlashcardModal() {
+  var ls = document.getElementById('fcLesson');
+  ls.innerHTML = lessons.map(function(l){
+    var s = subjects.find(function(x){ return x.id === l.subject_id; });
+    return '<option value="' + l.id + '">' + (s ? escapeHtml(s.name) + ' — ' : '') + 'L' + l.lesson_num + ': ' + escapeHtml(l.title) + '</option>';
+  }).join('');
+  document.getElementById('fcFront').value = '';
+  document.getElementById('fcBack').value = '';
+  document.getElementById('fcHint').value = '';
+  document.getElementById('flashcardModal').classList.add('show');
+}
+
+function saveFlashcard() {
+  var lessonId = document.getElementById('fcLesson').value;
+  var front = document.getElementById('fcFront').value.trim();
+  var back = document.getElementById('fcBack').value.trim();
+  if (!lessonId || !front || !back) { alert('Lesson, front, and back are required'); return; }
+  flashcards.push({ id:genId(), lesson_id:lessonId, front:front, back:back, hint:document.getElementById('fcHint').value.trim() });
+  persistAll();
+  closeModal('flashcardModal');
+  renderFlashcards();
+  renderDashboard();
+}
+
+function deleteFlashcard(id) {
+  if (!confirm('Delete this flashcard?')) return;
+  flashcards = flashcards.filter(function(f){ return f.id !== id; });
+  persistAll();
+  renderFlashcards();
+  renderDashboard();
+}
+
+// =====================================================================
+// BOOKS
+// =====================================================================
+function renderBooks() {
+  document.getElementById('booksTable').innerHTML = books.length === 0
+    ? '<tr><td colspan="4"><div class="empty-state">No books</div></td></tr>'
+    : books.map(function(b){
+        return '<tr><td><strong>' + escapeHtml(b.title) + '</strong></td><td>' + escapeHtml(b.author || '-') + '</td><td><span class="badge badge-green">' + escapeHtml(b.category || 'general') + '</span></td><td class="actions"><button class="btn btn-danger btn-sm" onclick="deleteBook(\'' + b.id + '\')">Delete</button></td></tr>';
+      }).join('');
+}
+
+function openBookModal() {
+  document.getElementById('bookTitle').value = '';
+  document.getElementById('bookAuthor').value = '';
+  document.getElementById('bookCategory').value = '';
+  document.getElementById('bookPath').value = '';
+  document.getElementById('bookModal').classList.add('show');
+}
+
+function saveBook() {
+  var title = document.getElementById('bookTitle').value.trim();
+  if (!title) { alert('Title is required'); return; }
+  books.push({ id:genId(), title:title, author:document.getElementById('bookAuthor').value.trim(), category:document.getElementById('bookCategory').value.trim(), path:document.getElementById('bookPath').value.trim() });
+  persistAll();
+  closeModal('bookModal');
+  renderBooks();
+  renderDashboard();
+}
+
+function deleteBook(id) {
+  if (!confirm('Delete this book?')) return;
+  books = books.filter(function(b){ return b.id !== id; });
+  persistAll();
+  renderBooks();
+  renderDashboard();
+}
+
+// =====================================================================
+// SETTINGS
+// =====================================================================
+function saveSettings() {
+  ADMIN_CONFIG.email = document.getElementById('setAdminEmail').value.trim();
+  ADMIN_CONFIG.password = document.getElementById('setAdminPass').value;
+  localStorage.setItem('nexo_admin_config', JSON.stringify(ADMIN_CONFIG));
+  document.getElementById('loginHint').textContent = 'Settings saved! Admin email: ' + ADMIN_CONFIG.email;
+  document.getElementById('loginHint').style.color = 'var(--green)';
+}
+
+// =====================================================================
+// MODALS
+// =====================================================================
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+document.querySelectorAll('.modal').forEach(function(m){
+  m.addEventListener('click', function(e){ if (e.target === this) this.classList.remove('show'); });
+});
+
+// =====================================================================
+// INIT
+// =====================================================================
+function initAdmin() {
+  fillSubjectFilters();
+  renderDashboard();
+  renderUsers();
+  renderSubjects();
+  renderLessons();
+  renderQuizzes();
+  renderFlashcards();
+  renderBooks();
+  document.getElementById('setAdminEmail').value = getAdminEmail();
+  document.getElementById('setAdminPass').value = getAdminPass();
+}
+</script>
+</body>
+</html>
