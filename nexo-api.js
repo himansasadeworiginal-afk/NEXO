@@ -1,15 +1,11 @@
-// NEXO API Client — auto-detects backend, falls back to localStorage mock
-// The site works fully without a running server.
+// NEXO API Client — uses relative /api/ URLs when same-origin,
+// falls back to localStorage mock when backend is unreachable.
 
 const NEXO_API = (() => {
-  const PROD_URL = 'https://nexo-api.onrender.com';
-  const isProd = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('onrender.com') || window.location.hostname.includes('github.io');
-  const BASE_URL = (isProd ? PROD_URL : 'http://localhost:4000');
-  const BASE = BASE_URL + '/api';
-
+  const BASE = '/api';
   let token = localStorage.getItem('nexo_token');
   let socket = null;
-  let backendOk = null; // null=unknown, true/false=cached
+  let backendOk = null;
 
   function headers(extra) {
     const h = { 'Content-Type': 'application/json', ...extra };
@@ -17,13 +13,12 @@ const NEXO_API = (() => {
     return h;
   }
 
-  // Ping backend once, cache result
   async function checkBackend() {
     if (backendOk !== null) return backendOk;
     try {
       const ctrl = new AbortController();
       const id = setTimeout(function(){ ctrl.abort(); }, 2000);
-      const r = await fetch(BASE_URL, { signal: ctrl.signal, method: 'HEAD' });
+      await fetch(BASE + '/health', { signal: ctrl.signal });
       clearTimeout(id);
       backendOk = true;
     } catch (e) {
@@ -32,13 +27,6 @@ const NEXO_API = (() => {
     return backendOk;
   }
 
-  function getUsers() {
-    try { return JSON.parse(localStorage.getItem('nexo_mock_users') || '[]'); } catch(e) { return []; }
-  }
-  function saveUsers(u) { localStorage.setItem('nexo_mock_users', JSON.stringify(u)); }
-  function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-
-  // Real API call
   async function api(method, path, body) {
     const opts = { method, headers: headers() };
     if (body) opts.body = JSON.stringify(body);
@@ -48,8 +36,14 @@ const NEXO_API = (() => {
     return data;
   }
 
+  function getUsers() {
+    try { return JSON.parse(localStorage.getItem('nexo_mock_users') || '[]'); } catch(e) { return []; }
+  }
+  function saveUsers(u) { localStorage.setItem('nexo_mock_users', JSON.stringify(u)); }
+  function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
   return {
-    BASE_URL: BASE_URL,
+    BASE_URL: '/',
     getToken: function() { return token; },
     isAuthenticated: function() { return !!token; },
 
@@ -63,11 +57,9 @@ const NEXO_API = (() => {
           localStorage.setItem('nexo_token', data.token);
           return data;
         } catch (e) {
-          if (e.status) throw e; // real API error, don't fallback
-          // network error — fall through to mock
+          if (e.status) throw e;
         }
       }
-      // Mock
       var users = getUsers();
       if (users.find(function(u){return u.email===email})) {
         throw { status:409, error:'Email already taken' };
@@ -95,7 +87,6 @@ const NEXO_API = (() => {
           if (e.status) throw e;
         }
       }
-      // Mock
       var users = getUsers();
       var user = users.find(function(u){return u.email===email && u.password===password});
       if (!user) throw { status:401, error:'Invalid email or password' };
@@ -128,7 +119,7 @@ const NEXO_API = (() => {
     connectSocket: function(){},
     request: function(method, path, body) { return api(method, path, body); },
 
-    // ── Stubs for offline mode ──
+    // ── stubs ──
     getProfile: function(){ return this.me(); },
     updateProfile: function(d){ localStorage.setItem('nexo_user', JSON.stringify(d)); return Promise.resolve(d); },
     getXP: function(){ return Promise.resolve({xp:0}); },
