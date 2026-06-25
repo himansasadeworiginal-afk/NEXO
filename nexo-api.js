@@ -3,6 +3,7 @@
 
 const NEXO_API = (() => {
   const BASE = '/api';
+  var onGitHubPages = window.location.hostname.includes('github.io');
   let token = localStorage.getItem('nexo_token');
   let socket = null;
   let backendOk = null;
@@ -15,6 +16,7 @@ const NEXO_API = (() => {
 
   async function checkBackend() {
     if (backendOk !== null) return backendOk;
+    if (onGitHubPages) { backendOk = false; return false; }
     try {
       const ctrl = new AbortController();
       const id = setTimeout(function(){ ctrl.abort(); }, 2000);

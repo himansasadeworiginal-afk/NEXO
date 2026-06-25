@@ -778,7 +778,7 @@ body::before{
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           Upgrade to Premium
         </button>
-        <div class="pc-message" id="pcMessage">Premium is coming soon! We'll notify you when it launches.</div>
+        <div class="pc-message" id="pcMessage">Processing payment...</div>
       </div>
       <div class="premium-plan-status" id="premiumStatus"></div>
     </div>
@@ -792,7 +792,7 @@ body::before{
     <p style="margin-bottom:1rem;color:var(--text);font-size:0.9rem;">Are you sure?</p>
     <div style="display:flex;gap:0.5rem;justify-content:center;">
       <button onclick="document.getElementById('logoutPopup').style.display='none'" style="padding:6px 16px;background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:0.8rem;">Cancel</button>
-      <button onclick="document.getElementById('logoutPopup').style.display='none'" style="padding:6px 16px;background:var(--rose);border:none;color:var(--bg);cursor:pointer;font-family:inherit;font-size:0.8rem;">Log out</button>
+      <button onclick="NEXO_API.logout();window.location.href='../index.html'" style="padding:6px 16px;background:var(--rose);border:none;color:var(--bg);cursor:pointer;font-family:inherit;font-size:0.8rem;">Log out</button>
     </div>
     <p style="font-size:0.65rem;color:var(--text-muted);margin-top:0.6rem;">Signs out of your account</p>
   </div>
@@ -806,6 +806,47 @@ const NEXO_MOCK_USER = (() => {
   if (NEXO_API && NEXO_API.isAuthenticated()) {
     const cached = localStorage.getItem('nexo_user_cache');
     if (cached) { try { return JSON.parse(cached); } catch {} }
+    const raw = localStorage.getItem('nexo_user');
+    if (raw) {
+      try {
+        const u = JSON.parse(raw);
+        return {
+          name: u.name || "User",
+          username: u.username || "user",
+          email: u.email || "",
+          avatarInitials: (u.name || "U").split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase(),
+          avatarColor: u.avatar_color || "#2ea84c",
+          joinDate: u.join_date ? new Date(u.join_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "January 2025",
+          plan: u.plan || "free",
+          streak: u.streak_count || 0,
+          totalLessonsCompleted: 0,
+          totalQuizzesTaken: 0,
+          totalBooksBookmarked: 0,
+          avgQuizScore: 0,
+          subjects: [
+            { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 0, avgScore: 0 },
+            { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 0, avgScore: 0 },
+            { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 0, avgScore: 0 }
+          ],
+          recentActivity: [],
+          quizHistory: [],
+          bookmarkedBooks: [],
+          bookmarkedLessons: [],
+          premium: {
+            status: "not_subscribed",
+            features: [
+              "Unlimited quiz attempts with detailed explanations",
+              "AI-powered study recommendations",
+              "Downloadable revision summaries",
+              "Priority access to new subjects and lessons",
+              "Personalized weak-area drills",
+              "Ad-free experience"
+            ],
+            price: "$4.99 / month"
+          }
+        };
+      } catch {}
+    }
   }
   return {
     name: "Aiden Silva",
@@ -1205,6 +1246,14 @@ function renderPremium() {
     '</div>'
   ).join('');
 
+  const statusEl = document.getElementById('premiumStatus');
+  const plan = localStorage.getItem('nexo_premium') || U.plan;
+  if (plan === 'free') {
+    statusEl.innerHTML = 'You are on the Free Plan. Upgrade above to unlock all features.';
+  } else {
+    statusEl.innerHTML = '<div class="active-badge">Active Premium</div>Membership since ' + (localStorage.getItem('nexo_premium_date') || U.joinDate) + '<br><br><button style="padding:6px 16px;background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:0.8rem;">Manage Subscription</button>';
+  }
+
   document.getElementById('upgradeBtn').addEventListener('click', async function() {
     if (NEXO_API && NEXO_API.isAuthenticated()) {
       try {
@@ -1213,16 +1262,17 @@ function renderPremium() {
       } catch {}
     }
     const msg = document.getElementById('pcMessage');
+    msg.textContent = 'Processing your payment...';
     msg.classList.add('show');
-    setTimeout(() => msg.classList.remove('show'), 3000);
+    this.disabled = true;
+    setTimeout(() => {
+      localStorage.setItem('nexo_premium', 'premium');
+      localStorage.setItem('nexo_premium_date', new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
+      msg.textContent = 'Welcome to Premium! Your account has been upgraded.';
+      statusEl.innerHTML = '<div class="active-badge">Active Premium</div>Membership since ' + localStorage.getItem('nexo_premium_date');
+      setTimeout(() => { msg.classList.remove('show'); this.disabled = false; }, 3000);
+    }, 2000);
   });
-
-  const statusEl = document.getElementById('premiumStatus');
-  if (U.plan === 'free') {
-    statusEl.innerHTML = 'You are on the Free Plan. Upgrade above to unlock all features.';
-  } else {
-    statusEl.innerHTML = '<div class="active-badge">Active Premium</div>Membership since ' + U.joinDate + '<br><br><button style="padding:6px 16px;background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:0.8rem;">Manage Subscription</button>';
-  }
 }
 
 // =====================================================================

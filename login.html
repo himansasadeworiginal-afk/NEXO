@@ -1038,6 +1038,7 @@ document.getElementById('emailForm').addEventListener('submit', function(e){
       document.getElementById('emailForm').style.display = 'none';
       document.getElementById('emailSuccess').classList.add('show');
       document.getElementById('ariaLive').textContent = 'Signed in successfully';
+      setTimeout(function(){ window.location.href = 'index.html'; }, 800);
     })
     .catch(function(err){
       btn.disabled = false;

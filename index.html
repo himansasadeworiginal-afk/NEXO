@@ -4509,6 +4509,33 @@ const NEXO_MOCK_USER = (() => {
   if (NEXO_API && NEXO_API.isAuthenticated()) {
     const cached = localStorage.getItem('nexo_user_cache');
     if (cached) { try { return JSON.parse(cached); } catch {} }
+    const raw = localStorage.getItem('nexo_user');
+    if (raw) {
+      try {
+        const u = JSON.parse(raw);
+        return {
+          name: u.name || "User",
+          username: u.username || "user",
+          email: u.email || "",
+          avatarInitials: (u.name || "U").split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase(),
+          avatarColor: u.avatar_color || "#2ea84c",
+          joinDate: u.join_date ? new Date(u.join_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "January 2025",
+          plan: u.plan || "free",
+          streak: u.streak_count || 0,
+          totalLessonsCompleted: 0,
+          totalQuizzesTaken: 0,
+          totalBooksBookmarked: 0,
+          avgQuizScore: 0,
+          subjects: [
+            { id: "economics", name: "Economics", color: "#2aaf8f", totalLessons: 12, completedLessons: 0, avgScore: 0 },
+            { id: "business", name: "Business Studies", color: "#d4a040", totalLessons: 8, completedLessons: 0, avgScore: 0 },
+            { id: "ict", name: "ICT", color: "#8a5abe", totalLessons: 2, completedLessons: 0, avgScore: 0 }
+          ],
+          recentActivity: [],
+          premium: { status: "not_subscribed", features: [], price: "$4.99 / month" }
+        };
+      } catch {}
+    }
   }
   return {
     name: "Aiden Silva",
